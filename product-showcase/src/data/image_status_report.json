@@ -1,181 +1,364 @@
 {
-  "timestamp": "2025-07-11T06:41:57.102Z",
+  "timestamp": "2025-07-11T08:24:36.308Z",
   "summary": {
     "totalProducts": 362,
-    "totalImagePaths": 881,
-    "existingImages": 55,
-    "missingImages": 826,
-    "successRate": 6.24
+    "totalImagePaths": 879,
+    "existingImages": 879,
+    "missingImages": 0,
+    "successRate": 100
   },
   "imageTypes": {
     "front": {
-      "total": 362,
-      "existing": 23,
-      "missing": 339
+      "total": 360,
+      "existing": 360,
+      "missing": 0
     },
     "back": {
       "total": 224,
-      "existing": 14,
-      "missing": 210
+      "existing": 224,
+      "missing": 0
     },
     "label": {
       "total": 252,
-      "existing": 15,
-      "missing": 237
+      "existing": 252,
+      "missing": 0
     },
     "package": {
       "total": 43,
-      "existing": 3,
-      "missing": 40
+      "existing": 43,
+      "missing": 0
     }
   },
-  "missingImages": [
+  "missingImages": [],
+  "existingImages": [
+    {
+      "productId": "20250708-002",
+      "productName": "卡士007益生菌酸奶",
+      "type": "front",
+      "path": "/images/20250708-002_正面图片_0.jpg",
+      "fileName": "20250708-002_正面图片_0.jpg"
+    },
+    {
+      "productId": "20250708-002",
+      "productName": "卡士007益生菌酸奶",
+      "type": "back",
+      "path": "/images/20250708-002_背面图片_0.jpg",
+      "fileName": "20250708-002_背面图片_0.jpg"
+    },
+    {
+      "productId": "20250708-002",
+      "productName": "卡士007益生菌酸奶",
+      "type": "label",
+      "path": "/images/20250708-002_标签照片_0.jpg",
+      "fileName": "20250708-002_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250708-003",
+      "productName": "卡士007益生菌酸奶",
+      "type": "front",
+      "path": "/images/20250708-003_正面图片_0.jpg",
+      "fileName": "20250708-003_正面图片_0.jpg"
+    },
+    {
+      "productId": "20250708-003",
+      "productName": "卡士007益生菌酸奶",
+      "type": "back",
+      "path": "/images/20250708-003_背面图片_0.jpg",
+      "fileName": "20250708-003_背面图片_0.jpg"
+    },
+    {
+      "productId": "20250708-003",
+      "productName": "卡士007益生菌酸奶",
+      "type": "label",
+      "path": "/images/20250708-003_标签照片_0.jpg",
+      "fileName": "20250708-003_标签照片_0.jpg"
+    },
     {
       "productId": "20250708-004",
       "productName": "100%番茄复合果蔬汁",
       "type": "front",
-      "path": "/images/20250708-004_正面图片_0.jpg",
-      "fileName": "20250708-004_正面图片_0.jpg"
+      "path": "/images/20250708-004_正面图片_0.png",
+      "fileName": "20250708-004_正面图片_0.png"
     },
     {
       "productId": "20250708-004",
       "productName": "100%番茄复合果蔬汁",
       "type": "label",
-      "path": "/images/20250708-004_标签照片_0.jpg",
-      "fileName": "20250708-004_标签照片_0.jpg"
+      "path": "/images/20250708-004_标签照片_0.png",
+      "fileName": "20250708-004_标签照片_0.png"
     },
     {
       "productId": "20250708-004",
       "productName": "100%番茄复合果蔬汁",
       "type": "package",
-      "path": "/images/20250708-004_外包装图片_0.jpg",
-      "fileName": "20250708-004_外包装图片_0.jpg"
+      "path": "/images/20250708-004_外包装图片_0.png",
+      "fileName": "20250708-004_外包装图片_0.png"
     },
     {
       "productId": "20250708-005",
       "productName": "100%橙汁",
       "type": "front",
-      "path": "/images/20250708-005_正面图片_0.jpg",
-      "fileName": "20250708-005_正面图片_0.jpg"
+      "path": "/images/20250708-005_正面图片_0.png",
+      "fileName": "20250708-005_正面图片_0.png"
+    },
+    {
+      "productId": "20250708-005",
+      "productName": "100%橙汁",
+      "type": "label",
+      "path": "/images/20250708-005_标签照片_0.png",
+      "fileName": "20250708-005_标签照片_0.png"
     },
     {
       "productId": "20250708-005",
       "productName": "100%橙汁",
       "type": "package",
-      "path": "/images/20250708-005_外包装图片_0.jpg",
-      "fileName": "20250708-005_外包装图片_0.jpg"
+      "path": "/images/20250708-005_外包装图片_0.png",
+      "fileName": "20250708-005_外包装图片_0.png"
     },
     {
       "productId": "20250708-006",
       "productName": "100%芒果复合果汁",
       "type": "front",
-      "path": "/images/20250708-006_正面图片_0.jpg",
-      "fileName": "20250708-006_正面图片_0.jpg"
+      "path": "/images/20250708-006_正面图片_0.png",
+      "fileName": "20250708-006_正面图片_0.png"
     },
     {
       "productId": "20250708-006",
       "productName": "100%芒果复合果汁",
       "type": "label",
-      "path": "/images/20250708-006_标签照片_0.jpg",
-      "fileName": "20250708-006_标签照片_0.jpg"
+      "path": "/images/20250708-006_标签照片_0.png",
+      "fileName": "20250708-006_标签照片_0.png"
     },
     {
       "productId": "20250708-006",
       "productName": "100%芒果复合果汁",
       "type": "package",
-      "path": "/images/20250708-006_外包装图片_0.jpg",
-      "fileName": "20250708-006_外包装图片_0.jpg"
+      "path": "/images/20250708-006_外包装图片_0.png",
+      "fileName": "20250708-006_外包装图片_0.png"
     },
     {
       "productId": "20250708-007",
       "productName": "100%葡萄复合果汁",
       "type": "front",
-      "path": "/images/20250708-007_正面图片_0.jpg",
-      "fileName": "20250708-007_正面图片_0.jpg"
+      "path": "/images/20250708-007_正面图片_0.png",
+      "fileName": "20250708-007_正面图片_0.png"
     },
     {
       "productId": "20250708-007",
       "productName": "100%葡萄复合果汁",
       "type": "label",
-      "path": "/images/20250708-007_标签照片_0.jpg",
-      "fileName": "20250708-007_标签照片_0.jpg"
+      "path": "/images/20250708-007_标签照片_0.png",
+      "fileName": "20250708-007_标签照片_0.png"
     },
     {
       "productId": "20250708-008",
       "productName": "盐焗味开心果",
       "type": "front",
-      "path": "/images/20250708-008_正面图片_0.jpg",
-      "fileName": "20250708-008_正面图片_0.jpg"
+      "path": "/images/20250708-008_正面图片_0.png",
+      "fileName": "20250708-008_正面图片_0.png"
+    },
+    {
+      "productId": "20250708-008",
+      "productName": "盐焗味开心果",
+      "type": "label",
+      "path": "/images/20250708-008_标签照片_0.jpg",
+      "fileName": "20250708-008_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250708-009",
+      "productName": "原味腰果仁",
+      "type": "front",
+      "path": "/images/20250708-009_正面图片_0.jpg",
+      "fileName": "20250708-009_正面图片_0.jpg"
     },
     {
       "productId": "20250708-009",
       "productName": "原味腰果仁",
       "type": "label",
-      "path": "/images/20250708-009_标签照片_0.jpg",
-      "fileName": "20250708-009_标签照片_0.jpg"
+      "path": "/images/20250708-009_标签照片_0.png",
+      "fileName": "20250708-009_标签照片_0.png"
     },
     {
       "productId": "20250708-010",
       "productName": "原味开心果",
       "type": "front",
-      "path": "/images/20250708-010_正面图片_0.jpg",
-      "fileName": "20250708-010_正面图片_0.jpg"
+      "path": "/images/20250708-010_正面图片_0.png",
+      "fileName": "20250708-010_正面图片_0.png"
+    },
+    {
+      "productId": "20250708-010",
+      "productName": "原味开心果",
+      "type": "label",
+      "path": "/images/20250708-010_标签照片_0.jpg",
+      "fileName": "20250708-010_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250709-001",
+      "productName": "熟咸鸭蛋(FP)",
+      "type": "front",
+      "path": "/images/20250709-001_正面图片_0.png",
+      "fileName": "20250709-001_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-001",
+      "productName": "熟咸鸭蛋(FP)",
+      "type": "label",
+      "path": "/images/20250709-001_标签照片_0.png",
+      "fileName": "20250709-001_标签照片_0.png"
+    },
+    {
+      "productId": "20250709-011",
+      "productName": "香脆碧根果仁",
+      "type": "front",
+      "path": "/images/20250709-011_正面图片_0.jpg",
+      "fileName": "20250709-011_正面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-011",
+      "productName": "香脆碧根果仁",
+      "type": "back",
+      "path": "/images/20250709-011_背面图片_0.jpg",
+      "fileName": "20250709-011_背面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-011",
+      "productName": "香脆碧根果仁",
+      "type": "label",
+      "path": "/images/20250709-011_标签照片_0.jpg",
+      "fileName": "20250709-011_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250709-012",
+      "productName": "松花皮蛋",
+      "type": "front",
+      "path": "/images/20250709-012_正面图片_0.png",
+      "fileName": "20250709-012_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-012",
+      "productName": "松花皮蛋",
+      "type": "label",
+      "path": "/images/20250709-012_标签照片_0.png",
+      "fileName": "20250709-012_标签照片_0.png"
     },
     {
       "productId": "20250709-013",
       "productName": "多口味燕麦脆礼盒",
       "type": "front",
-      "path": "/images/20250709-013_正面图片_0.png",
-      "fileName": "20250709-013_正面图片_0.png"
+      "path": "/images/20250709-013_正面图片_0.jpg",
+      "fileName": "20250709-013_正面图片_0.jpg"
     },
     {
       "productId": "20250709-013",
       "productName": "多口味燕麦脆礼盒",
       "type": "label",
-      "path": "/images/20250709-013_标签照片_0.png",
-      "fileName": "20250709-013_标签照片_0.png"
+      "path": "/images/20250709-013_标签照片_0.jpg",
+      "fileName": "20250709-013_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250709-014",
+      "productName": "爱尚咪咪虾味膨胀食品",
+      "type": "front",
+      "path": "/images/20250709-014_正面图片_0.png",
+      "fileName": "20250709-014_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-014",
+      "productName": "爱尚咪咪虾味膨胀食品",
+      "type": "back",
+      "path": "/images/20250709-014_背面图片_0.png",
+      "fileName": "20250709-014_背面图片_0.png"
+    },
+    {
+      "productId": "20250709-015",
+      "productName": "香巴佬卤鸡蛋",
+      "type": "front",
+      "path": "/images/20250709-015_正面图片_0.png",
+      "fileName": "20250709-015_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-015",
+      "productName": "香巴佬卤鸡蛋",
+      "type": "back",
+      "path": "/images/20250709-015_背面图片_0.png",
+      "fileName": "20250709-015_背面图片_0.png"
+    },
+    {
+      "productId": "20250709-015",
+      "productName": "香巴佬卤鸡蛋",
+      "type": "label",
+      "path": "/images/20250709-015_标签照片_0.png",
+      "fileName": "20250709-015_标签照片_0.png"
     },
     {
       "productId": "20250709-016",
       "productName": "草莓水果燕麦脆",
       "type": "front",
-      "path": "/images/20250709-016_正面图片_0.png",
-      "fileName": "20250709-016_正面图片_0.png"
+      "path": "/images/20250709-016_正面图片_0.jpg",
+      "fileName": "20250709-016_正面图片_0.jpg"
     },
     {
       "productId": "20250709-016",
       "productName": "草莓水果燕麦脆",
       "type": "back",
-      "path": "/images/20250709-016_背面图片_0.png",
-      "fileName": "20250709-016_背面图片_0.png"
+      "path": "/images/20250709-016_背面图片_0.jpg",
+      "fileName": "20250709-016_背面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-017",
+      "productName": "香巴佬蜜汁鸡蛋",
+      "type": "front",
+      "path": "/images/20250709-017_正面图片_0.png",
+      "fileName": "20250709-017_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-017",
+      "productName": "香巴佬蜜汁鸡蛋",
+      "type": "back",
+      "path": "/images/20250709-017_背面图片_0.png",
+      "fileName": "20250709-017_背面图片_0.png"
+    },
+    {
+      "productId": "20250709-017",
+      "productName": "香巴佬蜜汁鸡蛋",
+      "type": "label",
+      "path": "/images/20250709-017_标签照片_0.png",
+      "fileName": "20250709-017_标签照片_0.png"
     },
     {
       "productId": "20250709-018",
       "productName": "每日坚果燕麦脆",
       "type": "front",
-      "path": "/images/20250709-018_正面图片_0.png",
-      "fileName": "20250709-018_正面图片_0.png"
+      "path": "/images/20250709-018_正面图片_0.jpg",
+      "fileName": "20250709-018_正面图片_0.jpg"
     },
     {
       "productId": "20250709-018",
       "productName": "每日坚果燕麦脆",
       "type": "back",
-      "path": "/images/20250709-018_背面图片_0.png",
-      "fileName": "20250709-018_背面图片_0.png"
+      "path": "/images/20250709-018_背面图片_0.jpg",
+      "fileName": "20250709-018_背面图片_0.jpg"
     },
     {
       "productId": "20250709-019",
       "productName": "酸奶水果燕麦脆",
       "type": "front",
-      "path": "/images/20250709-019_正面图片_0.png",
-      "fileName": "20250709-019_正面图片_0.png"
+      "path": "/images/20250709-019_正面图片_0.jpg",
+      "fileName": "20250709-019_正面图片_0.jpg"
     },
     {
       "productId": "20250709-019",
       "productName": "酸奶水果燕麦脆",
       "type": "back",
-      "path": "/images/20250709-019_背面图片_0.png",
-      "fileName": "20250709-019_背面图片_0.png"
+      "path": "/images/20250709-019_背面图片_0.jpg",
+      "fileName": "20250709-019_背面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-020",
+      "productName": "果仁列巴",
+      "type": "front",
+      "path": "/images/20250709-020_正面图片_0.png",
+      "fileName": "20250709-020_正面图片_0.png"
     },
     {
       "productId": "20250709-020",
@@ -223,43 +406,43 @@
       "productId": "20250709-023",
       "productName": "银鲈鱼干",
       "type": "front",
-      "path": "/images/20250709-023_正面图片_0.png",
-      "fileName": "20250709-023_正面图片_0.png"
+      "path": "/images/20250709-023_正面图片_0.jpg",
+      "fileName": "20250709-023_正面图片_0.jpg"
     },
     {
       "productId": "20250709-023",
       "productName": "银鲈鱼干",
       "type": "back",
-      "path": "/images/20250709-023_背面图片_0.png",
-      "fileName": "20250709-023_背面图片_0.png"
+      "path": "/images/20250709-023_背面图片_0.jpg",
+      "fileName": "20250709-023_背面图片_0.jpg"
     },
     {
       "productId": "20250709-023",
       "productName": "银鲈鱼干",
       "type": "label",
-      "path": "/images/20250709-023_标签照片_0.png",
-      "fileName": "20250709-023_标签照片_0.png"
+      "path": "/images/20250709-023_标签照片_0.jpg",
+      "fileName": "20250709-023_标签照片_0.jpg"
     },
     {
       "productId": "20250709-024",
       "productName": "鳕鱼干",
       "type": "front",
-      "path": "/images/20250709-024_正面图片_0.png",
-      "fileName": "20250709-024_正面图片_0.png"
+      "path": "/images/20250709-024_正面图片_0.jpg",
+      "fileName": "20250709-024_正面图片_0.jpg"
     },
     {
       "productId": "20250709-024",
       "productName": "鳕鱼干",
       "type": "back",
-      "path": "/images/20250709-024_背面图片_0.png",
-      "fileName": "20250709-024_背面图片_0.png"
+      "path": "/images/20250709-024_背面图片_0.jpg",
+      "fileName": "20250709-024_背面图片_0.jpg"
     },
     {
       "productId": "20250709-024",
       "productName": "鳕鱼干",
       "type": "label",
-      "path": "/images/20250709-024_标签照片_0.png",
-      "fileName": "20250709-024_标签照片_0.png"
+      "path": "/images/20250709-024_标签照片_0.jpg",
+      "fileName": "20250709-024_标签照片_0.jpg"
     },
     {
       "productId": "20250709-025",
@@ -804,8 +987,8 @@
       "productId": "20250709-053",
       "productName": "压榨一级花生油",
       "type": "package",
-      "path": "/images/20250709-053_外包装图片_0.png",
-      "fileName": "20250709-053_外包装图片_0.png"
+      "path": "/images/20250709-053_外包装图片_0.jpg",
+      "fileName": "20250709-053_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-054",
@@ -832,8 +1015,8 @@
       "productId": "20250709-055",
       "productName": "零反式脂肪葵花籽油",
       "type": "front",
-      "path": "/images/20250709-055_正面图片_0.png",
-      "fileName": "20250709-055_正面图片_0.png"
+      "path": "/images/20250709-055_正面图片_0.jpg",
+      "fileName": "20250709-055_正面图片_0.jpg"
     },
     {
       "productId": "20250709-055",
@@ -846,29 +1029,29 @@
       "productId": "20250709-055",
       "productName": "零反式脂肪葵花籽油",
       "type": "package",
-      "path": "/images/20250709-055_外包装图片_0.png",
-      "fileName": "20250709-055_外包装图片_0.png"
+      "path": "/images/20250709-055_外包装图片_0.jpg",
+      "fileName": "20250709-055_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-056",
       "productName": "100%椰子水",
       "type": "front",
-      "path": "/images/20250709-056_正面图片_0.png",
-      "fileName": "20250709-056_正面图片_0.png"
+      "path": "/images/20250709-056_正面图片_0.jpg",
+      "fileName": "20250709-056_正面图片_0.jpg"
     },
     {
       "productId": "20250709-056",
       "productName": "100%椰子水",
       "type": "label",
-      "path": "/images/20250709-056_标签照片_0.png",
-      "fileName": "20250709-056_标签照片_0.png"
+      "path": "/images/20250709-056_标签照片_0.jpg",
+      "fileName": "20250709-056_标签照片_0.jpg"
     },
     {
       "productId": "20250709-056",
       "productName": "100%椰子水",
       "type": "package",
-      "path": "/images/20250709-056_外包装图片_0.png",
-      "fileName": "20250709-056_外包装图片_0.png"
+      "path": "/images/20250709-056_外包装图片_0.jpg",
+      "fileName": "20250709-056_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-057",
@@ -1119,22 +1302,22 @@
       "productId": "20250709-072",
       "productName": "芥末味绿蚕豆",
       "type": "front",
-      "path": "/images/20250709-072_正面图片_0.png",
-      "fileName": "20250709-072_正面图片_0.png"
+      "path": "/images/20250709-072_正面图片_0.jpg",
+      "fileName": "20250709-072_正面图片_0.jpg"
     },
     {
       "productId": "20250709-072",
       "productName": "芥末味绿蚕豆",
       "type": "back",
-      "path": "/images/20250709-072_背面图片_0.png",
-      "fileName": "20250709-072_背面图片_0.png"
+      "path": "/images/20250709-072_背面图片_0.jpg",
+      "fileName": "20250709-072_背面图片_0.jpg"
     },
     {
       "productId": "20250709-072",
       "productName": "芥末味绿蚕豆",
       "type": "label",
-      "path": "/images/20250709-072_标签照片_0.png",
-      "fileName": "20250709-072_标签照片_0.png"
+      "path": "/images/20250709-072_标签照片_0.jpg",
+      "fileName": "20250709-072_标签照片_0.jpg"
     },
     {
       "productId": "20250709-073",
@@ -1224,22 +1407,22 @@
       "productId": "20250709-077",
       "productName": "洽洽小黄袋每日坚果（全坚果款）",
       "type": "front",
-      "path": "/images/20250709-077_正面图片_0.png",
-      "fileName": "20250709-077_正面图片_0.png"
+      "path": "/images/20250709-077_正面图片_0.jpg",
+      "fileName": "20250709-077_正面图片_0.jpg"
     },
     {
       "productId": "20250709-077",
       "productName": "洽洽小黄袋每日坚果（全坚果款）",
       "type": "label",
-      "path": "/images/20250709-077_标签照片_0.png",
-      "fileName": "20250709-077_标签照片_0.png"
+      "path": "/images/20250709-077_标签照片_0.jpg",
+      "fileName": "20250709-077_标签照片_0.jpg"
     },
     {
       "productId": "20250709-077",
       "productName": "洽洽小黄袋每日坚果（全坚果款）",
       "type": "package",
-      "path": "/images/20250709-077_外包装图片_0.png",
-      "fileName": "20250709-077_外包装图片_0.png"
+      "path": "/images/20250709-077_外包装图片_0.jpg",
+      "fileName": "20250709-077_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-078",
@@ -1266,106 +1449,134 @@
       "productId": "20250709-079",
       "productName": "爆汁牛筋肉肠",
       "type": "front",
-      "path": "/images/20250709-079_正面图片_0.png",
-      "fileName": "20250709-079_正面图片_0.png"
+      "path": "/images/20250709-079_正面图片_0.jpg",
+      "fileName": "20250709-079_正面图片_0.jpg"
     },
     {
       "productId": "20250709-079",
       "productName": "爆汁牛筋肉肠",
       "type": "back",
-      "path": "/images/20250709-079_背面图片_0.png",
-      "fileName": "20250709-079_背面图片_0.png"
+      "path": "/images/20250709-079_背面图片_0.jpg",
+      "fileName": "20250709-079_背面图片_0.jpg"
     },
     {
       "productId": "20250709-079",
       "productName": "爆汁牛筋肉肠",
       "type": "label",
-      "path": "/images/20250709-079_标签照片_0.png",
-      "fileName": "20250709-079_标签照片_0.png"
+      "path": "/images/20250709-079_标签照片_0.jpg",
+      "fileName": "20250709-079_标签照片_0.jpg"
     },
     {
       "productId": "20250709-080",
       "productName": "开心果仁（蒜香风味&海盐风味）",
       "type": "front",
-      "path": "/images/20250709-080_正面图片_0.png",
-      "fileName": "20250709-080_正面图片_0.png"
+      "path": "/images/20250709-080_正面图片_0.jpg",
+      "fileName": "20250709-080_正面图片_0.jpg"
     },
     {
       "productId": "20250709-080",
       "productName": "开心果仁（蒜香风味&海盐风味）",
       "type": "label",
-      "path": "/images/20250709-080_标签照片_0.png",
-      "fileName": "20250709-080_标签照片_0.png"
+      "path": "/images/20250709-080_标签照片_0.jpg",
+      "fileName": "20250709-080_标签照片_0.jpg"
     },
     {
       "productId": "20250709-081",
       "productName": "苹果干",
       "type": "front",
-      "path": "/images/20250709-081_正面图片_0.png",
-      "fileName": "20250709-081_正面图片_0.png"
+      "path": "/images/20250709-081_正面图片_0.jpg",
+      "fileName": "20250709-081_正面图片_0.jpg"
     },
     {
       "productId": "20250709-081",
       "productName": "苹果干",
       "type": "label",
-      "path": "/images/20250709-081_标签照片_0.png",
-      "fileName": "20250709-081_标签照片_0.png"
+      "path": "/images/20250709-081_标签照片_0.jpg",
+      "fileName": "20250709-081_标签照片_0.jpg"
     },
     {
       "productId": "20250709-082",
       "productName": "Calbee牌Jagabee淡盐味薯条",
       "type": "front",
-      "path": "/images/20250709-082_正面图片_0.png",
-      "fileName": "20250709-082_正面图片_0.png"
+      "path": "/images/20250709-082_正面图片_0.jpg",
+      "fileName": "20250709-082_正面图片_0.jpg"
     },
     {
       "productId": "20250709-082",
       "productName": "Calbee牌Jagabee淡盐味薯条",
       "type": "label",
-      "path": "/images/20250709-082_标签照片_0.png",
-      "fileName": "20250709-082_标签照片_0.png"
+      "path": "/images/20250709-082_标签照片_0.jpg",
+      "fileName": "20250709-082_标签照片_0.jpg"
     },
     {
       "productId": "20250709-082",
       "productName": "Calbee牌Jagabee淡盐味薯条",
       "type": "gift",
-      "path": "/images/20250709-082_赠品图片_0.png",
-      "fileName": "20250709-082_赠品图片_0.png"
+      "path": "/images/20250709-082_赠品图片_0.jpg",
+      "fileName": "20250709-082_赠品图片_0.jpg"
     },
     {
       "productId": "20250709-083",
       "productName": "每日黑巧鲜萃黑巧巧克力制品（香醇榛子味）",
       "type": "front",
-      "path": "/images/20250709-083_正面图片_0.png",
-      "fileName": "20250709-083_正面图片_0.png"
+      "path": "/images/20250709-083_正面图片_0.jpg",
+      "fileName": "20250709-083_正面图片_0.jpg"
     },
     {
       "productId": "20250709-083",
       "productName": "每日黑巧鲜萃黑巧巧克力制品（香醇榛子味）",
       "type": "label",
-      "path": "/images/20250709-083_标签照片_0.png",
-      "fileName": "20250709-083_标签照片_0.png"
+      "path": "/images/20250709-083_标签照片_0.jpg",
+      "fileName": "20250709-083_标签照片_0.jpg"
     },
     {
       "productId": "20250709-083",
       "productName": "每日黑巧鲜萃黑巧巧克力制品（香醇榛子味）",
       "type": "package",
-      "path": "/images/20250709-083_外包装图片_0.png",
-      "fileName": "20250709-083_外包装图片_0.png"
+      "path": "/images/20250709-083_外包装图片_0.jpg",
+      "fileName": "20250709-083_外包装图片_0.jpg"
+    },
+    {
+      "productId": "20250709-084",
+      "productName": "宝丰自由爱（白酒）",
+      "type": "front",
+      "path": "/images/20250709-084_正面图片_0.png",
+      "fileName": "20250709-084_正面图片_0.png"
+    },
+    {
+      "productId": "20250709-084",
+      "productName": "宝丰自由爱（白酒）",
+      "type": "back",
+      "path": "/images/20250709-084_背面图片_0.png",
+      "fileName": "20250709-084_背面图片_0.png"
+    },
+    {
+      "productId": "20250709-084",
+      "productName": "宝丰自由爱（白酒）",
+      "type": "package",
+      "path": "/images/20250709-084_外包装图片_0.png",
+      "fileName": "20250709-084_外包装图片_0.png"
+    },
+    {
+      "productId": "20250709-085",
+      "productName": "椰子水",
+      "type": "front",
+      "path": "/images/20250709-085_正面图片_0.jpg",
+      "fileName": "20250709-085_正面图片_0.jpg"
     },
     {
       "productId": "20250709-085",
       "productName": "椰子水",
       "type": "label",
-      "path": "/images/20250709-085_标签照片_0.png",
-      "fileName": "20250709-085_标签照片_0.png"
+      "path": "/images/20250709-085_标签照片_0.jpg",
+      "fileName": "20250709-085_标签照片_0.jpg"
     },
     {
       "productId": "20250709-085",
       "productName": "椰子水",
       "type": "package",
-      "path": "/images/20250709-085_外包装图片_0.png",
-      "fileName": "20250709-085_外包装图片_0.png"
+      "path": "/images/20250709-085_外包装图片_0.jpg",
+      "fileName": "20250709-085_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-086",
@@ -1382,11 +1593,18 @@
       "fileName": "20250709-086_标签照片_0.png"
     },
     {
+      "productId": "20250709-086",
+      "productName": "精酿黑啤酒",
+      "type": "package",
+      "path": "/images/20250709-086_外包装图片_0.png",
+      "fileName": "20250709-086_外包装图片_0.png"
+    },
+    {
       "productId": "20250709-087",
       "productName": "精酿小麦啤酒",
       "type": "front",
-      "path": "/images/20250709-087_正面图片_0.png",
-      "fileName": "20250709-087_正面图片_0.png"
+      "path": "/images/20250709-087_正面图片_0.jpg",
+      "fileName": "20250709-087_正面图片_0.jpg"
     },
     {
       "productId": "20250709-087",
@@ -1399,8 +1617,8 @@
       "productId": "20250709-087",
       "productName": "精酿小麦啤酒",
       "type": "package",
-      "path": "/images/20250709-087_外包装图片_0.png",
-      "fileName": "20250709-087_外包装图片_0.png"
+      "path": "/images/20250709-087_外包装图片_0.jpg",
+      "fileName": "20250709-087_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-088",
@@ -1420,134 +1638,134 @@
       "productId": "20250709-089",
       "productName": "海鳗鱼干",
       "type": "front",
-      "path": "/images/20250709-089_正面图片_0.png",
-      "fileName": "20250709-089_正面图片_0.png"
+      "path": "/images/20250709-089_正面图片_0.jpg",
+      "fileName": "20250709-089_正面图片_0.jpg"
     },
     {
       "productId": "20250709-089",
       "productName": "海鳗鱼干",
       "type": "back",
-      "path": "/images/20250709-089_背面图片_0.png",
-      "fileName": "20250709-089_背面图片_0.png"
+      "path": "/images/20250709-089_背面图片_0.jpg",
+      "fileName": "20250709-089_背面图片_0.jpg"
     },
     {
       "productId": "20250709-089",
       "productName": "海鳗鱼干",
       "type": "label",
-      "path": "/images/20250709-089_标签照片_0.png",
-      "fileName": "20250709-089_标签照片_0.png"
+      "path": "/images/20250709-089_标签照片_0.jpg",
+      "fileName": "20250709-089_标签照片_0.jpg"
     },
     {
       "productId": "20250709-090",
       "productName": "椰子饮料",
       "type": "front",
-      "path": "/images/20250709-090_正面图片_0.png",
-      "fileName": "20250709-090_正面图片_0.png"
+      "path": "/images/20250709-090_正面图片_0.jpg",
+      "fileName": "20250709-090_正面图片_0.jpg"
     },
     {
       "productId": "20250709-090",
       "productName": "椰子饮料",
       "type": "label",
-      "path": "/images/20250709-090_标签照片_0.png",
-      "fileName": "20250709-090_标签照片_0.png"
+      "path": "/images/20250709-090_标签照片_0.jpg",
+      "fileName": "20250709-090_标签照片_0.jpg"
     },
     {
       "productId": "20250709-090",
       "productName": "椰子饮料",
       "type": "package",
-      "path": "/images/20250709-090_外包装图片_0.png",
-      "fileName": "20250709-090_外包装图片_0.png"
+      "path": "/images/20250709-090_外包装图片_0.jpg",
+      "fileName": "20250709-090_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-091",
       "productName": "鮟鱇鱼干",
       "type": "front",
-      "path": "/images/20250709-091_正面图片_0.png",
-      "fileName": "20250709-091_正面图片_0.png"
+      "path": "/images/20250709-091_正面图片_0.jpg",
+      "fileName": "20250709-091_正面图片_0.jpg"
     },
     {
       "productId": "20250709-091",
       "productName": "鮟鱇鱼干",
       "type": "back",
-      "path": "/images/20250709-091_背面图片_0.png",
-      "fileName": "20250709-091_背面图片_0.png"
+      "path": "/images/20250709-091_背面图片_0.jpg",
+      "fileName": "20250709-091_背面图片_0.jpg"
     },
     {
       "productId": "20250709-091",
       "productName": "鮟鱇鱼干",
       "type": "label",
-      "path": "/images/20250709-091_标签照片_0.png",
-      "fileName": "20250709-091_标签照片_0.png"
+      "path": "/images/20250709-091_标签照片_0.jpg",
+      "fileName": "20250709-091_标签照片_0.jpg"
     },
     {
       "productId": "20250709-092",
       "productName": "鳕鱼干香辣味",
       "type": "front",
-      "path": "/images/20250709-092_正面图片_0.png",
-      "fileName": "20250709-092_正面图片_0.png"
+      "path": "/images/20250709-092_正面图片_0.jpg",
+      "fileName": "20250709-092_正面图片_0.jpg"
     },
     {
       "productId": "20250709-092",
       "productName": "鳕鱼干香辣味",
       "type": "back",
-      "path": "/images/20250709-092_背面图片_0.png",
-      "fileName": "20250709-092_背面图片_0.png"
+      "path": "/images/20250709-092_背面图片_0.jpg",
+      "fileName": "20250709-092_背面图片_0.jpg"
     },
     {
       "productId": "20250709-092",
       "productName": "鳕鱼干香辣味",
       "type": "label",
-      "path": "/images/20250709-092_标签照片_0.png",
-      "fileName": "20250709-092_标签照片_0.png"
+      "path": "/images/20250709-092_标签照片_0.jpg",
+      "fileName": "20250709-092_标签照片_0.jpg"
     },
     {
       "productId": "20250709-093",
       "productName": "佳果源100%NFC黑钻凤梨汁",
       "type": "front",
-      "path": "/images/20250709-093_正面图片_0.png",
-      "fileName": "20250709-093_正面图片_0.png"
+      "path": "/images/20250709-093_正面图片_0.jpg",
+      "fileName": "20250709-093_正面图片_0.jpg"
     },
     {
       "productId": "20250709-093",
       "productName": "佳果源100%NFC黑钻凤梨汁",
       "type": "label",
-      "path": "/images/20250709-093_标签照片_0.png",
-      "fileName": "20250709-093_标签照片_0.png"
+      "path": "/images/20250709-093_标签照片_0.jpg",
+      "fileName": "20250709-093_标签照片_0.jpg"
     },
     {
       "productId": "20250709-093",
       "productName": "佳果源100%NFC黑钻凤梨汁",
       "type": "package",
-      "path": "/images/20250709-093_外包装图片_0.png",
-      "fileName": "20250709-093_外包装图片_0.png"
+      "path": "/images/20250709-093_外包装图片_0.jpg",
+      "fileName": "20250709-093_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-094",
       "productName": "红心火龙果干",
       "type": "front",
-      "path": "/images/20250709-094_正面图片_0.png",
-      "fileName": "20250709-094_正面图片_0.png"
+      "path": "/images/20250709-094_正面图片_0.jpg",
+      "fileName": "20250709-094_正面图片_0.jpg"
     },
     {
       "productId": "20250709-094",
       "productName": "红心火龙果干",
       "type": "label",
-      "path": "/images/20250709-094_标签照片_0.png",
-      "fileName": "20250709-094_标签照片_0.png"
+      "path": "/images/20250709-094_标签照片_0.jpg",
+      "fileName": "20250709-094_标签照片_0.jpg"
     },
     {
       "productId": "20250709-095",
       "productName": "鲜萃冻干榛果",
       "type": "front",
-      "path": "/images/20250709-095_正面图片_0.png",
-      "fileName": "20250709-095_正面图片_0.png"
+      "path": "/images/20250709-095_正面图片_0.jpg",
+      "fileName": "20250709-095_正面图片_0.jpg"
     },
     {
       "productId": "20250709-095",
       "productName": "鲜萃冻干榛果",
       "type": "label",
-      "path": "/images/20250709-095_标签照片_0.png",
-      "fileName": "20250709-095_标签照片_0.png"
+      "path": "/images/20250709-095_标签照片_0.jpg",
+      "fileName": "20250709-095_标签照片_0.jpg"
     },
     {
       "productId": "20250709-096",
@@ -1588,50 +1806,50 @@
       "productId": "20250709-098",
       "productName": "养生堂白桦树汁",
       "type": "front",
-      "path": "/images/20250709-098_正面图片_0.png",
-      "fileName": "20250709-098_正面图片_0.png"
+      "path": "/images/20250709-098_正面图片_0.jpg",
+      "fileName": "20250709-098_正面图片_0.jpg"
     },
     {
       "productId": "20250709-098",
       "productName": "养生堂白桦树汁",
       "type": "back",
-      "path": "/images/20250709-098_背面图片_0.png",
-      "fileName": "20250709-098_背面图片_0.png"
+      "path": "/images/20250709-098_背面图片_0.jpg",
+      "fileName": "20250709-098_背面图片_0.jpg"
     },
     {
       "productId": "20250709-098",
       "productName": "养生堂白桦树汁",
       "type": "label",
-      "path": "/images/20250709-098_标签照片_0.png",
-      "fileName": "20250709-098_标签照片_0.png"
+      "path": "/images/20250709-098_标签照片_0.jpg",
+      "fileName": "20250709-098_标签照片_0.jpg"
     },
     {
       "productId": "20250709-098",
       "productName": "养生堂白桦树汁",
       "type": "package",
-      "path": "/images/20250709-098_外包装图片_0.png",
-      "fileName": "20250709-098_外包装图片_0.png"
+      "path": "/images/20250709-098_外包装图片_0.jpg",
+      "fileName": "20250709-098_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-099",
       "productName": "松茸酥心葵花籽仁",
       "type": "front",
-      "path": "/images/20250709-099_正面图片_0.png",
-      "fileName": "20250709-099_正面图片_0.png"
+      "path": "/images/20250709-099_正面图片_0.jpg",
+      "fileName": "20250709-099_正面图片_0.jpg"
     },
     {
       "productId": "20250709-099",
       "productName": "松茸酥心葵花籽仁",
       "type": "label",
-      "path": "/images/20250709-099_标签照片_0.png",
-      "fileName": "20250709-099_标签照片_0.png"
+      "path": "/images/20250709-099_标签照片_0.jpg",
+      "fileName": "20250709-099_标签照片_0.jpg"
     },
     {
       "productId": "20250709-100",
       "productName": "家乐麻辣海鲜捞汁调味料",
       "type": "front",
-      "path": "/images/20250709-100_正面图片_0.png",
-      "fileName": "20250709-100_正面图片_0.png"
+      "path": "/images/20250709-100_正面图片_0.jpg",
+      "fileName": "20250709-100_正面图片_0.jpg"
     },
     {
       "productId": "20250709-101",
@@ -1658,15 +1876,15 @@
       "productId": "20250709-102",
       "productName": "坚果什锦脆（什锦果仁）",
       "type": "front",
-      "path": "/images/20250709-102_正面图片_0.png",
-      "fileName": "20250709-102_正面图片_0.png"
+      "path": "/images/20250709-102_正面图片_0.jpg",
+      "fileName": "20250709-102_正面图片_0.jpg"
     },
     {
       "productId": "20250709-102",
       "productName": "坚果什锦脆（什锦果仁）",
       "type": "label",
-      "path": "/images/20250709-102_标签照片_0.png",
-      "fileName": "20250709-102_标签照片_0.png"
+      "path": "/images/20250709-102_标签照片_0.jpg",
+      "fileName": "20250709-102_标签照片_0.jpg"
     },
     {
       "productId": "20250709-103",
@@ -1679,8 +1897,8 @@
       "productId": "20250709-103",
       "productName": "煌记榛子花生酱夹心薄饼干",
       "type": "label",
-      "path": "/images/20250709-103_标签照片_0.png",
-      "fileName": "20250709-103_标签照片_0.png"
+      "path": "/images/20250709-103_标签照片_0.jpg",
+      "fileName": "20250709-103_标签照片_0.jpg"
     },
     {
       "productId": "20250709-104",
@@ -1704,20 +1922,6 @@
       "fileName": "20250709-104_标签照片_0.png"
     },
     {
-      "productId": "20250709-105",
-      "productName": "好丽友好多鱼",
-      "type": "front",
-      "path": "/images/20250709-105_正面图片_0.png",
-      "fileName": "20250709-105_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-106",
-      "productName": "格力高百醇",
-      "type": "front",
-      "path": "/images/20250709-106_正面图片_0.png",
-      "fileName": "20250709-106_正面图片_0.png"
-    },
-    {
       "productId": "20250709-107",
       "productName": "乐天夹心饼干",
       "type": "front",
@@ -1728,71 +1932,71 @@
       "productId": "20250709-107",
       "productName": "乐天夹心饼干",
       "type": "label",
-      "path": "/images/20250709-107_标签照片_0.png",
-      "fileName": "20250709-107_标签照片_0.png"
+      "path": "/images/20250709-107_标签照片_0.jpg",
+      "fileName": "20250709-107_标签照片_0.jpg"
     },
     {
       "productId": "20250709-108",
       "productName": "喜茶羽衣甘蓝青瓜复合果蔬汁饮料",
       "type": "front",
-      "path": "/images/20250709-108_正面图片_0.png",
-      "fileName": "20250709-108_正面图片_0.png"
+      "path": "/images/20250709-108_正面图片_0.jpg",
+      "fileName": "20250709-108_正面图片_0.jpg"
     },
     {
       "productId": "20250709-108",
       "productName": "喜茶羽衣甘蓝青瓜复合果蔬汁饮料",
       "type": "back",
-      "path": "/images/20250709-108_背面图片_0.png",
-      "fileName": "20250709-108_背面图片_0.png"
+      "path": "/images/20250709-108_背面图片_0.jpg",
+      "fileName": "20250709-108_背面图片_0.jpg"
     },
     {
       "productId": "20250709-108",
       "productName": "喜茶羽衣甘蓝青瓜复合果蔬汁饮料",
       "type": "label",
-      "path": "/images/20250709-108_标签照片_0.png",
-      "fileName": "20250709-108_标签照片_0.png"
+      "path": "/images/20250709-108_标签照片_0.jpg",
+      "fileName": "20250709-108_标签照片_0.jpg"
     },
     {
       "productId": "20250709-108",
       "productName": "喜茶羽衣甘蓝青瓜复合果蔬汁饮料",
       "type": "package",
-      "path": "/images/20250709-108_外包装图片_0.png",
-      "fileName": "20250709-108_外包装图片_0.png"
+      "path": "/images/20250709-108_外包装图片_0.jpg",
+      "fileName": "20250709-108_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-109",
       "productName": "意式风味混合坚果（熟制坚果与籽类食品）",
       "type": "front",
-      "path": "/images/20250709-109_正面图片_0.png",
-      "fileName": "20250709-109_正面图片_0.png"
+      "path": "/images/20250709-109_正面图片_0.jpg",
+      "fileName": "20250709-109_正面图片_0.jpg"
     },
     {
       "productId": "20250709-109",
       "productName": "意式风味混合坚果（熟制坚果与籽类食品）",
       "type": "back",
-      "path": "/images/20250709-109_背面图片_0.png",
-      "fileName": "20250709-109_背面图片_0.png"
+      "path": "/images/20250709-109_背面图片_0.jpg",
+      "fileName": "20250709-109_背面图片_0.jpg"
     },
     {
       "productId": "20250709-109",
       "productName": "意式风味混合坚果（熟制坚果与籽类食品）",
       "type": "label",
-      "path": "/images/20250709-109_标签照片_0.png",
-      "fileName": "20250709-109_标签照片_0.png"
+      "path": "/images/20250709-109_标签照片_0.jpg",
+      "fileName": "20250709-109_标签照片_0.jpg"
     },
     {
       "productId": "20250709-109",
       "productName": "意式风味混合坚果（熟制坚果与籽类食品）",
       "type": "package",
-      "path": "/images/20250709-109_外包装图片_0.png",
-      "fileName": "20250709-109_外包装图片_0.png"
+      "path": "/images/20250709-109_外包装图片_0.jpg",
+      "fileName": "20250709-109_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-110",
       "productName": "奥利奥缤纷口味礼盒",
       "type": "front",
-      "path": "/images/20250709-110_正面图片_0.png",
-      "fileName": "20250709-110_正面图片_0.png"
+      "path": "/images/20250709-110_正面图片_0.jpg",
+      "fileName": "20250709-110_正面图片_0.jpg"
     },
     {
       "productId": "20250709-110",
@@ -1805,8 +2009,8 @@
       "productId": "20250709-110",
       "productName": "奥利奥缤纷口味礼盒",
       "type": "label",
-      "path": "/images/20250709-110_标签照片_0.png",
-      "fileName": "20250709-110_标签照片_0.png"
+      "path": "/images/20250709-110_标签照片_0.jpg",
+      "fileName": "20250709-110_标签照片_0.jpg"
     },
     {
       "productId": "20250709-111",
@@ -1847,22 +2051,22 @@
       "productId": "20250709-113",
       "productName": "高膳食纤维山楂棒",
       "type": "front",
-      "path": "/images/20250709-113_正面图片_0.png",
-      "fileName": "20250709-113_正面图片_0.png"
+      "path": "/images/20250709-113_正面图片_0.jpg",
+      "fileName": "20250709-113_正面图片_0.jpg"
     },
     {
       "productId": "20250709-113",
       "productName": "高膳食纤维山楂棒",
       "type": "label",
-      "path": "/images/20250709-113_标签照片_0.png",
-      "fileName": "20250709-113_标签照片_0.png"
+      "path": "/images/20250709-113_标签照片_0.jpg",
+      "fileName": "20250709-113_标签照片_0.jpg"
     },
     {
       "productId": "20250709-114",
       "productName": "奥利奥原味夹心饼干",
       "type": "front",
-      "path": "/images/20250709-114_正面图片_0.png",
-      "fileName": "20250709-114_正面图片_0.png"
+      "path": "/images/20250709-114_正面图片_0.jpg",
+      "fileName": "20250709-114_正面图片_0.jpg"
     },
     {
       "productId": "20250709-114",
@@ -1875,8 +2079,8 @@
       "productId": "20250709-114",
       "productName": "奥利奥原味夹心饼干",
       "type": "label",
-      "path": "/images/20250709-114_标签照片_0.png",
-      "fileName": "20250709-114_标签照片_0.png"
+      "path": "/images/20250709-114_标签照片_0.jpg",
+      "fileName": "20250709-114_标签照片_0.jpg"
     },
     {
       "productId": "20250709-114",
@@ -1889,15 +2093,15 @@
       "productId": "20250709-115",
       "productName": "智利无核西梅干",
       "type": "front",
-      "path": "/images/20250709-115_正面图片_0.png",
-      "fileName": "20250709-115_正面图片_0.png"
+      "path": "/images/20250709-115_正面图片_0.jpg",
+      "fileName": "20250709-115_正面图片_0.jpg"
     },
     {
       "productId": "20250709-115",
       "productName": "智利无核西梅干",
       "type": "label",
-      "path": "/images/20250709-115_标签照片_0.png",
-      "fileName": "20250709-115_标签照片_0.png"
+      "path": "/images/20250709-115_标签照片_0.jpg",
+      "fileName": "20250709-115_标签照片_0.jpg"
     },
     {
       "productId": "20250709-116",
@@ -1938,22 +2142,22 @@
       "productId": "20250709-119",
       "productName": "精制地瓜棒",
       "type": "front",
-      "path": "/images/20250709-119_正面图片_0.png",
-      "fileName": "20250709-119_正面图片_0.png"
+      "path": "/images/20250709-119_正面图片_0.jpg",
+      "fileName": "20250709-119_正面图片_0.jpg"
     },
     {
       "productId": "20250709-119",
       "productName": "精制地瓜棒",
       "type": "back",
-      "path": "/images/20250709-119_背面图片_0.png",
-      "fileName": "20250709-119_背面图片_0.png"
+      "path": "/images/20250709-119_背面图片_0.jpg",
+      "fileName": "20250709-119_背面图片_0.jpg"
     },
     {
       "productId": "20250709-119",
       "productName": "精制地瓜棒",
       "type": "label",
-      "path": "/images/20250709-119_标签照片_0.png",
-      "fileName": "20250709-119_标签照片_0.png"
+      "path": "/images/20250709-119_标签照片_0.jpg",
+      "fileName": "20250709-119_标签照片_0.jpg"
     },
     {
       "productId": "20250709-120",
@@ -1987,36 +2191,36 @@
       "productId": "20250709-122",
       "productName": "家乐白灼汁复合调味料",
       "type": "front",
-      "path": "/images/20250709-122_正面图片_0.png",
-      "fileName": "20250709-122_正面图片_0.png"
+      "path": "/images/20250709-122_正面图片_0.jpg",
+      "fileName": "20250709-122_正面图片_0.jpg"
     },
     {
       "productId": "20250709-122",
       "productName": "家乐白灼汁复合调味料",
       "type": "label",
-      "path": "/images/20250709-122_标签照片_0.png",
-      "fileName": "20250709-122_标签照片_0.png"
+      "path": "/images/20250709-122_标签照片_0.jpg",
+      "fileName": "20250709-122_标签照片_0.jpg"
     },
     {
       "productId": "20250709-123",
       "productName": "每日坚果（坚果+果干）",
       "type": "front",
-      "path": "/images/20250709-123_正面图片_0.png",
-      "fileName": "20250709-123_正面图片_0.png"
+      "path": "/images/20250709-123_正面图片_0.jpg",
+      "fileName": "20250709-123_正面图片_0.jpg"
     },
     {
       "productId": "20250709-123",
       "productName": "每日坚果（坚果+果干）",
       "type": "back",
-      "path": "/images/20250709-123_背面图片_0.png",
-      "fileName": "20250709-123_背面图片_0.png"
+      "path": "/images/20250709-123_背面图片_0.jpg",
+      "fileName": "20250709-123_背面图片_0.jpg"
     },
     {
       "productId": "20250709-123",
       "productName": "每日坚果（坚果+果干）",
       "type": "label",
-      "path": "/images/20250709-123_标签照片_0.png",
-      "fileName": "20250709-123_标签照片_0.png"
+      "path": "/images/20250709-123_标签照片_0.jpg",
+      "fileName": "20250709-123_标签照片_0.jpg"
     },
     {
       "productId": "20250709-124",
@@ -2029,232 +2233,232 @@
       "productId": "20250709-125",
       "productName": "VC多酚山楂条",
       "type": "front",
-      "path": "/images/20250709-125_正面图片_0.png",
-      "fileName": "20250709-125_正面图片_0.png"
+      "path": "/images/20250709-125_正面图片_0.jpg",
+      "fileName": "20250709-125_正面图片_0.jpg"
     },
     {
       "productId": "20250709-125",
       "productName": "VC多酚山楂条",
       "type": "label",
-      "path": "/images/20250709-125_标签照片_0.png",
-      "fileName": "20250709-125_标签照片_0.png"
+      "path": "/images/20250709-125_标签照片_0.jpg",
+      "fileName": "20250709-125_标签照片_0.jpg"
     },
     {
       "productId": "20250709-126",
       "productName": "有机果汁蓝莓干",
       "type": "front",
-      "path": "/images/20250709-126_正面图片_0.png",
-      "fileName": "20250709-126_正面图片_0.png"
+      "path": "/images/20250709-126_正面图片_0.jpg",
+      "fileName": "20250709-126_正面图片_0.jpg"
     },
     {
       "productId": "20250709-126",
       "productName": "有机果汁蓝莓干",
       "type": "back",
-      "path": "/images/20250709-126_背面图片_0.png",
-      "fileName": "20250709-126_背面图片_0.png"
+      "path": "/images/20250709-126_背面图片_0.jpg",
+      "fileName": "20250709-126_背面图片_0.jpg"
     },
     {
       "productId": "20250709-126",
       "productName": "有机果汁蓝莓干",
       "type": "label",
-      "path": "/images/20250709-126_标签照片_0.png",
-      "fileName": "20250709-126_标签照片_0.png"
+      "path": "/images/20250709-126_标签照片_0.jpg",
+      "fileName": "20250709-126_标签照片_0.jpg"
     },
     {
       "productId": "20250709-127",
       "productName": "红瑶地瓜棒",
       "type": "front",
-      "path": "/images/20250709-127_正面图片_0.png",
-      "fileName": "20250709-127_正面图片_0.png"
+      "path": "/images/20250709-127_正面图片_0.jpg",
+      "fileName": "20250709-127_正面图片_0.jpg"
     },
     {
       "productId": "20250709-127",
       "productName": "红瑶地瓜棒",
       "type": "back",
-      "path": "/images/20250709-127_背面图片_0.png",
-      "fileName": "20250709-127_背面图片_0.png"
+      "path": "/images/20250709-127_背面图片_0.jpg",
+      "fileName": "20250709-127_背面图片_0.jpg"
     },
     {
       "productId": "20250709-127",
       "productName": "红瑶地瓜棒",
       "type": "label",
-      "path": "/images/20250709-127_标签照片_0.png",
-      "fileName": "20250709-127_标签照片_0.png"
+      "path": "/images/20250709-127_标签照片_0.jpg",
+      "fileName": "20250709-127_标签照片_0.jpg"
     },
     {
       "productId": "20250709-128",
       "productName": "Member's Mark芥末味夏威夷果仁",
       "type": "front",
-      "path": "/images/20250709-128_正面图片_0.png",
-      "fileName": "20250709-128_正面图片_0.png"
+      "path": "/images/20250709-128_正面图片_0.jpg",
+      "fileName": "20250709-128_正面图片_0.jpg"
     },
     {
       "productId": "20250709-128",
       "productName": "Member's Mark芥末味夏威夷果仁",
       "type": "back",
-      "path": "/images/20250709-128_背面图片_0.png",
-      "fileName": "20250709-128_背面图片_0.png"
+      "path": "/images/20250709-128_背面图片_0.jpg",
+      "fileName": "20250709-128_背面图片_0.jpg"
     },
     {
       "productId": "20250709-128",
       "productName": "Member's Mark芥末味夏威夷果仁",
       "type": "label",
-      "path": "/images/20250709-128_标签照片_0.png",
-      "fileName": "20250709-128_标签照片_0.png"
+      "path": "/images/20250709-128_标签照片_0.jpg",
+      "fileName": "20250709-128_标签照片_0.jpg"
     },
     {
       "productId": "20250709-129",
       "productName": "Member's Mark盐焗开心果",
       "type": "front",
-      "path": "/images/20250709-129_正面图片_0.png",
-      "fileName": "20250709-129_正面图片_0.png"
+      "path": "/images/20250709-129_正面图片_0.jpg",
+      "fileName": "20250709-129_正面图片_0.jpg"
     },
     {
       "productId": "20250709-129",
       "productName": "Member's Mark盐焗开心果",
       "type": "label",
-      "path": "/images/20250709-129_标签照片_0.png",
-      "fileName": "20250709-129_标签照片_0.png"
+      "path": "/images/20250709-129_标签照片_0.jpg",
+      "fileName": "20250709-129_标签照片_0.jpg"
     },
     {
       "productId": "20250709-130",
       "productName": "都乐一颗小橘干",
       "type": "front",
-      "path": "/images/20250709-130_正面图片_0.png",
-      "fileName": "20250709-130_正面图片_0.png"
+      "path": "/images/20250709-130_正面图片_0.jpg",
+      "fileName": "20250709-130_正面图片_0.jpg"
     },
     {
       "productId": "20250709-130",
       "productName": "都乐一颗小橘干",
       "type": "label",
-      "path": "/images/20250709-130_标签照片_0.png",
-      "fileName": "20250709-130_标签照片_0.png"
+      "path": "/images/20250709-130_标签照片_0.jpg",
+      "fileName": "20250709-130_标签照片_0.jpg"
     },
     {
       "productId": "20250709-131",
       "productName": "苹果黄芪饮",
       "type": "front",
-      "path": "/images/20250709-131_正面图片_0.png",
-      "fileName": "20250709-131_正面图片_0.png"
+      "path": "/images/20250709-131_正面图片_0.jpg",
+      "fileName": "20250709-131_正面图片_0.jpg"
     },
     {
       "productId": "20250709-131",
       "productName": "苹果黄芪饮",
       "type": "back",
-      "path": "/images/20250709-131_背面图片_0.png",
-      "fileName": "20250709-131_背面图片_0.png"
+      "path": "/images/20250709-131_背面图片_0.jpg",
+      "fileName": "20250709-131_背面图片_0.jpg"
     },
     {
       "productId": "20250709-131",
       "productName": "苹果黄芪饮",
       "type": "label",
-      "path": "/images/20250709-131_标签照片_0.png",
-      "fileName": "20250709-131_标签照片_0.png"
+      "path": "/images/20250709-131_标签照片_0.jpg",
+      "fileName": "20250709-131_标签照片_0.jpg"
     },
     {
       "productId": "20250709-131",
       "productName": "苹果黄芪饮",
       "type": "package",
-      "path": "/images/20250709-131_外包装图片_0.png",
-      "fileName": "20250709-131_外包装图片_0.png"
+      "path": "/images/20250709-131_外包装图片_0.jpg",
+      "fileName": "20250709-131_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-132",
       "productName": "有机咸香花生仁",
       "type": "front",
-      "path": "/images/20250709-132_正面图片_0.png",
-      "fileName": "20250709-132_正面图片_0.png"
+      "path": "/images/20250709-132_正面图片_0.jpg",
+      "fileName": "20250709-132_正面图片_0.jpg"
     },
     {
       "productId": "20250709-132",
       "productName": "有机咸香花生仁",
       "type": "back",
-      "path": "/images/20250709-132_背面图片_0.png",
-      "fileName": "20250709-132_背面图片_0.png"
+      "path": "/images/20250709-132_背面图片_0.jpg",
+      "fileName": "20250709-132_背面图片_0.jpg"
     },
     {
       "productId": "20250709-132",
       "productName": "有机咸香花生仁",
       "type": "label",
-      "path": "/images/20250709-132_标签照片_0.png",
-      "fileName": "20250709-132_标签照片_0.png"
+      "path": "/images/20250709-132_标签照片_0.jpg",
+      "fileName": "20250709-132_标签照片_0.jpg"
     },
     {
       "productId": "20250709-133",
       "productName": "葵珍原味大瓜子",
       "type": "front",
-      "path": "/images/20250709-133_正面图片_0.png",
-      "fileName": "20250709-133_正面图片_0.png"
+      "path": "/images/20250709-133_正面图片_0.jpg",
+      "fileName": "20250709-133_正面图片_0.jpg"
     },
     {
       "productId": "20250709-133",
       "productName": "葵珍原味大瓜子",
       "type": "back",
-      "path": "/images/20250709-133_背面图片_0.png",
-      "fileName": "20250709-133_背面图片_0.png"
+      "path": "/images/20250709-133_背面图片_0.jpg",
+      "fileName": "20250709-133_背面图片_0.jpg"
     },
     {
       "productId": "20250709-133",
       "productName": "葵珍原味大瓜子",
       "type": "label",
-      "path": "/images/20250709-133_标签照片_0.png",
-      "fileName": "20250709-133_标签照片_0.png"
+      "path": "/images/20250709-133_标签照片_0.jpg",
+      "fileName": "20250709-133_标签照片_0.jpg"
     },
     {
       "productId": "20250709-134",
       "productName": "Member's Mark 苹果汁",
       "type": "front",
-      "path": "/images/20250709-134_正面图片_0.png",
-      "fileName": "20250709-134_正面图片_0.png"
+      "path": "/images/20250709-134_正面图片_0.jpg",
+      "fileName": "20250709-134_正面图片_0.jpg"
     },
     {
       "productId": "20250709-134",
       "productName": "Member's Mark 苹果汁",
       "type": "label",
-      "path": "/images/20250709-134_标签照片_0.png",
-      "fileName": "20250709-134_标签照片_0.png"
+      "path": "/images/20250709-134_标签照片_0.jpg",
+      "fileName": "20250709-134_标签照片_0.jpg"
     },
     {
       "productId": "20250709-134",
       "productName": "Member's Mark 苹果汁",
       "type": "package",
-      "path": "/images/20250709-134_外包装图片_0.png",
-      "fileName": "20250709-134_外包装图片_0.png"
+      "path": "/images/20250709-134_外包装图片_0.jpg",
+      "fileName": "20250709-134_外包装图片_0.jpg"
     },
     {
       "productId": "20250709-135",
       "productName": "Member's Mark盐焗腰果仁",
       "type": "front",
-      "path": "/images/20250709-135_正面图片_0.png",
-      "fileName": "20250709-135_正面图片_0.png"
+      "path": "/images/20250709-135_正面图片_0.jpg",
+      "fileName": "20250709-135_正面图片_0.jpg"
     },
     {
       "productId": "20250709-135",
       "productName": "Member's Mark盐焗腰果仁",
       "type": "back",
-      "path": "/images/20250709-135_背面图片_0.png",
-      "fileName": "20250709-135_背面图片_0.png"
+      "path": "/images/20250709-135_背面图片_0.jpg",
+      "fileName": "20250709-135_背面图片_0.jpg"
     },
     {
       "productId": "20250709-135",
       "productName": "Member's Mark盐焗腰果仁",
       "type": "label",
-      "path": "/images/20250709-135_标签照片_0.png",
-      "fileName": "20250709-135_标签照片_0.png"
+      "path": "/images/20250709-135_标签照片_0.jpg",
+      "fileName": "20250709-135_标签照片_0.jpg"
     },
     {
       "productId": "20250709-136",
       "productName": "杭派碧根果仁",
       "type": "front",
-      "path": "/images/20250709-136_正面图片_0.png",
-      "fileName": "20250709-136_正面图片_0.png"
+      "path": "/images/20250709-136_正面图片_0.jpg",
+      "fileName": "20250709-136_正面图片_0.jpg"
     },
     {
       "productId": "20250709-136",
       "productName": "杭派碧根果仁",
       "type": "label",
-      "path": "/images/20250709-136_标签照片_0.png",
-      "fileName": "20250709-136_标签照片_0.png"
+      "path": "/images/20250709-136_标签照片_0.jpg",
+      "fileName": "20250709-136_标签照片_0.jpg"
     },
     {
       "productId": "20250709-137",
@@ -2274,43 +2478,78 @@
       "productId": "20250709-138",
       "productName": "松茸有机鱼皮花生（裹衣花生）",
       "type": "front",
-      "path": "/images/20250709-138_正面图片_0.png",
-      "fileName": "20250709-138_正面图片_0.png"
+      "path": "/images/20250709-138_正面图片_0.jpg",
+      "fileName": "20250709-138_正面图片_0.jpg"
     },
     {
       "productId": "20250709-138",
       "productName": "松茸有机鱼皮花生（裹衣花生）",
       "type": "back",
-      "path": "/images/20250709-138_背面图片_0.png",
-      "fileName": "20250709-138_背面图片_0.png"
+      "path": "/images/20250709-138_背面图片_0.jpg",
+      "fileName": "20250709-138_背面图片_0.jpg"
     },
     {
       "productId": "20250709-138",
       "productName": "松茸有机鱼皮花生（裹衣花生）",
       "type": "label",
-      "path": "/images/20250709-138_标签照片_0.png",
-      "fileName": "20250709-138_标签照片_0.png"
+      "path": "/images/20250709-138_标签照片_0.jpg",
+      "fileName": "20250709-138_标签照片_0.jpg"
     },
     {
       "productId": "20250709-139",
       "productName": "都乐土耳其杏干",
       "type": "front",
-      "path": "/images/20250709-139_正面图片_0.png",
-      "fileName": "20250709-139_正面图片_0.png"
+      "path": "/images/20250709-139_正面图片_0.jpg",
+      "fileName": "20250709-139_正面图片_0.jpg"
     },
     {
       "productId": "20250709-139",
       "productName": "都乐土耳其杏干",
       "type": "label",
-      "path": "/images/20250709-139_标签照片_0.png",
-      "fileName": "20250709-139_标签照片_0.png"
+      "path": "/images/20250709-139_标签照片_0.jpg",
+      "fileName": "20250709-139_标签照片_0.jpg"
     },
     {
       "productId": "20250709-140",
       "productName": "雪梨枇杷露",
       "type": "front",
-      "path": "/images/20250709-140_正面图片_0.png",
-      "fileName": "20250709-140_正面图片_0.png"
+      "path": "/images/20250709-140_正面图片_0.jpg",
+      "fileName": "20250709-140_正面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-140",
+      "productName": "雪梨枇杷露",
+      "type": "label",
+      "path": "/images/20250709-140_标签照片_0.jpg",
+      "fileName": "20250709-140_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250709-140",
+      "productName": "雪梨枇杷露",
+      "type": "package",
+      "path": "/images/20250709-140_外包装图片_0.jpg",
+      "fileName": "20250709-140_外包装图片_0.jpg"
+    },
+    {
+      "productId": "20250709-141",
+      "productName": "有机冻干草莓",
+      "type": "front",
+      "path": "/images/20250709-141_正面图片_0.jpg",
+      "fileName": "20250709-141_正面图片_0.jpg"
+    },
+    {
+      "productId": "20250709-141",
+      "productName": "有机冻干草莓",
+      "type": "label",
+      "path": "/images/20250709-141_标签照片_0.jpg",
+      "fileName": "20250709-141_标签照片_0.jpg"
+    },
+    {
+      "productId": "20250709-142",
+      "productName": "克恩兹烧烤味木薯片",
+      "type": "front",
+      "path": "/images/20250709-142_正面图片_0.png",
+      "fileName": "20250709-142_正面图片_0.png"
     },
     {
       "productId": "20250709-142",
@@ -2323,36 +2562,36 @@
       "productId": "20250709-143",
       "productName": "有机板栗仁",
       "type": "front",
-      "path": "/images/20250709-143_正面图片_0.png",
-      "fileName": "20250709-143_正面图片_0.png"
+      "path": "/images/20250709-143_正面图片_0.jpg",
+      "fileName": "20250709-143_正面图片_0.jpg"
     },
     {
       "productId": "20250709-143",
       "productName": "有机板栗仁",
       "type": "back",
-      "path": "/images/20250709-143_背面图片_0.png",
-      "fileName": "20250709-143_背面图片_0.png"
+      "path": "/images/20250709-143_背面图片_0.jpg",
+      "fileName": "20250709-143_背面图片_0.jpg"
     },
     {
       "productId": "20250709-143",
       "productName": "有机板栗仁",
       "type": "label",
-      "path": "/images/20250709-143_标签照片_0.png",
-      "fileName": "20250709-143_标签照片_0.png"
+      "path": "/images/20250709-143_标签照片_0.jpg",
+      "fileName": "20250709-143_标签照片_0.jpg"
     },
     {
       "productId": "20250709-144",
       "productName": "臻香脆混合果仁（轻海盐口味）",
       "type": "front",
-      "path": "/images/20250709-144_正面图片_0.png",
-      "fileName": "20250709-144_正面图片_0.png"
+      "path": "/images/20250709-144_正面图片_0.jpg",
+      "fileName": "20250709-144_正面图片_0.jpg"
     },
     {
       "productId": "20250709-144",
       "productName": "臻香脆混合果仁（轻海盐口味）",
       "type": "label",
-      "path": "/images/20250709-144_标签照片_0.png",
-      "fileName": "20250709-144_标签照片_0.png"
+      "path": "/images/20250709-144_标签照片_0.jpg",
+      "fileName": "20250709-144_标签照片_0.jpg"
     },
     {
       "productId": "20250710-117",
@@ -2729,22 +2968,22 @@
       "productId": "20250710-169",
       "productName": "朱古力牛奶饮品",
       "type": "front",
-      "path": "/images/20250710-169_正面图片_0.png",
-      "fileName": "20250710-169_正面图片_0.png"
+      "path": "/images/20250710-169_正面图片_0.jpg",
+      "fileName": "20250710-169_正面图片_0.jpg"
     },
     {
       "productId": "20250710-169",
       "productName": "朱古力牛奶饮品",
       "type": "label",
-      "path": "/images/20250710-169_标签照片_0.png",
-      "fileName": "20250710-169_标签照片_0.png"
+      "path": "/images/20250710-169_标签照片_0.jpg",
+      "fileName": "20250710-169_标签照片_0.jpg"
     },
     {
       "productId": "20250710-169",
       "productName": "朱古力牛奶饮品",
       "type": "package",
-      "path": "/images/20250710-169_外包装图片_0.png",
-      "fileName": "20250710-169_外包装图片_0.png"
+      "path": "/images/20250710-169_外包装图片_0.jpg",
+      "fileName": "20250710-169_外包装图片_0.jpg"
     },
     {
       "productId": "20250710-170",
@@ -2834,29 +3073,29 @@
       "productId": "20250710-177",
       "productName": "多肉爆汁柚子 复合果汁饮品",
       "type": "front",
-      "path": "/images/20250710-177_正面图片_0.png",
-      "fileName": "20250710-177_正面图片_0.png"
+      "path": "/images/20250710-177_正面图片_0.jpg",
+      "fileName": "20250710-177_正面图片_0.jpg"
     },
     {
       "productId": "20250710-177",
       "productName": "多肉爆汁柚子 复合果汁饮品",
       "type": "back",
-      "path": "/images/20250710-177_背面图片_0.png",
-      "fileName": "20250710-177_背面图片_0.png"
+      "path": "/images/20250710-177_背面图片_0.jpg",
+      "fileName": "20250710-177_背面图片_0.jpg"
     },
     {
       "productId": "20250710-177",
       "productName": "多肉爆汁柚子 复合果汁饮品",
       "type": "label",
-      "path": "/images/20250710-177_标签照片_0.png",
-      "fileName": "20250710-177_标签照片_0.png"
+      "path": "/images/20250710-177_标签照片_0.jpg",
+      "fileName": "20250710-177_标签照片_0.jpg"
     },
     {
       "productId": "20250710-177",
       "productName": "多肉爆汁柚子 复合果汁饮品",
       "type": "package",
-      "path": "/images/20250710-177_外包装图片_0.png",
-      "fileName": "20250710-177_外包装图片_0.png"
+      "path": "/images/20250710-177_外包装图片_0.jpg",
+      "fileName": "20250710-177_外包装图片_0.jpg"
     },
     {
       "productId": "20250710-178",
@@ -2988,22 +3227,22 @@
       "productId": "20250710-187",
       "productName": "100%NFC橙汁",
       "type": "front",
-      "path": "/images/20250710-187_正面图片_0.png",
-      "fileName": "20250710-187_正面图片_0.png"
+      "path": "/images/20250710-187_正面图片_0.jpg",
+      "fileName": "20250710-187_正面图片_0.jpg"
     },
     {
       "productId": "20250710-187",
       "productName": "100%NFC橙汁",
       "type": "label",
-      "path": "/images/20250710-187_标签照片_0.png",
-      "fileName": "20250710-187_标签照片_0.png"
+      "path": "/images/20250710-187_标签照片_0.jpg",
+      "fileName": "20250710-187_标签照片_0.jpg"
     },
     {
       "productId": "20250710-187",
       "productName": "100%NFC橙汁",
       "type": "package",
-      "path": "/images/20250710-187_外包装图片_0.png",
-      "fileName": "20250710-187_外包装图片_0.png"
+      "path": "/images/20250710-187_外包装图片_0.jpg",
+      "fileName": "20250710-187_外包装图片_0.jpg"
     },
     {
       "productId": "20250710-188",
@@ -3282,22 +3521,50 @@
       "productId": "20250710-209",
       "productName": "坚果乳植物蛋白饮料",
       "type": "front",
-      "path": "/images/20250710-209_正面图片_0.png",
-      "fileName": "20250710-209_正面图片_0.png"
+      "path": "/images/20250710-209_正面图片_0.jpg",
+      "fileName": "20250710-209_正面图片_0.jpg"
     },
     {
       "productId": "20250710-209",
       "productName": "坚果乳植物蛋白饮料",
       "type": "label",
-      "path": "/images/20250710-209_标签照片_0.png",
-      "fileName": "20250710-209_标签照片_0.png"
+      "path": "/images/20250710-209_标签照片_0.jpg",
+      "fileName": "20250710-209_标签照片_0.jpg"
     },
     {
       "productId": "20250710-209",
       "productName": "坚果乳植物蛋白饮料",
       "type": "package",
-      "path": "/images/20250710-209_外包装图片_0.png",
-      "fileName": "20250710-209_外包装图片_0.png"
+      "path": "/images/20250710-209_外包装图片_0.jpg",
+      "fileName": "20250710-209_外包装图片_0.jpg"
+    },
+    {
+      "productId": "20250710-210",
+      "productName": "和情缤咖时焦糖夹心饼干",
+      "type": "front",
+      "path": "/images/20250710-210_正面图片_0.png",
+      "fileName": "20250710-210_正面图片_0.png"
+    },
+    {
+      "productId": "20250710-210",
+      "productName": "和情缤咖时焦糖夹心饼干",
+      "type": "back",
+      "path": "/images/20250710-210_背面图片_0.png",
+      "fileName": "20250710-210_背面图片_0.png"
+    },
+    {
+      "productId": "20250710-211",
+      "productName": "星七牌夹心饼干",
+      "type": "front",
+      "path": "/images/20250710-211_正面图片_0.png",
+      "fileName": "20250710-211_正面图片_0.png"
+    },
+    {
+      "productId": "20250710-211",
+      "productName": "星七牌夹心饼干",
+      "type": "label",
+      "path": "/images/20250710-211_标签照片_0.png",
+      "fileName": "20250710-211_标签照片_0.png"
     },
     {
       "productId": "20250710-212",
@@ -3331,8 +3598,8 @@
       "productId": "20250710-213",
       "productName": "赛味馆黑糖麦芽饼",
       "type": "label",
-      "path": "/images/20250710-213_标签照片_0.png",
-      "fileName": "20250710-213_标签照片_0.png"
+      "path": "/images/20250710-213_标签照片_0.jpg",
+      "fileName": "20250710-213_标签照片_0.jpg"
     },
     {
       "productId": "20250711-050",
@@ -3340,6 +3607,27 @@
       "type": "front",
       "path": "/images/20250711-050_正面图片_0.png",
       "fileName": "20250711-050_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-050",
+      "productName": "乐事马铃薯片",
+      "type": "back",
+      "path": "/images/20250711-050_背面图片_0.png",
+      "fileName": "20250711-050_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-050",
+      "productName": "乐事马铃薯片",
+      "type": "label",
+      "path": "/images/20250711-050_标签照片_0.png",
+      "fileName": "20250711-050_标签照片_0.png"
+    },
+    {
+      "productId": "20250711-051",
+      "productName": "乐事马铃薯片",
+      "type": "front",
+      "path": "/images/20250711-051_正面图片_0.png",
+      "fileName": "20250711-051_正面图片_0.png"
     },
     {
       "productId": "20250711-051",
@@ -3855,9 +4143,37 @@
     {
       "productId": "20250711-248",
       "productName": "宝乐友牛奶加钙数字饼干",
+      "type": "front",
+      "path": "/images/20250711-248_正面图片_0.png",
+      "fileName": "20250711-248_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-248",
+      "productName": "宝乐友牛奶加钙数字饼干",
       "type": "label",
       "path": "/images/20250711-248_标签照片_0.png",
       "fileName": "20250711-248_标签照片_0.png"
+    },
+    {
+      "productId": "20250711-249",
+      "productName": "禄顶咖啡饼干",
+      "type": "front",
+      "path": "/images/20250711-249_正面图片_0.png",
+      "fileName": "20250711-249_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-249",
+      "productName": "禄顶咖啡饼干",
+      "type": "back",
+      "path": "/images/20250711-249_背面图片_0.png",
+      "fileName": "20250711-249_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-250",
+      "productName": "莱家粒粒装柠檬饼干",
+      "type": "front",
+      "path": "/images/20250711-250_正面图片_0.png",
+      "fileName": "20250711-250_正面图片_0.png"
     },
     {
       "productId": "20250711-250",
@@ -3865,6 +4181,13 @@
       "type": "back",
       "path": "/images/20250711-250_背面图片_0.png",
       "fileName": "20250711-250_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-251",
+      "productName": "闲趣韧性饼干",
+      "type": "front",
+      "path": "/images/20250711-251_正面图片_0.png",
+      "fileName": "20250711-251_正面图片_0.png"
     },
     {
       "productId": "20250711-251",
@@ -4289,6 +4612,13 @@
     {
       "productId": "20250711-286",
       "productName": "乐事马铃薯片",
+      "type": "back",
+      "path": "/images/20250711-286_背面图片_0.png",
+      "fileName": "20250711-286_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-286",
+      "productName": "乐事马铃薯片",
       "type": "label",
       "path": "/images/20250711-286_标签照片_0.png",
       "fileName": "20250711-286_标签照片_0.png"
@@ -4299,6 +4629,13 @@
       "type": "front",
       "path": "/images/20250711-287_正面图片_0.png",
       "fileName": "20250711-287_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-287",
+      "productName": "乐事马铃薯片",
+      "type": "back",
+      "path": "/images/20250711-287_背面图片_0.png",
+      "fileName": "20250711-287_背面图片_0.png"
     },
     {
       "productId": "20250711-287",
@@ -5647,6 +5984,20 @@
     {
       "productId": "20250711-377",
       "productName": "乐事大波浪薯片",
+      "type": "front",
+      "path": "/images/20250711-377_正面图片_0.png",
+      "fileName": "20250711-377_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-377",
+      "productName": "乐事大波浪薯片",
+      "type": "back",
+      "path": "/images/20250711-377_背面图片_0.png",
+      "fileName": "20250711-377_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-377",
+      "productName": "乐事大波浪薯片",
       "type": "label",
       "path": "/images/20250711-377_标签照片_0.png",
       "fileName": "20250711-377_标签照片_0.png"
@@ -5661,6 +6012,13 @@
     {
       "productId": "20250711-378",
       "productName": "乐事大波浪薯片",
+      "type": "back",
+      "path": "/images/20250711-378_背面图片_0.png",
+      "fileName": "20250711-378_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-378",
+      "productName": "乐事大波浪薯片",
       "type": "label",
       "path": "/images/20250711-378_标签照片_0.png",
       "fileName": "20250711-378_标签照片_0.png"
@@ -5668,9 +6026,23 @@
     {
       "productId": "20250711-379",
       "productName": "乐事大波浪薯片",
+      "type": "front",
+      "path": "/images/20250711-379_正面图片_0.png",
+      "fileName": "20250711-379_正面图片_0.png"
+    },
+    {
+      "productId": "20250711-379",
+      "productName": "乐事大波浪薯片",
       "type": "back",
       "path": "/images/20250711-379_背面图片_0.png",
       "fileName": "20250711-379_背面图片_0.png"
+    },
+    {
+      "productId": "20250711-379",
+      "productName": "乐事大波浪薯片",
+      "type": "label",
+      "path": "/images/20250711-379_标签照片_0.png",
+      "fileName": "20250711-379_标签照片_0.png"
     },
     {
       "productId": "20250711-380",
@@ -5811,393 +6183,6 @@
       "type": "back",
       "path": "/images/20250711-387_背面图片_0.png",
       "fileName": "20250711-387_背面图片_0.png"
-    }
-  ],
-  "existingImages": [
-    {
-      "productId": "20250708-002",
-      "productName": "卡士007益生菌酸奶",
-      "type": "front",
-      "path": "/images/20250708-002_正面图片_0.jpg",
-      "fileName": "20250708-002_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250708-002",
-      "productName": "卡士007益生菌酸奶",
-      "type": "back",
-      "path": "/images/20250708-002_背面图片_0.jpg",
-      "fileName": "20250708-002_背面图片_0.jpg"
-    },
-    {
-      "productId": "20250708-002",
-      "productName": "卡士007益生菌酸奶",
-      "type": "label",
-      "path": "/images/20250708-002_标签照片_0.jpg",
-      "fileName": "20250708-002_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250708-003",
-      "productName": "卡士007益生菌酸奶",
-      "type": "front",
-      "path": "/images/20250708-003_正面图片_0.jpg",
-      "fileName": "20250708-003_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250708-003",
-      "productName": "卡士007益生菌酸奶",
-      "type": "back",
-      "path": "/images/20250708-003_背面图片_0.jpg",
-      "fileName": "20250708-003_背面图片_0.jpg"
-    },
-    {
-      "productId": "20250708-003",
-      "productName": "卡士007益生菌酸奶",
-      "type": "label",
-      "path": "/images/20250708-003_标签照片_0.jpg",
-      "fileName": "20250708-003_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250708-005",
-      "productName": "100%橙汁",
-      "type": "label",
-      "path": "/images/20250708-005_标签照片_0.png",
-      "fileName": "20250708-005_标签照片_0.png"
-    },
-    {
-      "productId": "20250708-008",
-      "productName": "盐焗味开心果",
-      "type": "label",
-      "path": "/images/20250708-008_标签照片_0.jpg",
-      "fileName": "20250708-008_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250708-009",
-      "productName": "原味腰果仁",
-      "type": "front",
-      "path": "/images/20250708-009_正面图片_0.jpg",
-      "fileName": "20250708-009_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250708-010",
-      "productName": "原味开心果",
-      "type": "label",
-      "path": "/images/20250708-010_标签照片_0.jpg",
-      "fileName": "20250708-010_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250709-001",
-      "productName": "熟咸鸭蛋(FP)",
-      "type": "front",
-      "path": "/images/20250709-001_正面图片_0.png",
-      "fileName": "20250709-001_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-001",
-      "productName": "熟咸鸭蛋(FP)",
-      "type": "label",
-      "path": "/images/20250709-001_标签照片_0.png",
-      "fileName": "20250709-001_标签照片_0.png"
-    },
-    {
-      "productId": "20250709-011",
-      "productName": "香脆碧根果仁",
-      "type": "front",
-      "path": "/images/20250709-011_正面图片_0.jpg",
-      "fileName": "20250709-011_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250709-011",
-      "productName": "香脆碧根果仁",
-      "type": "back",
-      "path": "/images/20250709-011_背面图片_0.jpg",
-      "fileName": "20250709-011_背面图片_0.jpg"
-    },
-    {
-      "productId": "20250709-011",
-      "productName": "香脆碧根果仁",
-      "type": "label",
-      "path": "/images/20250709-011_标签照片_0.jpg",
-      "fileName": "20250709-011_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250709-012",
-      "productName": "松花皮蛋",
-      "type": "front",
-      "path": "/images/20250709-012_正面图片_0.png",
-      "fileName": "20250709-012_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-012",
-      "productName": "松花皮蛋",
-      "type": "label",
-      "path": "/images/20250709-012_标签照片_0.png",
-      "fileName": "20250709-012_标签照片_0.png"
-    },
-    {
-      "productId": "20250709-014",
-      "productName": "爱尚咪咪虾味膨胀食品",
-      "type": "front",
-      "path": "/images/20250709-014_正面图片_0.png",
-      "fileName": "20250709-014_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-014",
-      "productName": "爱尚咪咪虾味膨胀食品",
-      "type": "back",
-      "path": "/images/20250709-014_背面图片_0.png",
-      "fileName": "20250709-014_背面图片_0.png"
-    },
-    {
-      "productId": "20250709-015",
-      "productName": "香巴佬卤鸡蛋",
-      "type": "front",
-      "path": "/images/20250709-015_正面图片_0.png",
-      "fileName": "20250709-015_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-015",
-      "productName": "香巴佬卤鸡蛋",
-      "type": "back",
-      "path": "/images/20250709-015_背面图片_0.png",
-      "fileName": "20250709-015_背面图片_0.png"
-    },
-    {
-      "productId": "20250709-015",
-      "productName": "香巴佬卤鸡蛋",
-      "type": "label",
-      "path": "/images/20250709-015_标签照片_0.png",
-      "fileName": "20250709-015_标签照片_0.png"
-    },
-    {
-      "productId": "20250709-017",
-      "productName": "香巴佬蜜汁鸡蛋",
-      "type": "front",
-      "path": "/images/20250709-017_正面图片_0.png",
-      "fileName": "20250709-017_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-017",
-      "productName": "香巴佬蜜汁鸡蛋",
-      "type": "back",
-      "path": "/images/20250709-017_背面图片_0.png",
-      "fileName": "20250709-017_背面图片_0.png"
-    },
-    {
-      "productId": "20250709-017",
-      "productName": "香巴佬蜜汁鸡蛋",
-      "type": "label",
-      "path": "/images/20250709-017_标签照片_0.png",
-      "fileName": "20250709-017_标签照片_0.png"
-    },
-    {
-      "productId": "20250709-020",
-      "productName": "果仁列巴",
-      "type": "front",
-      "path": "/images/20250709-020_正面图片_0.png",
-      "fileName": "20250709-020_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-084",
-      "productName": "宝丰自由爱（白酒）",
-      "type": "front",
-      "path": "/images/20250709-084_正面图片_0.png",
-      "fileName": "20250709-084_正面图片_0.png"
-    },
-    {
-      "productId": "20250709-084",
-      "productName": "宝丰自由爱（白酒）",
-      "type": "back",
-      "path": "/images/20250709-084_背面图片_0.png",
-      "fileName": "20250709-084_背面图片_0.png"
-    },
-    {
-      "productId": "20250709-084",
-      "productName": "宝丰自由爱（白酒）",
-      "type": "package",
-      "path": "/images/20250709-084_外包装图片_0.png",
-      "fileName": "20250709-084_外包装图片_0.png"
-    },
-    {
-      "productId": "20250709-085",
-      "productName": "椰子水",
-      "type": "front",
-      "path": "/images/20250709-085_正面图片_0.jpg",
-      "fileName": "20250709-085_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250709-086",
-      "productName": "精酿黑啤酒",
-      "type": "package",
-      "path": "/images/20250709-086_外包装图片_0.png",
-      "fileName": "20250709-086_外包装图片_0.png"
-    },
-    {
-      "productId": "20250709-140",
-      "productName": "雪梨枇杷露",
-      "type": "label",
-      "path": "/images/20250709-140_标签照片_0.jpg",
-      "fileName": "20250709-140_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250709-140",
-      "productName": "雪梨枇杷露",
-      "type": "package",
-      "path": "/images/20250709-140_外包装图片_0.jpg",
-      "fileName": "20250709-140_外包装图片_0.jpg"
-    },
-    {
-      "productId": "20250709-141",
-      "productName": "有机冻干草莓",
-      "type": "front",
-      "path": "/images/20250709-141_正面图片_0.jpg",
-      "fileName": "20250709-141_正面图片_0.jpg"
-    },
-    {
-      "productId": "20250709-141",
-      "productName": "有机冻干草莓",
-      "type": "label",
-      "path": "/images/20250709-141_标签照片_0.jpg",
-      "fileName": "20250709-141_标签照片_0.jpg"
-    },
-    {
-      "productId": "20250709-142",
-      "productName": "克恩兹烧烤味木薯片",
-      "type": "front",
-      "path": "/images/20250709-142_正面图片_0.png",
-      "fileName": "20250709-142_正面图片_0.png"
-    },
-    {
-      "productId": "20250710-210",
-      "productName": "和情缤咖时焦糖夹心饼干",
-      "type": "front",
-      "path": "/images/20250710-210_正面图片_0.png",
-      "fileName": "20250710-210_正面图片_0.png"
-    },
-    {
-      "productId": "20250710-210",
-      "productName": "和情缤咖时焦糖夹心饼干",
-      "type": "back",
-      "path": "/images/20250710-210_背面图片_0.png",
-      "fileName": "20250710-210_背面图片_0.png"
-    },
-    {
-      "productId": "20250710-211",
-      "productName": "星七牌夹心饼干",
-      "type": "front",
-      "path": "/images/20250710-211_正面图片_0.png",
-      "fileName": "20250710-211_正面图片_0.png"
-    },
-    {
-      "productId": "20250710-211",
-      "productName": "星七牌夹心饼干",
-      "type": "label",
-      "path": "/images/20250710-211_标签照片_0.png",
-      "fileName": "20250710-211_标签照片_0.png"
-    },
-    {
-      "productId": "20250711-050",
-      "productName": "乐事马铃薯片",
-      "type": "back",
-      "path": "/images/20250711-050_背面图片_0.png",
-      "fileName": "20250711-050_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-050",
-      "productName": "乐事马铃薯片",
-      "type": "label",
-      "path": "/images/20250711-050_标签照片_0.png",
-      "fileName": "20250711-050_标签照片_0.png"
-    },
-    {
-      "productId": "20250711-051",
-      "productName": "乐事马铃薯片",
-      "type": "front",
-      "path": "/images/20250711-051_正面图片_0.png",
-      "fileName": "20250711-051_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-248",
-      "productName": "宝乐友牛奶加钙数字饼干",
-      "type": "front",
-      "path": "/images/20250711-248_正面图片_0.png",
-      "fileName": "20250711-248_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-249",
-      "productName": "禄顶咖啡饼干",
-      "type": "front",
-      "path": "/images/20250711-249_正面图片_0.png",
-      "fileName": "20250711-249_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-249",
-      "productName": "禄顶咖啡饼干",
-      "type": "back",
-      "path": "/images/20250711-249_背面图片_0.png",
-      "fileName": "20250711-249_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-250",
-      "productName": "莱家粒粒装柠檬饼干",
-      "type": "front",
-      "path": "/images/20250711-250_正面图片_0.png",
-      "fileName": "20250711-250_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-251",
-      "productName": "闲趣韧性饼干",
-      "type": "front",
-      "path": "/images/20250711-251_正面图片_0.png",
-      "fileName": "20250711-251_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-286",
-      "productName": "乐事马铃薯片",
-      "type": "back",
-      "path": "/images/20250711-286_背面图片_0.png",
-      "fileName": "20250711-286_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-287",
-      "productName": "乐事马铃薯片",
-      "type": "back",
-      "path": "/images/20250711-287_背面图片_0.png",
-      "fileName": "20250711-287_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-377",
-      "productName": "乐事大波浪薯片",
-      "type": "front",
-      "path": "/images/20250711-377_正面图片_0.png",
-      "fileName": "20250711-377_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-377",
-      "productName": "乐事大波浪薯片",
-      "type": "back",
-      "path": "/images/20250711-377_背面图片_0.png",
-      "fileName": "20250711-377_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-378",
-      "productName": "乐事大波浪薯片",
-      "type": "back",
-      "path": "/images/20250711-378_背面图片_0.png",
-      "fileName": "20250711-378_背面图片_0.png"
-    },
-    {
-      "productId": "20250711-379",
-      "productName": "乐事大波浪薯片",
-      "type": "front",
-      "path": "/images/20250711-379_正面图片_0.png",
-      "fileName": "20250711-379_正面图片_0.png"
-    },
-    {
-      "productId": "20250711-379",
-      "productName": "乐事大波浪薯片",
-      "type": "label",
-      "path": "/images/20250711-379_标签照片_0.png",
-      "fileName": "20250711-379_标签照片_0.png"
     }
   ]
 }

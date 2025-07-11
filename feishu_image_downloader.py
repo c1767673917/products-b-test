@@ -14,6 +14,39 @@ from typing import List, Dict, Any, Optional
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+import imghdr
+
+def detect_image_format(image_data: bytes) -> str:
+    """检测图片数据的实际格式，返回对应的文件扩展名"""
+    # 使用 imghdr 检测图片格式
+    format_type = imghdr.what(None, h=image_data)
+
+    # 映射到常见的文件扩展名
+    format_map = {
+        'jpeg': '.jpg',
+        'png': '.png',
+        'gif': '.gif',
+        'bmp': '.bmp',
+        'webp': '.webp'
+    }
+
+    if format_type in format_map:
+        return format_map[format_type]
+
+    # 如果 imghdr 无法识别，尝试通过文件头检测
+    if image_data.startswith(b'\xff\xd8\xff'):
+        return '.jpg'
+    elif image_data.startswith(b'\x89PNG\r\n\x1a\n'):
+        return '.png'
+    elif image_data.startswith(b'GIF87a') or image_data.startswith(b'GIF89a'):
+        return '.gif'
+    elif image_data.startswith(b'BM'):
+        return '.bmp'
+    elif image_data.startswith(b'RIFF') and b'WEBP' in image_data[:12]:
+        return '.webp'
+
+    # 默认返回 .jpg
+    return '.jpg'
 
 class FeishuImageDownloader:
     """飞书多维表格图片下载器"""
@@ -196,11 +229,20 @@ class FeishuImageDownloader:
             field_name = image_info['field_name']
             original_name = image_info['file_name']
 
-            # 获取文件扩展名
+            # 下载图片数据到内存中，以便检测格式
+            image_data = b''
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    image_data += chunk
+
+            # 检测图片的实际格式
             if original_name:
                 _, ext = os.path.splitext(original_name)
+                if not ext:  # 如果原始文件名没有扩展名，检测实际格式
+                    ext = detect_image_format(image_data)
             else:
-                ext = '.jpg'  # 默认扩展名
+                # 没有原始文件名时，检测实际格式
+                ext = detect_image_format(image_data)
 
             # 构建完整文件名 - 使用编号字段作为文件名前缀
             safe_filename = f"{product_id}_{field_name}_{image_info['image_index']}{ext}"
@@ -208,9 +250,7 @@ class FeishuImageDownloader:
 
             # 保存文件
             with open(file_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
+                f.write(image_data)
 
             file_size = os.path.getsize(file_path)
             print(f"✅ 下载成功: {safe_filename} ({file_size} bytes)")

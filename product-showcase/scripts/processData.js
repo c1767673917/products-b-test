@@ -95,28 +95,28 @@ function getImagePath(productId, imageType) {
   const mappedType = typeMap[imageType] || imageType;
 
   try {
-    // 检查可能的文件扩展名
-    const possibleExtensions = ['jpg', 'png', 'jpeg'];
+    // 检查可能的文件扩展名，优先检查 png，因为大多数图片是 png 格式
+    const possibleExtensions = ['png', 'jpg', 'jpeg', 'webp'];
     const baseImagePath = `${productId}_${mappedType}_0`;
 
     for (const ext of possibleExtensions) {
       const fullPath = path.join(process.cwd(), 'public', 'images', `${baseImagePath}.${ext}`);
       if (fs.existsSync(fullPath)) {
+        console.log(`✅ 找到图片文件: ${baseImagePath}.${ext}`);
         return `/images/${baseImagePath}.${ext}`;
       }
     }
+
+    // 如果没有找到文件，记录警告
+    console.warn(`⚠️  未找到图片文件: ${baseImagePath}.[png|jpg|jpeg|webp]`);
   } catch (error) {
     // 如果文件系统检查失败，使用默认逻辑
-    console.warn(`无法检查图片文件: ${error.message}`);
+    console.warn(`❌ 无法检查图片文件: ${error.message}`);
   }
 
-  // 如果文件不存在或检查失败，使用默认扩展名逻辑
-  let extension = 'png';
-  if (productId.startsWith('20250708-') || productId.startsWith('20250709-011')) {
-    extension = 'jpg';
-  }
-
-  return `/images/${productId}_${mappedType}_0.${extension}`;
+  // 如果文件不存在，返回空字符串而不是生成错误的路径
+  // 这样可以避免在前端显示无效的图片链接
+  return '';
 }
 
 // 将CSV行转换为Product对象

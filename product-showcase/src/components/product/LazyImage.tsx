@@ -154,63 +154,18 @@ const LazyImage: React.FC<LazyImageProps> = ({
     onLoad?.();
   }, [loadStartTime, src, onLoad]);
 
-  // 图片扩展名fallback逻辑
-  const [currentSrcIndex, setCurrentSrcIndex] = useState(0);
-  const [fallbackSources, setFallbackSources] = useState<string[]>([]);
-
-  // 生成fallback图片源列表
-  const generateFallbackSources = useCallback((originalSrc: string) => {
-    if (!originalSrc || originalSrc === placeholder) {
-      return [originalSrc];
-    }
-
-    // 提取文件路径和扩展名
-    const lastDotIndex = originalSrc.lastIndexOf('.');
-    if (lastDotIndex === -1) {
-      return [originalSrc];
-    }
-
-    const basePath = originalSrc.substring(0, lastDotIndex);
-    const originalExt = originalSrc.substring(lastDotIndex + 1).toLowerCase();
-
-    // 常见图片扩展名，原始扩展名优先
-    const extensions = ['jpg', 'png', 'jpeg', 'webp'];
-    const orderedExtensions = [
-      originalExt,
-      ...extensions.filter(ext => ext !== originalExt)
-    ];
-
-    return orderedExtensions.map(ext => `${basePath}.${ext}`);
-  }, [placeholder]);
-
-  // 当src改变时，重新生成fallback源列表
-  useEffect(() => {
-    const sources = generateFallbackSources(src);
-    setFallbackSources(sources);
-    setCurrentSrcIndex(0);
-    setHasError(false);
-    setRetries(0);
-  }, [src, generateFallbackSources]);
-
   const handleError = useCallback(() => {
-    // 首先尝试下一个扩展名
-    if (currentSrcIndex < fallbackSources.length - 1) {
-      setCurrentSrcIndex(prev => prev + 1);
-      setRetries(0); // 重置重试计数
-      return;
-    }
-
-    // 如果所有扩展名都尝试过了，再进行重试
     if (retries < retryCount) {
+      // 重试加载
       setTimeout(() => {
         setRetries(prev => prev + 1);
-        setCurrentSrcIndex(0); // 从第一个源重新开始
+        setHasError(false);
       }, Math.pow(2, retries) * 1000); // 指数退避
     } else {
       setHasError(true);
       onError?.();
     }
-  }, [currentSrcIndex, fallbackSources.length, retries, retryCount, onError]);
+  }, [retries, retryCount, onError]);
 
   const imageSrc = hasError ? placeholder : optimizedSrc;
 

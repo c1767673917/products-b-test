@@ -72,9 +72,9 @@
       "normal": 75
     },
     "images": {
-      "front": "/images/20250708-004_正面图片_0.jpg",
-      "label": "/images/20250708-004_标签照片_0.jpg",
-      "package": "/images/20250708-004_外包装图片_0.jpg"
+      "front": "/images/20250708-004_正面图片_0.png",
+      "label": "/images/20250708-004_标签照片_0.png",
+      "package": "/images/20250708-004_外包装图片_0.png"
     },
     "origin": {
       "country": "中国",
@@ -101,9 +101,9 @@
       "normal": 87
     },
     "images": {
-      "front": "/images/20250708-005_正面图片_0.jpg",
+      "front": "/images/20250708-005_正面图片_0.png",
       "label": "/images/20250708-005_标签照片_0.png",
-      "package": "/images/20250708-005_外包装图片_0.jpg"
+      "package": "/images/20250708-005_外包装图片_0.png"
     },
     "origin": {
       "country": "中国",
@@ -130,9 +130,9 @@
       "normal": 78
     },
     "images": {
-      "front": "/images/20250708-006_正面图片_0.jpg",
-      "label": "/images/20250708-006_标签照片_0.jpg",
-      "package": "/images/20250708-006_外包装图片_0.jpg"
+      "front": "/images/20250708-006_正面图片_0.png",
+      "label": "/images/20250708-006_标签照片_0.png",
+      "package": "/images/20250708-006_外包装图片_0.png"
     },
     "origin": {
       "country": "中国",
@@ -159,8 +159,8 @@
       "normal": 87
     },
     "images": {
-      "front": "/images/20250708-007_正面图片_0.jpg",
-      "label": "/images/20250708-007_标签照片_0.jpg"
+      "front": "/images/20250708-007_正面图片_0.png",
+      "label": "/images/20250708-007_标签照片_0.png"
     },
     "origin": {
       "country": "中国",
@@ -187,7 +187,7 @@
       "normal": 79
     },
     "images": {
-      "front": "/images/20250708-008_正面图片_0.jpg",
+      "front": "/images/20250708-008_正面图片_0.png",
       "label": "/images/20250708-008_标签照片_0.jpg"
     },
     "origin": {
@@ -215,7 +215,7 @@
     },
     "images": {
       "front": "/images/20250708-009_正面图片_0.jpg",
-      "label": "/images/20250708-009_标签照片_0.jpg"
+      "label": "/images/20250708-009_标签照片_0.png"
     },
     "origin": {
       "country": "中国",
@@ -241,7 +241,7 @@
       "normal": 79
     },
     "images": {
-      "front": "/images/20250708-010_正面图片_0.jpg",
+      "front": "/images/20250708-010_正面图片_0.png",
       "label": "/images/20250708-010_标签照片_0.jpg"
     },
     "origin": {
@@ -349,8 +349,8 @@
       "normal": 119
     },
     "images": {
-      "front": "/images/20250709-013_正面图片_0.png",
-      "label": "/images/20250709-013_标签照片_0.png"
+      "front": "/images/20250709-013_正面图片_0.jpg",
+      "label": "/images/20250709-013_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -438,8 +438,8 @@
       "normal": 21
     },
     "images": {
-      "front": "/images/20250709-016_正面图片_0.png",
-      "back": "/images/20250709-016_背面图片_0.png"
+      "front": "/images/20250709-016_正面图片_0.jpg",
+      "back": "/images/20250709-016_背面图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -494,8 +494,8 @@
       "normal": 16.8
     },
     "images": {
-      "front": "/images/20250709-018_正面图片_0.png",
-      "back": "/images/20250709-018_背面图片_0.png"
+      "front": "/images/20250709-018_正面图片_0.jpg",
+      "back": "/images/20250709-018_背面图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -521,8 +521,8 @@
       "normal": 20.5
     },
     "images": {
-      "front": "/images/20250709-019_正面图片_0.png",
-      "back": "/images/20250709-019_背面图片_0.png"
+      "front": "/images/20250709-019_正面图片_0.jpg",
+      "back": "/images/20250709-019_背面图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -635,9 +635,9 @@
       "normal": 9.9
     },
     "images": {
-      "front": "/images/20250709-023_正面图片_0.png",
-      "back": "/images/20250709-023_背面图片_0.png",
-      "label": "/images/20250709-023_标签照片_0.png"
+      "front": "/images/20250709-023_正面图片_0.jpg",
+      "back": "/images/20250709-023_背面图片_0.jpg",
+      "label": "/images/20250709-023_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -663,9 +663,9 @@
       "normal": 9.9
     },
     "images": {
-      "front": "/images/20250709-024_正面图片_0.png",
-      "back": "/images/20250709-024_背面图片_0.png",
-      "label": "/images/20250709-024_标签照片_0.png"
+      "front": "/images/20250709-024_正面图片_0.jpg",
+      "back": "/images/20250709-024_背面图片_0.jpg",
+      "label": "/images/20250709-024_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -1477,7 +1477,7 @@
     "images": {
       "front": "/images/20250709-053_正面图片_0.png",
       "label": "/images/20250709-053_标签照片_0.png",
-      "package": "/images/20250709-053_外包装图片_0.png"
+      "package": "/images/20250709-053_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -1534,9 +1534,9 @@
       "normal": 276
     },
     "images": {
-      "front": "/images/20250709-055_正面图片_0.png",
+      "front": "/images/20250709-055_正面图片_0.jpg",
       "label": "/images/20250709-055_标签照片_0.png",
-      "package": "/images/20250709-055_外包装图片_0.png"
+      "package": "/images/20250709-055_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -1562,9 +1562,9 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-056_正面图片_0.png",
-      "label": "/images/20250709-056_标签照片_0.png",
-      "package": "/images/20250709-056_外包装图片_0.png"
+      "front": "/images/20250709-056_正面图片_0.jpg",
+      "label": "/images/20250709-056_标签照片_0.jpg",
+      "package": "/images/20250709-056_外包装图片_0.jpg"
     },
     "origin": {
       "country": "泰国",
@@ -2010,9 +2010,9 @@
       "normal": 32.5
     },
     "images": {
-      "front": "/images/20250709-072_正面图片_0.png",
-      "back": "/images/20250709-072_背面图片_0.png",
-      "label": "/images/20250709-072_标签照片_0.png"
+      "front": "/images/20250709-072_正面图片_0.jpg",
+      "back": "/images/20250709-072_背面图片_0.jpg",
+      "label": "/images/20250709-072_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2157,9 +2157,9 @@
       "normal": 83.9
     },
     "images": {
-      "front": "/images/20250709-077_正面图片_0.png",
-      "label": "/images/20250709-077_标签照片_0.png",
-      "package": "/images/20250709-077_外包装图片_0.png"
+      "front": "/images/20250709-077_正面图片_0.jpg",
+      "label": "/images/20250709-077_标签照片_0.jpg",
+      "package": "/images/20250709-077_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2218,9 +2218,9 @@
       "normal": 54
     },
     "images": {
-      "front": "/images/20250709-079_正面图片_0.png",
-      "back": "/images/20250709-079_背面图片_0.png",
-      "label": "/images/20250709-079_标签照片_0.png"
+      "front": "/images/20250709-079_正面图片_0.jpg",
+      "back": "/images/20250709-079_背面图片_0.jpg",
+      "label": "/images/20250709-079_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2247,8 +2247,8 @@
       "normal": 106.9
     },
     "images": {
-      "front": "/images/20250709-080_正面图片_0.png",
-      "label": "/images/20250709-080_标签照片_0.png"
+      "front": "/images/20250709-080_正面图片_0.jpg",
+      "label": "/images/20250709-080_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2274,8 +2274,8 @@
       "normal": 56.9
     },
     "images": {
-      "front": "/images/20250709-081_正面图片_0.png",
-      "label": "/images/20250709-081_标签照片_0.png"
+      "front": "/images/20250709-081_正面图片_0.jpg",
+      "label": "/images/20250709-081_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2299,9 +2299,9 @@
       "normal": 85.9
     },
     "images": {
-      "front": "/images/20250709-082_正面图片_0.png",
-      "label": "/images/20250709-082_标签照片_0.png",
-      "gift": "/images/20250709-082_赠品图片_0.png"
+      "front": "/images/20250709-082_正面图片_0.jpg",
+      "label": "/images/20250709-082_标签照片_0.jpg",
+      "gift": "/images/20250709-082_赠品图片_0.jpg"
     },
     "origin": {
       "country": "泰国",
@@ -2327,9 +2327,9 @@
       "normal": 99.9
     },
     "images": {
-      "front": "/images/20250709-083_正面图片_0.png",
-      "label": "/images/20250709-083_标签照片_0.png",
-      "package": "/images/20250709-083_外包装图片_0.png"
+      "front": "/images/20250709-083_正面图片_0.jpg",
+      "label": "/images/20250709-083_标签照片_0.jpg",
+      "package": "/images/20250709-083_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2384,8 +2384,8 @@
     },
     "images": {
       "front": "/images/20250709-085_正面图片_0.jpg",
-      "label": "/images/20250709-085_标签照片_0.png",
-      "package": "/images/20250709-085_外包装图片_0.png"
+      "label": "/images/20250709-085_标签照片_0.jpg",
+      "package": "/images/20250709-085_外包装图片_0.jpg"
     },
     "origin": {
       "country": "泰国",
@@ -2442,9 +2442,9 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-087_正面图片_0.png",
+      "front": "/images/20250709-087_正面图片_0.jpg",
       "label": "/images/20250709-087_标签照片_0.png",
-      "package": "/images/20250709-087_外包装图片_0.png"
+      "package": "/images/20250709-087_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2501,9 +2501,9 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-089_正面图片_0.png",
-      "back": "/images/20250709-089_背面图片_0.png",
-      "label": "/images/20250709-089_标签照片_0.png"
+      "front": "/images/20250709-089_正面图片_0.jpg",
+      "back": "/images/20250709-089_背面图片_0.jpg",
+      "label": "/images/20250709-089_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2529,9 +2529,9 @@
       "normal": 89
     },
     "images": {
-      "front": "/images/20250709-090_正面图片_0.png",
-      "label": "/images/20250709-090_标签照片_0.png",
-      "package": "/images/20250709-090_外包装图片_0.png"
+      "front": "/images/20250709-090_正面图片_0.jpg",
+      "label": "/images/20250709-090_标签照片_0.jpg",
+      "package": "/images/20250709-090_外包装图片_0.jpg"
     },
     "origin": {
       "country": "泰国",
@@ -2558,9 +2558,9 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-091_正面图片_0.png",
-      "back": "/images/20250709-091_背面图片_0.png",
-      "label": "/images/20250709-091_标签照片_0.png"
+      "front": "/images/20250709-091_正面图片_0.jpg",
+      "back": "/images/20250709-091_背面图片_0.jpg",
+      "label": "/images/20250709-091_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2588,9 +2588,9 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-092_正面图片_0.png",
-      "back": "/images/20250709-092_背面图片_0.png",
-      "label": "/images/20250709-092_标签照片_0.png"
+      "front": "/images/20250709-092_正面图片_0.jpg",
+      "back": "/images/20250709-092_背面图片_0.jpg",
+      "label": "/images/20250709-092_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2616,9 +2616,9 @@
       "normal": 109.9
     },
     "images": {
-      "front": "/images/20250709-093_正面图片_0.png",
-      "label": "/images/20250709-093_标签照片_0.png",
-      "package": "/images/20250709-093_外包装图片_0.png"
+      "front": "/images/20250709-093_正面图片_0.jpg",
+      "label": "/images/20250709-093_标签照片_0.jpg",
+      "package": "/images/20250709-093_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2644,8 +2644,8 @@
       "normal": 59.9
     },
     "images": {
-      "front": "/images/20250709-094_正面图片_0.png",
-      "label": "/images/20250709-094_标签照片_0.png"
+      "front": "/images/20250709-094_正面图片_0.jpg",
+      "label": "/images/20250709-094_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2671,8 +2671,8 @@
       "normal": 79.9
     },
     "images": {
-      "front": "/images/20250709-095_正面图片_0.png",
-      "label": "/images/20250709-095_标签照片_0.png"
+      "front": "/images/20250709-095_正面图片_0.jpg",
+      "label": "/images/20250709-095_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2755,10 +2755,10 @@
       "normal": 129.9
     },
     "images": {
-      "front": "/images/20250709-098_正面图片_0.png",
-      "back": "/images/20250709-098_背面图片_0.png",
-      "label": "/images/20250709-098_标签照片_0.png",
-      "package": "/images/20250709-098_外包装图片_0.png"
+      "front": "/images/20250709-098_正面图片_0.jpg",
+      "back": "/images/20250709-098_背面图片_0.jpg",
+      "label": "/images/20250709-098_标签照片_0.jpg",
+      "package": "/images/20250709-098_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2784,8 +2784,8 @@
       "normal": 79.9
     },
     "images": {
-      "front": "/images/20250709-099_正面图片_0.png",
-      "label": "/images/20250709-099_标签照片_0.png"
+      "front": "/images/20250709-099_正面图片_0.jpg",
+      "label": "/images/20250709-099_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2812,7 +2812,7 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-100_正面图片_0.png"
+      "front": "/images/20250709-100_正面图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2868,8 +2868,8 @@
       "normal": 77.9
     },
     "images": {
-      "front": "/images/20250709-102_正面图片_0.png",
-      "label": "/images/20250709-102_标签照片_0.png"
+      "front": "/images/20250709-102_正面图片_0.jpg",
+      "label": "/images/20250709-102_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2897,7 +2897,7 @@
     },
     "images": {
       "front": "/images/20250709-103_正面图片_0.png",
-      "label": "/images/20250709-103_标签照片_0.png"
+      "label": "/images/20250709-103_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -2954,7 +2954,7 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-105_正面图片_0.png"
+      "front": ""
     },
     "origin": {
       "country": "中国",
@@ -2981,7 +2981,7 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-106_正面图片_0.png"
+      "front": ""
     },
     "origin": {
       "country": "中国",
@@ -3010,7 +3010,7 @@
     },
     "images": {
       "front": "/images/20250709-107_正面图片_0.png",
-      "label": "/images/20250709-107_标签照片_0.png"
+      "label": "/images/20250709-107_标签照片_0.jpg"
     },
     "origin": {
       "country": "韩国",
@@ -3035,10 +3035,10 @@
       "normal": 89.9
     },
     "images": {
-      "front": "/images/20250709-108_正面图片_0.png",
-      "back": "/images/20250709-108_背面图片_0.png",
-      "label": "/images/20250709-108_标签照片_0.png",
-      "package": "/images/20250709-108_外包装图片_0.png"
+      "front": "/images/20250709-108_正面图片_0.jpg",
+      "back": "/images/20250709-108_背面图片_0.jpg",
+      "label": "/images/20250709-108_标签照片_0.jpg",
+      "package": "/images/20250709-108_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3066,10 +3066,10 @@
       "discountRate": 14
     },
     "images": {
-      "front": "/images/20250709-109_正面图片_0.png",
-      "back": "/images/20250709-109_背面图片_0.png",
-      "label": "/images/20250709-109_标签照片_0.png",
-      "package": "/images/20250709-109_外包装图片_0.png"
+      "front": "/images/20250709-109_正面图片_0.jpg",
+      "back": "/images/20250709-109_背面图片_0.jpg",
+      "label": "/images/20250709-109_标签照片_0.jpg",
+      "package": "/images/20250709-109_外包装图片_0.jpg"
     },
     "origin": {
       "country": "越南",
@@ -3097,9 +3097,9 @@
       "discountRate": 14
     },
     "images": {
-      "front": "/images/20250709-110_正面图片_0.png",
+      "front": "/images/20250709-110_正面图片_0.jpg",
       "back": "/images/20250709-110_背面图片_0.png",
-      "label": "/images/20250709-110_标签照片_0.png"
+      "label": "/images/20250709-110_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3186,8 +3186,8 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-113_正面图片_0.png",
-      "label": "/images/20250709-113_标签照片_0.png"
+      "front": "/images/20250709-113_正面图片_0.jpg",
+      "label": "/images/20250709-113_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3214,9 +3214,9 @@
       "discountRate": 16
     },
     "images": {
-      "front": "/images/20250709-114_正面图片_0.png",
+      "front": "/images/20250709-114_正面图片_0.jpg",
       "back": "/images/20250709-114_背面图片_0.png",
-      "label": "/images/20250709-114_标签照片_0.png",
+      "label": "/images/20250709-114_标签照片_0.jpg",
       "package": "/images/20250709-114_外包装图片_0.png"
     },
     "origin": {
@@ -3245,8 +3245,8 @@
       "normal": 56.9
     },
     "images": {
-      "front": "/images/20250709-115_正面图片_0.png",
-      "label": "/images/20250709-115_标签照片_0.png"
+      "front": "/images/20250709-115_正面图片_0.jpg",
+      "label": "/images/20250709-115_标签照片_0.jpg"
     },
     "origin": {
       "country": "",
@@ -3330,9 +3330,9 @@
       "normal": 39.8
     },
     "images": {
-      "front": "/images/20250709-119_正面图片_0.png",
-      "back": "/images/20250709-119_背面图片_0.png",
-      "label": "/images/20250709-119_标签照片_0.png"
+      "front": "/images/20250709-119_正面图片_0.jpg",
+      "back": "/images/20250709-119_背面图片_0.jpg",
+      "label": "/images/20250709-119_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3416,8 +3416,8 @@
       "discountRate": 0
     },
     "images": {
-      "front": "/images/20250709-122_正面图片_0.png",
-      "label": "/images/20250709-122_标签照片_0.png"
+      "front": "/images/20250709-122_正面图片_0.jpg",
+      "label": "/images/20250709-122_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3443,9 +3443,9 @@
       "normal": 99
     },
     "images": {
-      "front": "/images/20250709-123_正面图片_0.png",
-      "back": "/images/20250709-123_背面图片_0.png",
-      "label": "/images/20250709-123_标签照片_0.png"
+      "front": "/images/20250709-123_正面图片_0.jpg",
+      "back": "/images/20250709-123_背面图片_0.jpg",
+      "label": "/images/20250709-123_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3497,8 +3497,8 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-125_正面图片_0.png",
-      "label": "/images/20250709-125_标签照片_0.png"
+      "front": "/images/20250709-125_正面图片_0.jpg",
+      "label": "/images/20250709-125_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3524,9 +3524,9 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-126_正面图片_0.png",
-      "back": "/images/20250709-126_背面图片_0.png",
-      "label": "/images/20250709-126_标签照片_0.png"
+      "front": "/images/20250709-126_正面图片_0.jpg",
+      "back": "/images/20250709-126_背面图片_0.jpg",
+      "label": "/images/20250709-126_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3551,9 +3551,9 @@
       "normal": 45.9
     },
     "images": {
-      "front": "/images/20250709-127_正面图片_0.png",
-      "back": "/images/20250709-127_背面图片_0.png",
-      "label": "/images/20250709-127_标签照片_0.png"
+      "front": "/images/20250709-127_正面图片_0.jpg",
+      "back": "/images/20250709-127_背面图片_0.jpg",
+      "label": "/images/20250709-127_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3579,9 +3579,9 @@
       "normal": 99
     },
     "images": {
-      "front": "/images/20250709-128_正面图片_0.png",
-      "back": "/images/20250709-128_背面图片_0.png",
-      "label": "/images/20250709-128_标签照片_0.png"
+      "front": "/images/20250709-128_正面图片_0.jpg",
+      "back": "/images/20250709-128_背面图片_0.jpg",
+      "label": "/images/20250709-128_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3607,8 +3607,8 @@
       "normal": 89
     },
     "images": {
-      "front": "/images/20250709-129_正面图片_0.png",
-      "label": "/images/20250709-129_标签照片_0.png"
+      "front": "/images/20250709-129_正面图片_0.jpg",
+      "label": "/images/20250709-129_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3634,8 +3634,8 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-130_正面图片_0.png",
-      "label": "/images/20250709-130_标签照片_0.png"
+      "front": "/images/20250709-130_正面图片_0.jpg",
+      "label": "/images/20250709-130_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3660,10 +3660,10 @@
       "normal": 69.9
     },
     "images": {
-      "front": "/images/20250709-131_正面图片_0.png",
-      "back": "/images/20250709-131_背面图片_0.png",
-      "label": "/images/20250709-131_标签照片_0.png",
-      "package": "/images/20250709-131_外包装图片_0.png"
+      "front": "/images/20250709-131_正面图片_0.jpg",
+      "back": "/images/20250709-131_背面图片_0.jpg",
+      "label": "/images/20250709-131_标签照片_0.jpg",
+      "package": "/images/20250709-131_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3689,9 +3689,9 @@
       "normal": 39.8
     },
     "images": {
-      "front": "/images/20250709-132_正面图片_0.png",
-      "back": "/images/20250709-132_背面图片_0.png",
-      "label": "/images/20250709-132_标签照片_0.png"
+      "front": "/images/20250709-132_正面图片_0.jpg",
+      "back": "/images/20250709-132_背面图片_0.jpg",
+      "label": "/images/20250709-132_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3716,9 +3716,9 @@
       "normal": 59.9
     },
     "images": {
-      "front": "/images/20250709-133_正面图片_0.png",
-      "back": "/images/20250709-133_背面图片_0.png",
-      "label": "/images/20250709-133_标签照片_0.png"
+      "front": "/images/20250709-133_正面图片_0.jpg",
+      "back": "/images/20250709-133_背面图片_0.jpg",
+      "label": "/images/20250709-133_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3745,9 +3745,9 @@
       "normal": 83.9
     },
     "images": {
-      "front": "/images/20250709-134_正面图片_0.png",
-      "label": "/images/20250709-134_标签照片_0.png",
-      "package": "/images/20250709-134_外包装图片_0.png"
+      "front": "/images/20250709-134_正面图片_0.jpg",
+      "label": "/images/20250709-134_标签照片_0.jpg",
+      "package": "/images/20250709-134_外包装图片_0.jpg"
     },
     "origin": {
       "country": "西班牙",
@@ -3772,9 +3772,9 @@
       "normal": 99
     },
     "images": {
-      "front": "/images/20250709-135_正面图片_0.png",
-      "back": "/images/20250709-135_背面图片_0.png",
-      "label": "/images/20250709-135_标签照片_0.png"
+      "front": "/images/20250709-135_正面图片_0.jpg",
+      "back": "/images/20250709-135_背面图片_0.jpg",
+      "label": "/images/20250709-135_标签照片_0.jpg"
     },
     "origin": {
       "country": "越南",
@@ -3799,8 +3799,8 @@
       "normal": 79.9
     },
     "images": {
-      "front": "/images/20250709-136_正面图片_0.png",
-      "label": "/images/20250709-136_标签照片_0.png"
+      "front": "/images/20250709-136_正面图片_0.jpg",
+      "label": "/images/20250709-136_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3853,9 +3853,9 @@
       "normal": 49.9
     },
     "images": {
-      "front": "/images/20250709-138_正面图片_0.png",
-      "back": "/images/20250709-138_背面图片_0.png",
-      "label": "/images/20250709-138_标签照片_0.png"
+      "front": "/images/20250709-138_正面图片_0.jpg",
+      "back": "/images/20250709-138_背面图片_0.jpg",
+      "label": "/images/20250709-138_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3881,8 +3881,8 @@
       "normal": 76.9
     },
     "images": {
-      "front": "/images/20250709-139_正面图片_0.png",
-      "label": "/images/20250709-139_标签照片_0.png"
+      "front": "/images/20250709-139_正面图片_0.jpg",
+      "label": "/images/20250709-139_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -3907,7 +3907,7 @@
       "normal": 69.9
     },
     "images": {
-      "front": "/images/20250709-140_正面图片_0.png",
+      "front": "/images/20250709-140_正面图片_0.jpg",
       "label": "/images/20250709-140_标签照片_0.jpg",
       "package": "/images/20250709-140_外包装图片_0.jpg"
     },
@@ -3989,9 +3989,9 @@
       "normal": 68
     },
     "images": {
-      "front": "/images/20250709-143_正面图片_0.png",
-      "back": "/images/20250709-143_背面图片_0.png",
-      "label": "/images/20250709-143_标签照片_0.png"
+      "front": "/images/20250709-143_正面图片_0.jpg",
+      "back": "/images/20250709-143_背面图片_0.jpg",
+      "label": "/images/20250709-143_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -4016,8 +4016,8 @@
       "normal": 89.9
     },
     "images": {
-      "front": "/images/20250709-144_正面图片_0.png",
-      "label": "/images/20250709-144_标签照片_0.png"
+      "front": "/images/20250709-144_正面图片_0.jpg",
+      "label": "/images/20250709-144_标签照片_0.jpg"
     },
     "origin": {
       "country": "",
@@ -4701,9 +4701,9 @@
       "normal": 89.8
     },
     "images": {
-      "front": "/images/20250710-169_正面图片_0.png",
-      "label": "/images/20250710-169_标签照片_0.png",
-      "package": "/images/20250710-169_外包装图片_0.png"
+      "front": "/images/20250710-169_正面图片_0.jpg",
+      "label": "/images/20250710-169_标签照片_0.jpg",
+      "package": "/images/20250710-169_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -4903,10 +4903,10 @@
       "normal": 89.9
     },
     "images": {
-      "front": "/images/20250710-177_正面图片_0.png",
-      "back": "/images/20250710-177_背面图片_0.png",
-      "label": "/images/20250710-177_标签照片_0.png",
-      "package": "/images/20250710-177_外包装图片_0.png"
+      "front": "/images/20250710-177_正面图片_0.jpg",
+      "back": "/images/20250710-177_背面图片_0.jpg",
+      "label": "/images/20250710-177_标签照片_0.jpg",
+      "package": "/images/20250710-177_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -5191,9 +5191,9 @@
       "normal": 99.9
     },
     "images": {
-      "front": "/images/20250710-187_正面图片_0.png",
-      "label": "/images/20250710-187_标签照片_0.png",
-      "package": "/images/20250710-187_外包装图片_0.png"
+      "front": "/images/20250710-187_正面图片_0.jpg",
+      "label": "/images/20250710-187_标签照片_0.jpg",
+      "package": "/images/20250710-187_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -5690,9 +5690,9 @@
       "normal": 89.9
     },
     "images": {
-      "front": "/images/20250710-209_正面图片_0.png",
-      "label": "/images/20250710-209_标签照片_0.png",
-      "package": "/images/20250710-209_外包装图片_0.png"
+      "front": "/images/20250710-209_正面图片_0.jpg",
+      "label": "/images/20250710-209_标签照片_0.jpg",
+      "package": "/images/20250710-209_外包装图片_0.jpg"
     },
     "origin": {
       "country": "中国",
@@ -5810,7 +5810,7 @@
     "images": {
       "front": "/images/20250710-213_正面图片_0.png",
       "back": "/images/20250710-213_背面图片_0.png",
-      "label": "/images/20250710-213_标签照片_0.png"
+      "label": "/images/20250710-213_标签照片_0.jpg"
     },
     "origin": {
       "country": "中国",
