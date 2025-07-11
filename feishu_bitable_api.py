@@ -192,8 +192,8 @@ def main():
     # 您提供的配置信息
     APP_ID = "cli_a8e575c35763d013"
     APP_SECRET = "41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf"
-    APP_TOKEN = "S5yvbq5txacTZOsHGszc3RpDn4f"
-    TABLE_ID = "tblyBL4HSF2GqSi4"
+    APP_TOKEN = "KfxmbvSgCaLjcIsI5v2crhPGnZf"
+    TABLE_ID = "tblMeJxvQlcWlct1"
     
     print("🚀 开始调用飞书多维表格API...")
     print("=" * 50)

@@ -33,7 +33,7 @@ interface RawProductData {
   备注: string;
 }
 
-// 提取序号信息
+// 提取序号信息（保留用于显示）
 export const extractSequence = (sequence: string): string => {
   if (!sequence) return '';
   return sequence.trim();

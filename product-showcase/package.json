@@ -11,7 +11,12 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "fix-keys": "node scripts/fixDuplicateKeys.js",
+    "validate-keys": "node scripts/validateKeys.js",
+    "process-data": "node scripts/processData.js",
+    "backup-data": "mkdir -p backups && cp src/data/*.json backups/",
+    "check-duplicates": "node -e \"const p=require('./src/data/products.json'); const ids=p.map(x=>x.id); const unique=new Set(ids); console.log('Products:',p.length,'Unique:',unique.size,'Duplicates:',p.length-unique.size); if(p.length!==unique.size) process.exit(1)\""
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",

@@ -8,11 +8,14 @@ const __dirname = path.dirname(__filename);
 
 // 读取CSV文件
 function readCSVFile() {
-  const csvPath = path.join(__dirname, '../src/data/data.csv');
+  // 使用最新的飞书数据文件
+  const csvPath = path.join(__dirname, '../../feishu_data_20250711_134230/data.csv');
   try {
+    console.log(`📂 读取数据文件: ${csvPath}`);
     return fs.readFileSync(csvPath, 'utf-8');
   } catch (error) {
     console.error('Error reading CSV file:', error);
+    console.error('请确保已运行 feishu_data_analyzer.py 获取最新数据');
     return null;
   }
 }
@@ -76,10 +79,10 @@ function parseCSV(csvText) {
   return rows;
 }
 
-// 获取图片路径
-function getImagePath(sequence, imageType) {
-  if (!sequence) return '';
-  
+// 获取图片路径 - 现在基于编号字段，自动检测文件扩展名
+function getImagePath(productId, imageType) {
+  if (!productId) return '';
+
   // 根据图片类型映射到实际文件名
   const typeMap = {
     '正面图片': '正面图片',
@@ -88,55 +91,69 @@ function getImagePath(sequence, imageType) {
     '外包装图片': '外包装图片',
     '赠品图片': '赠品图片',
   };
-  
+
   const mappedType = typeMap[imageType] || imageType;
-  
-  // 根据序号前缀确定文件扩展名
-  let extension = 'png';
-  if (sequence.startsWith('HM-')) {
-    extension = 'jpg';
-  } else if (sequence.startsWith('PDL-')) {
-    // PDL的图片有混合格式，需要特殊处理
-    if (imageType === '标签照片') {
-      extension = sequence.includes('0002') || sequence.includes('0005') ? 'jpg' : 'png';
-    } else if (imageType === '正面图片') {
-      extension = sequence.includes('0002B') || sequence.includes('0003') || sequence.includes('0005B') ? 'jpg' : 'png';
-    } else {
-      extension = 'jpg';
+
+  try {
+    // 检查可能的文件扩展名
+    const possibleExtensions = ['jpg', 'png', 'jpeg'];
+    const baseImagePath = `${productId}_${mappedType}_0`;
+
+    for (const ext of possibleExtensions) {
+      const fullPath = path.join(process.cwd(), 'public', 'images', `${baseImagePath}.${ext}`);
+      if (fs.existsSync(fullPath)) {
+        return `/images/${baseImagePath}.${ext}`;
+      }
     }
+  } catch (error) {
+    // 如果文件系统检查失败，使用默认逻辑
+    console.warn(`无法检查图片文件: ${error.message}`);
   }
-  
-  return `/src/assets/images/products/${sequence}_${mappedType}_0.${extension}`;
+
+  // 如果文件不存在或检查失败，使用默认扩展名逻辑
+  let extension = 'png';
+  if (productId.startsWith('20250708-') || productId.startsWith('20250709-011')) {
+    extension = 'jpg';
+  }
+
+  return `/images/${productId}_${mappedType}_0.${extension}`;
 }
 
 // 将CSV行转换为Product对象
 function csvRowToProduct(row) {
   try {
-    const sequence = row.序号?.trim() || '';
-    if (!sequence || !row.品名) return null;
+    // 使用新的"编号"字段作为唯一ID
+    const productId = row.编号?.trim() || '';
+    const sequence = row.序号?.trim() || ''; // 保留序号字段用于显示
+
+    // 验证必要字段 - 现在只需要编号和品名
+    if (!productId || !row.品名) {
+      console.warn(`跳过无效记录: 编号=${productId}, 品名=${row.品名}`);
+      return null;
+    }
 
     const normalPrice = parseFloat(row.正常售价) || 0;
     const discountPrice = row.优惠到手价 ? parseFloat(row.优惠到手价) : undefined;
-    
+
     // 计算折扣率
-    const discountRate = discountPrice && normalPrice > 0 
+    const discountRate = discountPrice && normalPrice > 0
       ? Math.round(((normalPrice - discountPrice) / normalPrice) * 100)
       : undefined;
 
-    // 处理图片路径
+    // 处理图片路径 - 使用编号字段构建图片路径，因为图片文件名现在基于编号
     const images = {
-      front: getImagePath(sequence, '正面图片'),
-      back: row.背面图片 ? getImagePath(sequence, '背面图片') : undefined,
-      label: row.标签照片 ? getImagePath(sequence, '标签照片') : undefined,
-      package: row.外包装图片 ? getImagePath(sequence, '外包装图片') : undefined,
-      gift: row.赠品图片 ? getImagePath(sequence, '赠品图片') : undefined,
+      front: getImagePath(productId, '正面图片'),
+      back: row.背面图片 ? getImagePath(productId, '背面图片') : undefined,
+      label: row.标签照片 ? getImagePath(productId, '标签照片') : undefined,
+      package: row.外包装图片 ? getImagePath(productId, '外包装图片') : undefined,
+      gift: row.赠品图片 ? getImagePath(productId, '赠品图片') : undefined,
     };
 
     const product = {
-      id: sequence,
+      id: productId, // 使用编号作为唯一ID
       recordId: row.record_id,
       name: row.品名.trim(),
-      sequence: sequence,
+      sequence: sequence, // 保留序号字段用于显示
       category: {
         primary: row.品类一级?.trim() || '',
         secondary: row.品类二级?.trim() || '',
@@ -265,8 +282,8 @@ function processData() {
     }
   }
 
-  // 按序号排序
-  products.sort((a, b) => a.sequence.localeCompare(b.sequence));
+  // 按编号排序
+  products.sort((a, b) => a.id.localeCompare(b.id));
   console.log(`✅ 成功转换 ${products.length} 个产品`);
 
   // 生成统计信息
