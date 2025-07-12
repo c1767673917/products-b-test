@@ -12,6 +12,7 @@ import ProductCard from '../../components/product/ProductCard';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Loading';
+import { Pagination } from '../../components/ui';
 import { FilterPanel } from '../../components/filters';
 import { useUrlFilters, useFilterSummary } from '../../hooks/useUrlFilters';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -41,6 +42,7 @@ const ProductList: React.FC = () => {
     setSortOption,
     setSearchQuery,
     setCurrentPage,
+    setItemsPerPage,
     setShowFilters,
     toggleFavorite,
     addToCompare,
@@ -86,11 +88,14 @@ const ProductList: React.FC = () => {
   // 分页产品（filteredProducts已经在store中排序过了）
 
   const paginatedProducts = useMemo(() => {
+    if (itemsPerPage === 0) {
+      return filteredProducts; // 显示全部产品
+    }
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(filteredProducts.length / itemsPerPage);
 
   // 处理产品操作
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
@@ -122,6 +127,12 @@ const ProductList: React.FC = () => {
   // 处理分页
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 处理每页显示数量变化
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -298,6 +309,11 @@ const ProductList: React.FC = () => {
               <>
                 {/* 产品网格/列表 */}
                 <motion.div
+                  key={`page-${currentPage}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
                   layout
                   className={cn(
                     "gap-6",
@@ -307,55 +323,48 @@ const ProductList: React.FC = () => {
                   )}
                 >
                   <AnimatePresence mode="popLayout">
-                    {paginatedProducts.map((product) => (
-                      <ProductCard
+                    {paginatedProducts.map((product, index) => (
+                      <motion.div
                         key={product.id}
-                        product={product}
-                        layout={viewMode}
-                        onQuickAction={(action) => handleProductAction(product, action)}
-                      />
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{
+                          duration: 0.2,
+                          delay: index * 0.05,
+                          ease: "easeOut"
+                        }}
+                      >
+                        <ProductCard
+                          product={product}
+                          layout={viewMode}
+                          onQuickAction={(action) => handleProductAction(product, action)}
+                        />
+                      </motion.div>
                     ))}
                   </AnimatePresence>
                 </motion.div>
 
                 {/* 分页 */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center mt-8">
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={currentPage === 1}
-                        onClick={() => handlePageChange(currentPage - 1)}
-                      >
-                        上一页
-                      </Button>
-                      
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const page = i + 1;
-                        return (
-                          <Button
-                            key={page}
-                            variant={currentPage === page ? "primary" : "outline"}
-                            size="sm"
-                            onClick={() => handlePageChange(page)}
-                          >
-                            {page}
-                          </Button>
-                        );
-                      })}
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={currentPage === totalPages}
-                        onClick={() => handlePageChange(currentPage + 1)}
-                      >
-                        下一页
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="mt-8"
+                >
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredProducts.length}
+                    itemsPerPage={itemsPerPage}
+                    itemsPerPageOptions={[0, 20, 100, 500]} // 添加0选项表示显示全部
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    showItemsPerPageSelector={true}
+                    showPageInfo={true}
+                    disabled={loading}
+                  />
+                </motion.div>
               </>
             )}
           </div>

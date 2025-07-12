@@ -17,11 +17,20 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   className
 }) => {
   const products = useProductStore(state => state.products);
+
+  // 添加调试信息
+  React.useEffect(() => {
+    console.log('CategoryFilter: products 数组长度:', products.length);
+    if (products.length > 0) {
+      console.log('CategoryFilter: 第一个产品:', products[0]);
+    }
+  }, [products.length]);
   
   // 计算品类分布和层级结构
   const categoryData = useMemo(() => {
+    console.log('CategoryFilter: 重新计算品类数据，products.length =', products.length);
     const categoryMap = new Map<string, { count: number; subcategories: Map<string, number> }>();
-    
+
     products.forEach(product => {
       const primary = product.category.primary;
       const secondary = product.category.secondary;
@@ -40,7 +49,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     });
     
     // 转换为数组并排序
-    return Array.from(categoryMap.entries())
+    const result = Array.from(categoryMap.entries())
       .map(([name, info]) => ({
         name,
         count: info.count,
@@ -49,6 +58,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           .sort((a, b) => b.count - a.count)
       }))
       .sort((a, b) => b.count - a.count);
+
+    console.log('CategoryFilter: 计算得到的品类数据:', result);
+    return result;
   }, [products]);
 
   const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set());

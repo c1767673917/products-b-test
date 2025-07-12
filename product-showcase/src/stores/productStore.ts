@@ -34,6 +34,7 @@ interface ProductState {
   setSortOption: (option: SortOption) => void;
   setSearchQuery: (query: string) => void;
   setCurrentPage: (page: number) => void;
+  setItemsPerPage: (itemsPerPage: number) => void;
   setFilters: (filters: Partial<FilterState>) => void;
   setShowFilters: (show: boolean) => void;
   toggleFavorite: (productId: string) => void;
@@ -65,7 +66,7 @@ export const useProductStore = create<ProductState>()(
       sortOption: 'name',
       searchQuery: '',
       currentPage: 1,
-      itemsPerPage: 20,
+      itemsPerPage: 0, // 0表示显示全部
       filters: initialFilters,
       showFilters: false,
       favorites: [],
@@ -100,6 +101,11 @@ export const useProductStore = create<ProductState>()(
 
       // 设置当前页
       setCurrentPage: (currentPage) => set({ currentPage }),
+
+      // 设置每页显示数量
+      setItemsPerPage: (itemsPerPage) => {
+        set({ itemsPerPage, currentPage: 1 });
+      },
 
       // 设置筛选条件
       setFilters: (newFilters) => {
@@ -143,10 +149,61 @@ export const useProductStore = create<ProductState>()(
       // 应用筛选和排序
       applyFilters: () => {
         const { products, filters, searchQuery, sortOption } = get();
-        const dataService = new DataService();
-        
-        // 筛选产品
-        let filtered = dataService.filterProducts(filters, searchQuery);
+
+        // 直接从 store 中的 products 进行筛选，而不是创建新的 DataService 实例
+        let filtered = [...products];
+
+        // 价格筛选
+        if (filters.priceRange) {
+          const [minPrice, maxPrice] = filters.priceRange;
+          filtered = filtered.filter(product => {
+            const price = product.price.discount || product.price.normal;
+            return price >= minPrice && price <= maxPrice;
+          });
+        }
+
+        // 品类筛选
+        if (filters.categories.length > 0) {
+          filtered = filtered.filter(product =>
+            filters.categories.includes(product.category.primary)
+          );
+        }
+
+        // 产地筛选
+        if (filters.locations.length > 0) {
+          filtered = filtered.filter(product =>
+            filters.locations.includes(product.origin.province)
+          );
+        }
+
+        // 平台筛选
+        if (filters.platforms.length > 0) {
+          filtered = filtered.filter(product =>
+            filters.platforms.includes(product.platform)
+          );
+        }
+
+        // 只显示有优惠的产品
+        if (filters.showDiscountOnly) {
+          filtered = filtered.filter(product => product.price.discount !== undefined);
+        }
+
+        // 关键词搜索
+        if (searchQuery && searchQuery.trim()) {
+          const query = searchQuery.toLowerCase().trim();
+          filtered = filtered.filter(product => {
+            const searchFields = [
+              product.name,
+              product.category.primary,
+              product.category.secondary,
+              product.manufacturer || '',
+              product.flavor || '',
+              product.specification,
+            ].join(' ').toLowerCase();
+
+            return searchFields.includes(query);
+          });
+        }
         
         // 排序产品
         switch (sortOption) {
@@ -233,6 +290,7 @@ export const useProductActions = () => useProductStore(state => ({
   setSortOption: state.setSortOption,
   setSearchQuery: state.setSearchQuery,
   setCurrentPage: state.setCurrentPage,
+  setItemsPerPage: state.setItemsPerPage,
   setFilters: state.setFilters,
   setShowFilters: state.setShowFilters,
   toggleFavorite: state.toggleFavorite,

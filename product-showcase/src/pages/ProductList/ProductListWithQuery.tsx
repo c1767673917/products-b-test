@@ -16,11 +16,13 @@ import ProductCard from '../../components/product/ProductCard';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Loading';
+import { Pagination } from '../../components/ui';
 import { FilterPanel } from '../../components/filters';
 import { useProducts, useFilterProducts, useRefreshProducts } from '../../hooks/useProducts';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
+import { useProductStore } from '../../stores/productStore';
 import { cn } from '../../utils/cn';
 
 // 初始筛选状态
@@ -39,12 +41,11 @@ export const ProductListWithQuery: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(0); // 0表示显示全部
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [compareList, setCompareList] = useState<string[]>([]);
-
-  const itemsPerPage = 20;
   const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
   const { showSuccess, showError, showInfo } = useToast();
 
@@ -52,6 +53,15 @@ export const ProductListWithQuery: React.FC = () => {
   const productsQuery = useProducts();
   const filterQuery = useFilterProducts(filters, searchQuery);
   const refreshMutation = useRefreshProducts();
+
+  // ProductStore hooks
+  const setProducts = useProductStore(state => state.setProducts);
+  const storeProducts = useProductStore(state => state.products);
+
+  // 监控 ProductStore 状态变化
+  useEffect(() => {
+    console.log('ProductStore products 数组长度变化:', storeProducts.length);
+  }, [storeProducts.length]);
 
   // 响应式检测
   const [isMobile, setIsMobile] = useState(false);
@@ -65,6 +75,20 @@ export const ProductListWithQuery: React.FC = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // 同步 React Query 数据到 ProductStore
+  useEffect(() => {
+    console.log('ProductListWithQuery: React Query 状态变化');
+    console.log('  - isLoading:', productsQuery.isLoading);
+    console.log('  - isError:', productsQuery.isError);
+    console.log('  - data length:', productsQuery.data?.length || 0);
+    console.log('  - error:', productsQuery.error);
+
+    if (productsQuery.data && productsQuery.data.length > 0) {
+      console.log('同步产品数据到 ProductStore:', productsQuery.data.length, '个产品');
+      setProducts(productsQuery.data);
+    }
+  }, [productsQuery.data, productsQuery.isLoading, productsQuery.isError, productsQuery.error, setProducts]);
 
   // 防抖搜索效果
   useEffect(() => {
@@ -117,13 +141,16 @@ export const ProductListWithQuery: React.FC = () => {
     return products;
   }, [filterQuery.data, productsQuery.data, sortOption]);
 
-  // 分页产品
+  // 分页产品 - 如果itemsPerPage为0则显示全部
   const paginatedProducts = useMemo(() => {
+    if (itemsPerPage === 0) {
+      return displayProducts; // 显示全部产品
+    }
     const startIndex = (currentPage - 1) * itemsPerPage;
     return displayProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [displayProducts, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(displayProducts.length / itemsPerPage);
+  const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(displayProducts.length / itemsPerPage);
 
   // 处理产品操作
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
@@ -151,6 +178,27 @@ export const ProductListWithQuery: React.FC = () => {
         showSuccess('已添加到对比列表');
         break;
     }
+  };
+
+  // 处理分页
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 处理每页显示数量变化
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    if (newItemsPerPage === 0) {
+      // 显示全部时，重置到第一页
+      setCurrentPage(1);
+    } else {
+      // 计算切换后应该在哪一页，尽量保持当前显示的第一个项目位置
+      const currentFirstItem = (currentPage - 1) * itemsPerPage + 1;
+      const newPage = Math.ceil(currentFirstItem / newItemsPerPage);
+      setCurrentPage(newPage);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // 处理筛选变化
@@ -440,37 +488,20 @@ export const ProductListWithQuery: React.FC = () => {
                 </ScrollStagger>
 
                 {/* 分页 */}
-                {totalPages > 1 && (
-                  <ScrollReveal direction="up" delay={0.3}>
-                    <div className="flex justify-center">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                          disabled={currentPage === 1}
-                          animationType="bounce"
-                        >
-                          上一页
-                        </Button>
-
-                        <span className="text-sm text-gray-600">
-                          第 {currentPage} 页，共 {totalPages} 页
-                        </span>
-
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                          disabled={currentPage === totalPages}
-                          animationType="bounce"
-                        >
-                          下一页
-                        </Button>
-                      </div>
-                    </div>
-                  </ScrollReveal>
-                )}
+                <ScrollReveal direction="up" delay={0.3}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={displayProducts.length}
+                    itemsPerPage={itemsPerPage}
+                    itemsPerPageOptions={[0, 20, 100, 500]} // 添加0选项表示显示全部
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    showItemsPerPageSelector={true}
+                    showPageInfo={true}
+                    disabled={isLoading}
+                  />
+                </ScrollReveal>
               </>
             )}
           </div>

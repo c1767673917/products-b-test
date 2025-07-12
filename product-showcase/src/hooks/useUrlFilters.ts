@@ -5,7 +5,20 @@ import { useProductStore } from '../stores/productStore';
 
 export const useUrlFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { filters, searchQuery, sortOption, viewMode, setFilters, setSearchQuery, setSortOption, setViewMode } = useProductStore();
+  const {
+    filters,
+    searchQuery,
+    sortOption,
+    viewMode,
+    currentPage,
+    itemsPerPage,
+    setFilters,
+    setSearchQuery,
+    setSortOption,
+    setViewMode,
+    setCurrentPage,
+    setItemsPerPage
+  } = useProductStore();
 
   // 从URL参数解析筛选条件
   const parseFiltersFromUrl = useCallback((): Partial<FilterState> => {
@@ -66,6 +79,15 @@ export const useUrlFilters = () => {
       params.set('view', viewMode);
     }
 
+    // 添加分页参数
+    if (currentPage > 1) {
+      params.set('page', currentPage.toString());
+    }
+
+    if (itemsPerPage !== 0) { // 0是默认值（显示全部），不需要添加到URL
+      params.set('pageSize', itemsPerPage.toString());
+    }
+
     // 添加价格区间
     if (filters.priceRange) {
       params.set('priceRange', filters.priceRange.join(','));
@@ -93,7 +115,7 @@ export const useUrlFilters = () => {
 
     // 更新URL（不触发页面刷新）
     setSearchParams(params, { replace: true });
-  }, [filters, searchQuery, sortOption, viewMode, setSearchParams]);
+  }, [filters, searchQuery, sortOption, viewMode, currentPage, itemsPerPage, setSearchParams]);
 
   // 从URL初始化筛选条件
   const initializeFromUrl = useCallback(() => {
@@ -117,11 +139,28 @@ export const useUrlFilters = () => {
       setViewMode(view);
     }
 
+    // 设置分页参数
+    const page = searchParams.get('page');
+    if (page) {
+      const pageNum = parseInt(page, 10);
+      if (!isNaN(pageNum) && pageNum > 0 && pageNum !== currentPage) {
+        setCurrentPage(pageNum);
+      }
+    }
+
+    const pageSize = searchParams.get('pageSize');
+    if (pageSize) {
+      const pageSizeNum = parseInt(pageSize, 10);
+      if (!isNaN(pageSizeNum) && pageSizeNum > 0 && pageSizeNum !== itemsPerPage) {
+        setItemsPerPage(pageSizeNum);
+      }
+    }
+
     // 设置筛选条件
     if (Object.keys(urlFilters).length > 0) {
       setFilters(urlFilters);
     }
-  }, [searchParams, parseFiltersFromUrl, searchQuery, sortOption, viewMode, setSearchQuery, setSortOption, setViewMode, setFilters]);
+  }, [searchParams, parseFiltersFromUrl, searchQuery, sortOption, viewMode, currentPage, itemsPerPage, setSearchQuery, setSortOption, setViewMode, setCurrentPage, setItemsPerPage, setFilters]);
 
   // 监听store变化，同步到URL
   useEffect(() => {
