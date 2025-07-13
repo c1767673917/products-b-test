@@ -159,14 +159,23 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   const isFavorited = favorites.includes(product.id);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
-          transition={{ type: 'tween', duration: 0.3 }}
-          className="fixed top-0 right-0 bottom-0 bg-white shadow-2xl z-50 overflow-hidden"
+          transition={{ 
+            type: 'tween', 
+            duration: 0.25, // 减少动画时间
+            ease: [0.25, 0.46, 0.45, 0.94] // 优化的贝塞尔曲线
+          }}
+          style={{
+            willChange: 'transform', // 启用硬件加速
+            backfaceVisibility: 'hidden',
+            transformStyle: 'preserve-3d'
+          }}
+          className="fixed top-0 right-0 bottom-0 bg-white shadow-2xl z-50 overflow-hidden transform-gpu"
           style={{ width: `${currentWidth}px` }}
           onKeyDown={handleKeyDown}
           tabIndex={-1}
@@ -256,9 +265,18 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
             <div className="p-4 space-y-6">
               {/* 产品名称和价格 */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ 
+                  delay: 0.05,
+                  duration: 0.2,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                style={{
+                  willChange: 'transform, opacity',
+                  backfaceVisibility: 'hidden'
+                }}
+                className="transform-gpu"
               >
                 <h1 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
                   {product.name}
@@ -291,9 +309,18 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
               {/* 图片画廊 - 提前显示 */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
+                transition={{ 
+                  delay: 0.1,
+                  duration: 0.2,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                style={{
+                  willChange: 'transform, opacity',
+                  backfaceVisibility: 'hidden'
+                }}
+                className="transform-gpu"
               >
                 <Card className="p-3">
                   {isImageLoading && (
@@ -316,9 +343,18 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
               {/* 基本信息 */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ 
+                  delay: 0.15,
+                  duration: 0.2,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                style={{
+                  willChange: 'transform, opacity',
+                  backfaceVisibility: 'hidden'
+                }}
+                className="transform-gpu"
               >
                 <Card className="p-4">
                   <h3 className="text-base font-semibold mb-3">基本信息</h3>

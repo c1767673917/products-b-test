@@ -179,14 +179,22 @@ const LazyImage: React.FC<LazyImageProps> = ({
             sizes={sizes}
             onLoad={handleLoad}
             onError={handleError}
-            initial={{ opacity: 0, scale: blur ? 1.1 : 1 }}
+            initial={{ opacity: 0, scale: blur ? 1.05 : 1 }}
             animate={{
               opacity: isLoaded ? 1 : 0,
-              scale: isLoaded ? 1 : (blur ? 1.1 : 1)
+              scale: isLoaded ? 1 : (blur ? 1.05 : 1)
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ 
+              duration: 0.2, 
+              ease: [0.25, 0.46, 0.45, 0.94] // 优化的贝塞尔曲线
+            }}
+            style={{
+              willChange: 'opacity, transform', // 启用硬件加速
+              backfaceVisibility: 'hidden',
+              transformStyle: 'preserve-3d'
+            }}
             className={cn(
-              "w-full h-full object-cover transition-all duration-300",
+              "w-full h-full object-cover transition-all duration-200 transform-gpu",
               !isLoaded && blur && "blur-sm"
             )}
             loading={loadingStrategy}

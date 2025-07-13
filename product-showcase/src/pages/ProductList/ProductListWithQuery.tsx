@@ -435,17 +435,21 @@ export const ProductListWithQuery: React.FC = () => {
       <div 
         ref={containerRef}
         className={cn(
-          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300",
+          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-200 ease-out transform-gpu",
           isDetailPanelOpen && !isMobile ? "lg:pr-4" : ""
         )}
+        style={{
+          willChange: 'margin-right, padding'
+        }}
       >
         <div 
           className={cn(
-            "flex flex-col lg:flex-row gap-8 transition-all duration-300",
+            "flex flex-col lg:flex-row gap-8 transition-all duration-200 ease-out transform-gpu",
             isDetailPanelOpen && isMobile ? "hidden" : ""
           )}
           style={{
-            marginRight: isDetailPanelOpen && !isMobile ? `${preferences.width + 16}px` : '0'
+            marginRight: isDetailPanelOpen && !isMobile ? `${preferences.width + 16}px` : '0',
+            willChange: 'margin-right'
           }}
         >
           {/* 桌面端筛选面板 */}
@@ -455,8 +459,16 @@ export const ProductListWithQuery: React.FC = () => {
                 initial={{ opacity: 0, x: -300 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -300 }}
-                transition={{ type: 'tween', duration: 0.3 }}
-                className="lg:w-80 flex-shrink-0"
+                transition={{ 
+                  type: 'tween', 
+                  duration: 0.2,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                style={{
+                  willChange: 'transform, opacity',
+                  backfaceVisibility: 'hidden'
+                }}
+                className="lg:w-80 flex-shrink-0 transform-gpu"
               >
                 <FilterPanel
                   filters={filters}
@@ -485,8 +497,16 @@ export const ProductListWithQuery: React.FC = () => {
                   initial={{ y: '100%' }}
                   animate={{ y: 0 }}
                   exit={{ y: '100%' }}
-                  transition={{ type: 'tween', duration: 0.3 }}
-                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden"
+                  transition={{ 
+                    type: 'tween', 
+                    duration: 0.2,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }}
+                  style={{
+                    willChange: 'transform',
+                    backfaceVisibility: 'hidden'
+                  }}
+                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden transform-gpu"
                 >
                   {/* 抽屉头部 */}
                   <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-2xl">

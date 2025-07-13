@@ -135,7 +135,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
         <LazyImage
           src={currentImage.url}
           alt={`${product.name} - ${currentImage.label}`}
-          className="w-full h-full object-cover cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover cursor-zoom-in transition-transform duration-200 group-hover:scale-105 will-change-transform"
           onClick={handleFullscreen}
         />
         
@@ -181,8 +181,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
             <motion.button
               key={image.type}
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative flex-shrink-0 w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border-2 transition-all duration-200 shadow-sm ${
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              style={{
+                willChange: 'transform',
+                backfaceVisibility: 'hidden'
+              }}
+              className={`relative flex-shrink-0 w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border-2 transition-all duration-150 shadow-sm transform-gpu ${
                 index === currentImageIndex
                   ? 'border-blue-500 shadow-md'
                   : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
@@ -253,18 +258,29 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
 
             {/* 全屏图片 */}
             <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="relative max-w-[90vw] max-h-[90vh]"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ 
+                duration: 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              style={{
+                willChange: 'transform, opacity',
+                backfaceVisibility: 'hidden'
+              }}
+              className="relative max-w-[90vw] max-h-[90vh] transform-gpu"
               onClick={(e) => e.stopPropagation()}
             >
               <motion.img
                 src={currentImage.url}
                 alt={`${product.name} - ${currentImage.label}`}
                 className="max-w-full max-h-full object-contain"
-                style={{ transform: `scale(${zoomLevel})` }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                style={{ 
+                  transform: `scale(${zoomLevel})`,
+                  willChange: 'transform'
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
               />
             </motion.div>
 

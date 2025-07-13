@@ -185,12 +185,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ 
+        y: -4, 
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 400, damping: 17 }
+      }}
+      transition={{ 
+        duration: 0.2,
+        ease: [0.25, 0.46, 0.45, 0.94] // 优化的贝塞尔曲线
+      }}
+      style={{
+        willChange: 'transform', // 启用硬件加速
+        backfaceVisibility: 'hidden', // 防止背面闪烁
+        transformStyle: 'preserve-3d' // 3D渲染优化
+      }}
       className={cn(
-        "bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300",
+        "bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200",
         "border border-gray-200 overflow-hidden cursor-pointer group",
-        "h-full flex flex-col", // 确保卡片高度一致
+        "h-full flex flex-col transform-gpu", // 强制GPU加速
         className
       )}
       onClick={handleViewDetail}
@@ -200,7 +212,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <LazyImage
           src={getCurrentImage()}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200 will-change-transform"
         />
 
         {/* 折扣标签 */}
@@ -215,12 +227,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         {/* 快速操作按钮 */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 transform-gpu">
           <motion.button
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={handleFavorite}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm"
+            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm will-change-transform"
             title="收藏"
           >
             {isFavorited ? (
@@ -231,9 +244,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={handleCompare}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm"
+            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm will-change-transform"
             title="对比"
           >
             <ScaleIcon className="w-4 h-4 text-gray-600" />

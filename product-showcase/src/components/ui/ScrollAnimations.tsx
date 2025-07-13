@@ -1,9 +1,10 @@
-// 滚动动画和视差效果组件
-import React, { useEffect, useRef, useState } from 'react';
+// 滚动动画和视差效果组件 - 性能优化版本
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useAnimation, useInView, useScroll, useTransform } from 'framer-motion';
 import { cn } from '../../utils/cn';
+import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
 
-// 滚动触发动画组件
+// 优化的滚动触发动画组件
 interface ScrollRevealProps {
   children: React.ReactNode;
   direction?: 'up' | 'down' | 'left' | 'right';
@@ -18,62 +19,84 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
   direction = 'up',
   delay = 0,
-  duration = 0.6,
-  distance = 50,
+  duration = 0.4, // 减少默认持续时间
+  distance = 30, // 减少移动距离
   className = '',
   once = true,
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once, margin: '-100px' });
+  const { preferences, getAnimationConfig } = useAnimationPreferences();
+  
+  // 如果用户偏好减少动画，直接显示内容
+  if (preferences.reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  const isInView = useInView(ref, { 
+    once, 
+    margin: '-50px', // 减少监听边距，提高性能
+    amount: 0.1 // 只需要10%进入视口即触发
+  });
+  
   const controls = useAnimation();
 
-  const getInitialPosition = () => {
-    switch (direction) {
-      case 'up':
-        return { y: distance, opacity: 0 };
-      case 'down':
-        return { y: -distance, opacity: 0 };
-      case 'left':
-        return { x: distance, opacity: 0 };
-      case 'right':
-        return { x: -distance, opacity: 0 };
-      default:
-        return { y: distance, opacity: 0 };
-    }
-  };
+  const animationVariants = useMemo(() => {
+    const getInitialPosition = () => {
+      switch (direction) {
+        case 'up':
+          return { y: distance, opacity: 0 };
+        case 'down':
+          return { y: -distance, opacity: 0 };
+        case 'left':
+          return { x: distance, opacity: 0 };
+        case 'right':
+          return { x: -distance, opacity: 0 };
+        default:
+          return { y: distance, opacity: 0 };
+      }
+    };
 
-  const getFinalPosition = () => {
-    switch (direction) {
-      case 'up':
-      case 'down':
-        return { y: 0, opacity: 1 };
-      case 'left':
-      case 'right':
-        return { x: 0, opacity: 1 };
-      default:
-        return { y: 0, opacity: 1 };
-    }
-  };
+    const getFinalPosition = () => {
+      switch (direction) {
+        case 'up':
+        case 'down':
+          return { y: 0, opacity: 1 };
+        case 'left':
+        case 'right':
+          return { x: 0, opacity: 1 };
+        default:
+          return { y: 0, opacity: 1 };
+      }
+    };
+
+    return { initial: getInitialPosition(), final: getFinalPosition() };
+  }, [direction, distance]);
 
   useEffect(() => {
     if (isInView) {
-      controls.start(getFinalPosition());
+      controls.start(animationVariants.final);
     } else if (!once) {
-      controls.start(getInitialPosition());
+      controls.start(animationVariants.initial);
     }
-  }, [isInView, controls, once]);
+  }, [isInView, controls, once, animationVariants]);
+
+  const animConfig = getAnimationConfig(duration);
 
   return (
     <motion.div
       ref={ref}
-      initial={getInitialPosition()}
+      initial={animationVariants.initial}
       animate={controls}
       transition={{
-        duration,
+        duration: animConfig.duration,
         delay,
-        ease: 'easeOut',
+        ease: [0.25, 0.46, 0.45, 0.94], // 优化的贝塞尔曲线
       }}
-      className={className}
+      style={{
+        willChange: 'transform, opacity',
+        backfaceVisibility: 'hidden',
+      }}
+      className={cn(className, 'transform-gpu')}
     >
       {children}
     </motion.div>
@@ -191,7 +214,7 @@ export const ScrollCounter: React.FC<ScrollCounterProps> = ({
   );
 };
 
-// 滚动触发交错动画组件
+// 优化的滚动触发交错动画组件
 interface ScrollStaggerProps {
   children: React.ReactNode;
   staggerDelay?: number;
@@ -200,11 +223,24 @@ interface ScrollStaggerProps {
 
 export const ScrollStagger: React.FC<ScrollStaggerProps> = ({
   children,
-  staggerDelay = 0.1,
+  staggerDelay = 0.05, // 减少交错延迟
   className = '',
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const { preferences, getAnimationConfig } = useAnimationPreferences();
+  
+  // 如果用户偏好减少动画，直接显示内容
+  if (preferences.reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  const isInView = useInView(ref, { 
+    once: true, 
+    margin: '-30px', // 减少监听边距
+    amount: 0.1 
+  });
+
+  const animConfig = getAnimationConfig(0.4);
 
   return (
     <motion.div
@@ -220,22 +256,30 @@ export const ScrollStagger: React.FC<ScrollStaggerProps> = ({
           },
         },
       }}
-      className={className}
+      style={{
+        willChange: 'opacity',
+      }}
+      className={cn(className, 'transform-gpu')}
     >
       {React.Children.map(children, (child, index) => (
         <motion.div
           key={index}
           variants={{
-            hidden: { opacity: 0, y: 20 },
+            hidden: { opacity: 0, y: 15 }, // 减少移动距离
             visible: {
               opacity: 1,
               y: 0,
               transition: {
-                duration: 0.6,
-                ease: 'easeOut',
+                duration: animConfig.duration,
+                ease: [0.25, 0.46, 0.45, 0.94],
               },
             },
           }}
+          style={{
+            willChange: 'transform, opacity',
+            backfaceVisibility: 'hidden',
+          }}
+          className="transform-gpu"
         >
           {child}
         </motion.div>
