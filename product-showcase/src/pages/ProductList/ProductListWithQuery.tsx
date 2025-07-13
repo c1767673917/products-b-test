@@ -1,7 +1,6 @@
 // 使用React Query的产品列表页面
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import {
   Squares2X2Icon,
   ListBulletIcon,
@@ -41,7 +40,7 @@ export const ProductListWithQuery: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(0); // 0表示显示全部
+  const [itemsPerPage, setItemsPerPage] = useState(20); // 默认每页20个，这样可以看到分页
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [favorites, setFavorites] = useState<string[]>([]);

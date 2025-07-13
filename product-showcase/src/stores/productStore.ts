@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Product, FilterState, ViewMode, SortOption } from '../types/product';
-import { DataService } from '../services/dataService';
 import { apiService } from '../services/apiService';
 
 interface ProductState {

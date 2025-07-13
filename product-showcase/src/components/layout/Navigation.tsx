@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   HomeIcon,
-  RectangleStackIcon,
   CpuChipIcon,
   ChartBarIcon,
   DocumentTextIcon,
@@ -24,15 +23,9 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   {
     path: '/',
-    label: 'React Query版本',
+    label: '产品列表',
     icon: HomeIcon,
-    description: '使用React Query的产品列表'
-  },
-  {
-    path: '/products',
-    label: '原版本',
-    icon: RectangleStackIcon,
-    description: '使用Zustand的产品列表'
+    description: '浏览所有产品'
   },
   {
     path: '/api-demo',

@@ -1,1 +1,1 @@
-export { default } from './ProductList';
+export { ProductListWithQuery as default } from './ProductListWithQuery';

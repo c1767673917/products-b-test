@@ -13,7 +13,6 @@ import { dataService } from './services/dataService';
 import './App.css';
 
 // 懒加载页面组件
-const ProductList = React.lazy(() => import('./pages/ProductList'));
 const ProductListWithQuery = React.lazy(() =>
   import('./pages/ProductList/ProductListWithQuery').then(module => ({
     default: module.ProductListWithQuery
@@ -88,30 +87,6 @@ const AnimatedRoutes: React.FC = () => {
             <ErrorBoundary>
               <Suspense fallback={<PageLoader />}>
                 <PageTransitionWrapper type="fade">
-                  <ProductListWithQuery />
-                </PageTransitionWrapper>
-              </Suspense>
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="/products"
-          element={
-            <ErrorBoundary>
-              <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="slide">
-                  <ProductList />
-                </PageTransitionWrapper>
-              </Suspense>
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="/products-query"
-          element={
-            <ErrorBoundary>
-              <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="scale">
                   <ProductListWithQuery />
                 </PageTransitionWrapper>
               </Suspense>
