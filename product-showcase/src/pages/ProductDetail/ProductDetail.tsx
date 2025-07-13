@@ -12,11 +12,21 @@ import { useToast } from '../../components/ui/ToastNotification';
 import ImageGallery from '../../components/product/ImageGallery';
 import ProductInfo from '../../components/product/ProductInfo';
 import RelatedProducts from '../../components/product/RelatedProducts';
+import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
+import { cn } from '../../utils/cn';
+import {
+  PAGE_TRANSITION_VARIANTS,
+  ANIMATION_EASING,
+  PERFORMANCE_CSS,
+  GPU_ACCELERATED_CLASS,
+  getResponsiveAnimationConfig,
+} from '../../constants/animations';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { shouldEnableAnimation } = useAnimationPreferences();
   
   const { 
     products, 
@@ -29,8 +39,18 @@ const ProductDetail: React.FC = () => {
   } = useProductStore();
   
   const [product, setProduct] = useState<Product | null>(null);
-  const [isImageLoading, setIsImageLoading] = useState(true);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  // 响应式动画配置
+  const responsiveConfig = getResponsiveAnimationConfig(screenWidth);
+
+  // 监听屏幕尺寸变化
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (id && products.length > 0) {
@@ -118,7 +138,7 @@ const ProductDetail: React.FC = () => {
           text: `查看这个产品：${product.name}`,
           url: window.location.href,
         });
-      } catch (error) {
+      } catch (err) {
         // 如果不支持原生分享，复制链接到剪贴板
         navigator.clipboard.writeText(window.location.href);
         showToast('链接已复制到剪贴板', 'success');
@@ -157,17 +177,26 @@ const ProductDetail: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="min-h-screen bg-gray-50"
+      variants={PAGE_TRANSITION_VARIANTS.slideUp}
+      initial="initial"
+      animate="in"
+      exit="out"
+      transition={{
+        duration: responsiveConfig.duration,
+        ease: ANIMATION_EASING.easeOut
+      }}
+      style={PERFORMANCE_CSS}
+      className={cn("min-h-screen bg-gray-50", GPU_ACCELERATED_CLASS)}
     >
       {/* 导航栏 */}
       <motion.div
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ 
+          duration: responsiveConfig.duration, 
+          delay: shouldEnableAnimation('enablePageTransitions') ? 0.1 : 0,
+          ease: ANIMATION_EASING.easeOut
+        }}
         className="bg-white shadow-sm border-b sticky top-0 z-10 backdrop-blur-sm bg-white/95"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -233,12 +262,24 @@ const ProductDetail: React.FC = () => {
       {/* 主要内容 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {/* 左侧：图片画廊 - 占据更大空间，移动端优先显示 */}
+          {/* 左侧：图片画廊 - 左右分屏动画优化 */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-2 space-y-4 order-1"
+            variants={{
+              hidden: { opacity: 0, x: -responsiveConfig.distance },
+              visible: { 
+                opacity: 1, 
+                x: 0,
+                transition: {
+                  duration: responsiveConfig.duration,
+                  delay: 0.1,
+                  ease: ANIMATION_EASING.easeOut
+                }
+              }
+            }}
+            initial="hidden"
+            animate="visible"
+            style={PERFORMANCE_CSS}
+            className={cn("lg:col-span-2 space-y-4 order-1", GPU_ACCELERATED_CLASS)}
           >
             <Card className="p-3 sm:p-4 lg:p-6 shadow-sm">
               {!imagesPreloaded && (
@@ -255,12 +296,24 @@ const ProductDetail: React.FC = () => {
             </Card>
           </motion.div>
 
-          {/* 右侧：产品信息 */}
+          {/* 右侧：产品信息 - 右侧滑入动画 */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="lg:col-span-1 space-y-4 sm:space-y-6 order-2"
+            variants={{
+              hidden: { opacity: 0, x: responsiveConfig.distance },
+              visible: { 
+                opacity: 1, 
+                x: 0,
+                transition: {
+                  duration: responsiveConfig.duration,
+                  delay: 0.2,
+                  ease: ANIMATION_EASING.easeOut
+                }
+              }
+            }}
+            initial="hidden"
+            animate="visible"
+            style={PERFORMANCE_CSS}
+            className={cn("lg:col-span-1 space-y-4 sm:space-y-6 order-2", GPU_ACCELERATED_CLASS)}
           >
             <Card className="p-4 sm:p-6 shadow-sm">
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 leading-tight">
@@ -328,12 +381,24 @@ const ProductDetail: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* 相关产品推荐 */}
+        {/* 相关产品推荐 - 底部滑入动画 */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-6 sm:mt-8 lg:mt-12 lg:col-span-3"
+          variants={{
+            hidden: { opacity: 0, y: responsiveConfig.distance * 1.5 },
+            visible: { 
+              opacity: 1, 
+              y: 0,
+              transition: {
+                duration: responsiveConfig.duration,
+                delay: 0.4,
+                ease: ANIMATION_EASING.easeOut
+              }
+            }
+          }}
+          initial="hidden"
+          animate="visible"
+          style={PERFORMANCE_CSS}
+          className={cn("mt-6 sm:mt-8 lg:mt-12 lg:col-span-3", GPU_ACCELERATED_CLASS)}
         >
           <RelatedProducts currentProduct={product} />
         </motion.div>

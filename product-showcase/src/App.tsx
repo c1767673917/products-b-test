@@ -86,7 +86,7 @@ const AnimatedRoutes: React.FC = () => {
           element={
             <ErrorBoundary>
               <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="fade">
+                <PageTransitionWrapper type="fade" duration={0.15}>
                   <ProductListWithQuery />
                 </PageTransitionWrapper>
               </Suspense>
@@ -98,7 +98,7 @@ const AnimatedRoutes: React.FC = () => {
           element={
             <ErrorBoundary>
               <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="default">
+                <PageTransitionWrapper type="scale" duration={0.25}>
                   <ProductDetail />
                 </PageTransitionWrapper>
               </Suspense>

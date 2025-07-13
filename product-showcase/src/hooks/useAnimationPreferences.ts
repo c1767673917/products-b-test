@@ -1,5 +1,6 @@
 // 动画偏好设置和性能优化Hook
 import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { getResponsiveAnimationConfig, BREAKPOINTS } from '../constants/animations';
 
 export interface AnimationPreferences {
   reduceMotion: boolean;
@@ -70,6 +71,20 @@ export const useAnimationPreferences = () => {
     return { ...defaultPreferences, ...systemPrefs };
   });
 
+  // 响应式屏幕尺寸状态
+  const [screenWidth, setScreenWidth] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth : BREAKPOINTS.lg;
+  });
+
+  // 监听屏幕尺寸变化
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // 保存偏好设置到localStorage
   const savePreferences = useCallback((newPreferences: Partial<AnimationPreferences>) => {
     const updated = { ...preferences, ...newPreferences };
@@ -109,7 +124,7 @@ export const useAnimationPreferences = () => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [preferences.reduceMotion, savePreferences]);
 
-  // 获取优化后的动画配置
+  // 获取优化后的动画配置（支持响应式）
   const getAnimationConfig = useCallback((baseDuration: number = 0.3) => {
     if (preferences.reduceMotion) {
       return {
@@ -120,13 +135,14 @@ export const useAnimationPreferences = () => {
     }
 
     const speedMultiplier = getSpeedMultiplier(preferences.animationSpeed);
+    const responsiveConfig = getResponsiveAnimationConfig(screenWidth);
     
     return {
-      duration: baseDuration * speedMultiplier,
+      duration: (baseDuration * speedMultiplier * responsiveConfig.duration) / 0.3, // 基于响应式调整
       ease: 'easeOut',
       disabled: false,
     };
-  }, [preferences.reduceMotion, preferences.animationSpeed]);
+  }, [preferences.reduceMotion, preferences.animationSpeed, screenWidth]);
 
   // 获取Framer Motion变体配置
   const getMotionVariants = useCallback((variants: any) => {
@@ -228,6 +244,11 @@ export const useAnimationPreferences = () => {
     shouldEnableAnimation,
     performanceMetrics,
     speedMultiplier: getSpeedMultiplier(preferences.animationSpeed),
+    screenWidth,
+    responsiveConfig: getResponsiveAnimationConfig(screenWidth),
+    isMobile: screenWidth < BREAKPOINTS.md,
+    isTablet: screenWidth >= BREAKPOINTS.md && screenWidth < BREAKPOINTS.lg,
+    isDesktop: screenWidth >= BREAKPOINTS.lg,
   };
 };
 

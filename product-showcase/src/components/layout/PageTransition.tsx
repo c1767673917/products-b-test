@@ -3,29 +3,14 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { useAnimationContext } from '../../hooks/useAnimationPreferences';
+import { PAGE_TRANSITION_VARIANTS } from '../../constants/animations';
 
 interface PageTransitionProps {
   children: React.ReactNode;
 }
 
 // 页面过渡动画变体
-const pageVariants = {
-  initial: {
-    opacity: 0,
-    x: 20,
-    scale: 0.98,
-  },
-  in: {
-    opacity: 1,
-    x: 0,
-    scale: 1,
-  },
-  out: {
-    opacity: 0,
-    x: -20,
-    scale: 0.98,
-  },
-};
+const pageVariants = PAGE_TRANSITION_VARIANTS.slide;
 
 // 页面过渡动画配置
 const pageTransition = {
@@ -35,55 +20,13 @@ const pageTransition = {
 };
 
 // 滑动过渡动画变体
-const slideVariants = {
-  initial: (direction: number) => ({
-    x: direction > 0 ? 300 : -300,
-    opacity: 0,
-  }),
-  in: {
-    x: 0,
-    opacity: 1,
-  },
-  out: (direction: number) => ({
-    x: direction < 0 ? 300 : -300,
-    opacity: 0,
-  }),
-};
+const slideVariants = PAGE_TRANSITION_VARIANTS.slide;
 
 // 淡入淡出动画变体
-const fadeVariants = {
-  initial: {
-    opacity: 0,
-    y: 20,
-  },
-  in: {
-    opacity: 1,
-    y: 0,
-  },
-  out: {
-    opacity: 0,
-    y: -20,
-  },
-};
+const fadeVariants = PAGE_TRANSITION_VARIANTS.fade;
 
 // 缩放动画变体
-const scaleVariants = {
-  initial: {
-    opacity: 0,
-    scale: 0.9,
-    y: 20,
-  },
-  in: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-  },
-  out: {
-    opacity: 0,
-    scale: 1.1,
-    y: -20,
-  },
-};
+const scaleVariants = PAGE_TRANSITION_VARIANTS.scale;
 
 export type TransitionType = 'fade' | 'slide' | 'scale' | 'default';
 

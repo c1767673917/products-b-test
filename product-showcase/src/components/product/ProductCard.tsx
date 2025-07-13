@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { HeartIcon, EyeIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import type { ProductCardProps, ImageType } from '../../types/product';
 import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
+import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
+import {
+  CARD_HOVER_VARIANTS,
+  PRODUCT_CARD_VARIANTS,
+  BUTTON_VARIANTS,
+  ANIMATION_DURATION,
+  ANIMATION_EASING,
+  PERFORMANCE_CSS,
+  GPU_ACCELERATED_CLASS,
+} from '../../constants/animations';
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
@@ -15,6 +26,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isFavorited = false
 }) => {
   const [currentImageType, setCurrentImageType] = useState<ImageType>('front');
+  const { preferences, getAnimationConfig } = useAnimationPreferences();
+  const navigate = useNavigate();
 
   // 获取当前显示的图片
   const getCurrentImage = () => {
@@ -48,6 +61,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // 处理查看详情
   const handleViewDetail = () => {
+    // 使用原生的 navigate 直接跳转，避免复杂的动画冲突
+    navigate(`/products/${product.id}`);
+    
+    // 如果有自定义处理函数，也调用它
     onQuickAction?.('detail');
   };
 
@@ -65,14 +82,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   if (layout === 'list') {
     return (
       <motion.div
-        layout
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        whileHover={{ y: -2, scale: 1.01 }}
+        variants={PRODUCT_CARD_VARIANTS}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        whileHover={preferences.reduceMotion ? {} : { y: -2, scale: 1.01 }}
+        whileTap={preferences.reduceMotion ? {} : "tap"}
+        transition={getAnimationConfig(ANIMATION_DURATION.normal)}
+        style={PERFORMANCE_CSS}
         className={cn(
           "bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300",
           "border border-gray-200 p-3 sm:p-4 cursor-pointer",
+          GPU_ACCELERATED_CLASS,
           className
         )}
         onClick={handleViewDetail}
@@ -181,28 +202,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
   // 网格布局
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      whileHover={{ 
-        y: -4, 
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 400, damping: 17 }
+      variants={PRODUCT_CARD_VARIANTS}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      whileHover={preferences.reduceMotion ? {} : 'hover'}
+      whileTap={preferences.reduceMotion ? {} : "tap"}
+      transition={{
+        duration: getAnimationConfig(ANIMATION_DURATION.normal).duration,
+        ease: ANIMATION_EASING.easeOut
       }}
-      transition={{ 
-        duration: 0.2,
-        ease: [0.25, 0.46, 0.45, 0.94] // 优化的贝塞尔曲线
-      }}
-      style={{
-        willChange: 'transform', // 启用硬件加速
-        backfaceVisibility: 'hidden', // 防止背面闪烁
-        transformStyle: 'preserve-3d' // 3D渲染优化
-      }}
+      style={PERFORMANCE_CSS}
       className={cn(
         "bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200",
         "border border-gray-200 overflow-hidden cursor-pointer group",
-        "h-full flex flex-col transform-gpu", // 强制GPU加速
+        "h-full flex flex-col",
+        GPU_ACCELERATED_CLASS,
         className
       )}
       onClick={handleViewDetail}
@@ -212,7 +227,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <LazyImage
           src={getCurrentImage()}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200 will-change-transform"
+          className={cn(
+            "w-full h-full object-cover transition-transform duration-200",
+            preferences.reduceMotion ? "" : "group-hover:scale-105"
+          )}
         />
 
         {/* 折扣标签 */}

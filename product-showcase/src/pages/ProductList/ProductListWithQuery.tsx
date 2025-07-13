@@ -621,7 +621,6 @@ export const ProductListWithQuery: React.FC = () => {
               <>
                 <ScrollStagger staggerDelay={0.05}>
                   <motion.div
-                    layout
                     className={cn(
                       'mb-8',
                       viewMode === 'grid' 

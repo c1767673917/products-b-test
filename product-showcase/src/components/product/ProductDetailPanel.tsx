@@ -173,10 +173,10 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
           style={{
             willChange: 'transform', // 启用硬件加速
             backfaceVisibility: 'hidden',
-            transformStyle: 'preserve-3d'
+            transformStyle: 'preserve-3d',
+            width: `${currentWidth}px`
           }}
           className="fixed top-0 right-0 bottom-0 bg-white shadow-2xl z-50 overflow-hidden transform-gpu"
-          style={{ width: `${currentWidth}px` }}
           onKeyDown={handleKeyDown}
           tabIndex={-1}
         >
