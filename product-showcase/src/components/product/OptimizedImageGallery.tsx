@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MagnifyingGlassMinusIcon, 
@@ -11,10 +11,11 @@ import { ImageType, Product } from '../../types/product';
 import { Button } from '../ui/Button';
 import LazyImage from './LazyImage';
 
-interface ImageGalleryProps {
+interface OptimizedImageGalleryProps {
   product: Product;
   className?: string;
   compact?: boolean;
+  containerWidth?: number;
 }
 
 interface ImageInfo {
@@ -23,11 +24,16 @@ interface ImageInfo {
   label: string;
 }
 
-const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact = false }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(1);
+const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({ 
+  product, 
+  className, 
+  compact = false,
+  containerWidth = 400
+}) => {
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [imageColumns, setImageColumns] = useState(2);
 
   // 获取所有可用的图片
   const getAvailableImages = (): ImageInfo[] => {
@@ -49,12 +55,23 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
   };
 
   const availableImages = getAvailableImages();
-  const currentImage = availableImages[currentImageIndex];
+
+  // 根据容器宽度动态计算列数
+  const calculateColumns = useCallback((width: number) => {
+    if (width < 300) return 1;
+    if (width < 500) return 2;
+    if (width < 700) return 3;
+    return Math.min(4, availableImages.length);
+  }, [availableImages.length]);
+
+  useEffect(() => {
+    setImageColumns(calculateColumns(containerWidth));
+  }, [containerWidth, calculateColumns]);
 
   // 键盘导航
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isFullscreen) return;
+      if (!isFullscreen || selectedImageIndex === null) return;
       
       switch (e.key) {
         case 'ArrowLeft':
@@ -68,6 +85,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
         case 'Escape':
           e.preventDefault();
           setIsFullscreen(false);
+          setSelectedImageIndex(null);
           break;
         case '+':
         case '=':
@@ -83,18 +101,20 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen, currentImageIndex, zoomLevel]);
+  }, [isFullscreen, selectedImageIndex, zoomLevel]);
 
   const handlePrevImage = () => {
-    setCurrentImageIndex(prev => 
-      prev === 0 ? availableImages.length - 1 : prev - 1
+    if (selectedImageIndex === null) return;
+    setSelectedImageIndex(prev => 
+      prev === 0 ? availableImages.length - 1 : prev! - 1
     );
     setZoomLevel(1);
   };
 
   const handleNextImage = () => {
-    setCurrentImageIndex(prev => 
-      prev === availableImages.length - 1 ? 0 : prev + 1
+    if (selectedImageIndex === null) return;
+    setSelectedImageIndex(prev => 
+      prev === availableImages.length - 1 ? 0 : prev! + 1
     );
     setZoomLevel(1);
   };
@@ -108,11 +128,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
   };
 
   const handleImageClick = (index: number) => {
-    setCurrentImageIndex(index);
-    setZoomLevel(1);
-  };
-
-  const handleFullscreen = () => {
+    setSelectedImageIndex(index);
     setIsFullscreen(true);
     setZoomLevel(1);
   };
@@ -130,87 +146,61 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
 
   return (
     <div className={className}>
-      {/* 主图显示区域 */}
-      <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group">
-        <LazyImage
-          src={currentImage.url}
-          alt={`${product.name} - ${currentImage.label}`}
-          className="w-full h-full object-cover cursor-zoom-in"
-          onClick={handleFullscreen}
-        />
-        
-        {/* 图片导航按钮 */}
-        {availableImages.length > 1 && (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 hover:bg-white"
-              onClick={handlePrevImage}
-            >
-              <ChevronLeftIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 hover:bg-white"
-              onClick={handleNextImage}
-            >
-              <ChevronRightIcon className="h-4 w-4" />
-            </Button>
-          </>
-        )}
-
-        {/* 图片类型标签 */}
-        <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-          {currentImage.label}
-        </div>
-
-        {/* 图片计数 */}
-        {availableImages.length > 1 && (
-          <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-            {currentImageIndex + 1} / {availableImages.length}
-          </div>
-        )}
-      </div>
-
-      {/* 缩略图导航 */}
-      {availableImages.length > 1 && (
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-          {availableImages.map((image, index) => (
-            <motion.button
-              key={image.type}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
-                index === currentImageIndex
-                  ? 'border-blue-500'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => handleImageClick(index)}
-            >
-              <LazyImage
-                src={image.url}
-                alt={`${product.name} - ${image.label}`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-1 py-0.5 text-center truncate">
+      {/* 图片网格 */}
+      <div 
+        className="grid gap-2 rounded-lg overflow-hidden"
+        style={{ 
+          gridTemplateColumns: `repeat(${imageColumns}, 1fr)`,
+          aspectRatio: imageColumns === 1 ? '3/4' : imageColumns === 2 ? '4/3' : 'auto'
+        }}
+      >
+        {availableImages.map((image, index) => (
+          <motion.div
+            key={image.type}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className="relative group cursor-pointer overflow-hidden rounded-md bg-gray-100"
+            style={{
+              aspectRatio: imageColumns === 1 ? '3/4' : '1/1'
+            }}
+            onClick={() => handleImageClick(index)}
+          >
+            <LazyImage
+              src={image.url}
+              alt={`${product.name} - ${image.label}`}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            
+            {/* 图片标签 */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+              <span className="text-white text-xs font-medium truncate block">
                 {image.label}
+              </span>
+            </div>
+
+            {/* 悬停放大提示 */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 rounded-full p-2">
+                <MagnifyingGlassPlusIcon className="h-4 w-4 text-gray-700" />
               </div>
-            </motion.button>
-          ))}
-        </div>
-      )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
       {/* 全屏模态框 */}
       <AnimatePresence>
-        {isFullscreen && (
+        {isFullscreen && selectedImageIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
-            onClick={() => setIsFullscreen(false)}
+            onClick={() => {
+              setIsFullscreen(false);
+              setSelectedImageIndex(null);
+            }}
           >
             {/* 工具栏 */}
             <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -245,7 +235,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
                 variant="ghost"
                 size="sm"
                 className="text-white hover:bg-white/20"
-                onClick={() => setIsFullscreen(false)}
+                onClick={() => {
+                  setIsFullscreen(false);
+                  setSelectedImageIndex(null);
+                }}
               >
                 <XMarkIcon className="h-4 w-4" />
               </Button>
@@ -260,8 +253,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
               onClick={(e) => e.stopPropagation()}
             >
               <motion.img
-                src={currentImage.url}
-                alt={`${product.name} - ${currentImage.label}`}
+                src={availableImages[selectedImageIndex].url}
+                alt={`${product.name} - ${availableImages[selectedImageIndex].label}`}
                 className="max-w-full max-h-full object-contain"
                 style={{ transform: `scale(${zoomLevel})` }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -299,13 +292,40 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
             {/* 全屏图片信息 */}
             <div className="absolute bottom-4 left-4 text-white">
               <p className="text-lg font-medium">{product.name}</p>
-              <p className="text-sm opacity-80">{currentImage.label}</p>
-              {availableImages.length > 1 && (
-                <p className="text-sm opacity-60">
-                  {currentImageIndex + 1} / {availableImages.length}
-                </p>
-              )}
+              <p className="text-sm opacity-80">{availableImages[selectedImageIndex].label}</p>
+              <p className="text-sm opacity-60">
+                {selectedImageIndex + 1} / {availableImages.length}
+              </p>
             </div>
+
+            {/* 缩略图导航 */}
+            {availableImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[80vw] overflow-x-auto pb-2">
+                {availableImages.map((image, index) => (
+                  <motion.button
+                    key={image.type}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`relative flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border-2 transition-colors ${
+                      index === selectedImageIndex
+                        ? 'border-white'
+                        : 'border-white/30 hover:border-white/60'
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedImageIndex(index);
+                      setZoomLevel(1);
+                    }}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`${product.name} - ${image.label}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -313,4 +333,4 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
   );
 };
 
-export default ImageGallery;
+export default OptimizedImageGallery;

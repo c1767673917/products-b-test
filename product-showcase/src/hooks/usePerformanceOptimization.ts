@@ -77,7 +77,7 @@ export const usePerformanceOptimization = () => {
     } else {
       // 高性能设备：保持完整体验
       optimizations.imageOptimization = false;
-      optimizations.codeSpli tting = false;
+      optimizations.codeSplitting = false;
       optimizations.caching = true;
       optimizations.virtualScrolling = false;
       

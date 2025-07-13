@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { HeartIcon, EyeIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import type { Product, ProductCardProps, ImageType } from '../../types/product';
+import type { ProductCardProps, ImageType } from '../../types/product';
 import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
 
@@ -12,10 +11,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onImageHover,
   onQuickAction,
   layout = 'grid',
-  className
+  className,
+  isFavorited = false
 }) => {
-  const navigate = useNavigate();
-  const [isFavorited, setIsFavorited] = useState(false);
   const [currentImageType, setCurrentImageType] = useState<ImageType>('front');
 
   // 获取当前显示的图片
@@ -39,7 +37,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   // 处理收藏
   const handleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorited(!isFavorited);
     onQuickAction?.('favorite');
   };
 
@@ -51,7 +48,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // 处理查看详情
   const handleViewDetail = () => {
-    navigate(`/products/${product.id}`);
     onQuickAction?.('detail');
   };
 

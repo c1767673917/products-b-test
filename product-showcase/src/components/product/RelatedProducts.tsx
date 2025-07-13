@@ -10,6 +10,7 @@ import ProductCard from './ProductCard';
 interface RelatedProductsProps {
   currentProduct: Product;
   className?: string;
+  compact?: boolean;
 }
 
 interface RecommendationStrategy {
@@ -20,7 +21,8 @@ interface RecommendationStrategy {
 
 const RelatedProducts: React.FC<RelatedProductsProps> = ({ 
   currentProduct, 
-  className 
+  className,
+  compact = false
 }) => {
   const { products } = useProductStore();
   const [currentPage, setCurrentPage] = useState(0);

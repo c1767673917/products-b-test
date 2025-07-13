@@ -20,6 +20,7 @@ import { Button } from '../ui/Button';
 interface ProductInfoProps {
   product: Product;
   className?: string;
+  compact?: boolean;
 }
 
 interface InfoSection {
@@ -32,7 +33,7 @@ interface InfoSection {
   }>;
 }
 
-const ProductInfo: React.FC<ProductInfoProps> = ({ product, className }) => {
+const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact = false }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['basic', 'price'])
   );

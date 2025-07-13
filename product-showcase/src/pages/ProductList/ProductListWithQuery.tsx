@@ -12,6 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { Product, FilterState } from '../../types/product';
 import ProductCard from '../../components/product/ProductCard';
+import ProductDetailPanel from '../../components/product/ProductDetailPanel';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Loading';
@@ -22,6 +23,10 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
+import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useResponsiveGrid } from '../../hooks/useResponsiveGrid';
+import { useContainerDimensions } from '../../hooks/useContainerDimensions';
+import LayoutDebugger from '../../components/debug/LayoutDebugger';
 import { cn } from '../../utils/cn';
 
 // 初始筛选状态
@@ -45,24 +50,14 @@ export const ProductListWithQuery: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [compareList, setCompareList] = useState<string[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
   const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
   const { showSuccess, showError, showInfo } = useToast();
+  const { preferences } = usePanelPreferences();
+  const { containerRef, dimensions } = useContainerDimensions();
 
-  // React Query hooks
-  const productsQuery = useProducts();
-  const filterQuery = useFilterProducts(filters, searchQuery);
-  const refreshMutation = useRefreshProducts();
-
-  // ProductStore hooks
-  const setProducts = useProductStore(state => state.setProducts);
-  const storeProducts = useProductStore(state => state.products);
-
-  // 监控 ProductStore 状态变化
-  useEffect(() => {
-    console.log('ProductStore products 数组长度变化:', storeProducts.length);
-  }, [storeProducts.length]);
-
-  // 响应式检测
+  // 响应式检测 - 需要在其他地方使用前先声明
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -75,16 +70,84 @@ export const ProductListWithQuery: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // 获取响应式网格计算 - 需要考虑详情面板占用的空间
+  const effectiveContainerWidth = isDetailPanelOpen && !isMobile 
+    ? Math.max(dimensions.width - preferences.width - 32, 300) // 减去面板宽度和间距，最小300px
+    : dimensions.width;
+
+  // 添加调试日志 (仅开发环境)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📐 容器宽度计算:', {
+        原始容器宽度: dimensions.width,
+        面板宽度: preferences.width,
+        面板状态: isDetailPanelOpen,
+        有效容器宽度: effectiveContainerWidth,
+        是否移动端: isMobile
+      });
+    }
+  }, [dimensions.width, preferences.width, isDetailPanelOpen, effectiveContainerWidth, isMobile]);
+
+  const {
+    getResponsiveGridClass,
+    columns,
+    cardWidth,
+    availableWidth,
+    debug
+  } = useResponsiveGrid(
+    effectiveContainerWidth, // 使用有效的容器宽度
+    0, // 面板宽度影响已在上面计算
+    false, // 不需要再次考虑面板状态
+    {
+      minCardWidth: viewMode === 'grid' ? 180 : 300,
+      maxColumns: viewMode === 'grid' ? 6 : 1,
+      gap: viewMode === 'grid' ? 16 : 16,
+      padding: 64 // 容器左右padding
+    }
+  );
+
+  // 添加网格计算结果调试日志 (仅开发环境)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔢 网格计算结果:', {
+        列数: columns,
+        卡片宽度: cardWidth,
+        可用宽度: availableWidth,
+        CSS类名: getResponsiveGridClass()
+      });
+    }
+  }, [columns, cardWidth, availableWidth, getResponsiveGridClass]);
+
+  // React Query hooks
+  const productsQuery = useProducts();
+  const filterQuery = useFilterProducts(filters, searchQuery);
+  const refreshMutation = useRefreshProducts();
+
+  // ProductStore hooks
+  const setProducts = useProductStore(state => state.setProducts);
+  const storeProducts = useProductStore(state => state.products);
+
+  // 监控 ProductStore 状态变化 (仅开发环境)
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('ProductStore products 数组长度变化:', storeProducts.length);
+    }
+  }, [storeProducts.length]);
+
   // 同步 React Query 数据到 ProductStore
   useEffect(() => {
-    console.log('ProductListWithQuery: React Query 状态变化');
-    console.log('  - isLoading:', productsQuery.isLoading);
-    console.log('  - isError:', productsQuery.isError);
-    console.log('  - data length:', productsQuery.data?.length || 0);
-    console.log('  - error:', productsQuery.error);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('ProductListWithQuery: React Query 状态变化');
+      console.log('  - isLoading:', productsQuery.isLoading);
+      console.log('  - isError:', productsQuery.isError);
+      console.log('  - data length:', productsQuery.data?.length || 0);
+      console.log('  - error:', productsQuery.error);
+    }
 
     if (productsQuery.data && productsQuery.data.length > 0) {
-      console.log('同步产品数据到 ProductStore:', productsQuery.data.length, '个产品');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('同步产品数据到 ProductStore:', productsQuery.data.length, '个产品');
+      }
       setProducts(productsQuery.data);
     }
   }, [productsQuery.data, productsQuery.isLoading, productsQuery.isError, productsQuery.error, setProducts]);
@@ -149,6 +212,48 @@ export const ProductListWithQuery: React.FC = () => {
     return displayProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [displayProducts, currentPage, itemsPerPage]);
 
+  // 获取当前选中的产品
+  const selectedProduct = selectedProductId 
+    ? displayProducts.find(p => p.id === selectedProductId) || null
+    : null;
+
+  // 获取产品导航信息
+  const getProductNavigation = () => {
+    if (!selectedProductId) return { prev: false, next: false };
+    
+    const currentIndex = displayProducts.findIndex(p => p.id === selectedProductId);
+    return {
+      prev: currentIndex > 0,
+      next: currentIndex < displayProducts.length - 1
+    };
+  };
+
+  const canNavigate = getProductNavigation();
+
+  // 处理产品导航
+  const handleProductNavigation = (direction: 'prev' | 'next') => {
+    if (!selectedProductId) return;
+    
+    const currentIndex = displayProducts.findIndex(p => p.id === selectedProductId);
+    let newIndex = currentIndex;
+    
+    if (direction === 'prev' && currentIndex > 0) {
+      newIndex = currentIndex - 1;
+    } else if (direction === 'next' && currentIndex < displayProducts.length - 1) {
+      newIndex = currentIndex + 1;
+    }
+    
+    if (newIndex !== currentIndex) {
+      setSelectedProductId(displayProducts[newIndex].id);
+    }
+  };
+
+  // 关闭详情面板
+  const handleCloseDetailPanel = () => {
+    setIsDetailPanelOpen(false);
+    setSelectedProductId(null);
+  };
+
   const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(displayProducts.length / itemsPerPage);
 
   // 处理产品操作
@@ -163,6 +268,10 @@ export const ProductListWithQuery: React.FC = () => {
         showSuccess(
           favorites.includes(product.id) ? '已取消收藏' : '已添加到收藏'
         );
+        break;
+      case 'detail':
+        setSelectedProductId(product.id);
+        setIsDetailPanelOpen(true);
         break;
       case 'compare':
         if (compareList.length >= 4) {
@@ -253,7 +362,7 @@ export const ProductListWithQuery: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       {/* 滚动进度条 */}
       <ScrollProgress />
 
@@ -301,7 +410,7 @@ export const ProductListWithQuery: React.FC = () => {
               {/* 视图切换 */}
               <div className="flex border rounded-lg">
                 <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                  variant={viewMode === 'grid' ? 'primary' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('grid')}
                   className="rounded-r-none"
@@ -309,7 +418,7 @@ export const ProductListWithQuery: React.FC = () => {
                   <Squares2X2Icon className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  variant={viewMode === 'list' ? 'primary' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('list')}
                   className="rounded-l-none"
@@ -322,8 +431,23 @@ export const ProductListWithQuery: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      {/* 主要内容区域 */}
+      <div 
+        ref={containerRef}
+        className={cn(
+          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300",
+          isDetailPanelOpen && !isMobile ? "lg:pr-4" : ""
+        )}
+      >
+        <div 
+          className={cn(
+            "flex flex-col lg:flex-row gap-8 transition-all duration-300",
+            isDetailPanelOpen && isMobile ? "hidden" : ""
+          )}
+          style={{
+            marginRight: isDetailPanelOpen && !isMobile ? `${preferences.width + 16}px` : '0'
+          }}
+        >
           {/* 桌面端筛选面板 */}
           <AnimatePresence>
             {showFilters && !isMobile && (
@@ -422,7 +546,7 @@ export const ProductListWithQuery: React.FC = () => {
                   </div>
                   <select
                     value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as any)}
+                    onChange={(e) => setSortOption(e.target.value as 'name' | 'price-asc' | 'price-desc' | 'collect-time')}
                     className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="name">按名称排序</option>
@@ -442,6 +566,20 @@ export const ProductListWithQuery: React.FC = () => {
                 </div>
               </div>
             </ScrollReveal>
+
+            {/* 布局调试信息 (开发环境) */}
+            {process.env.NODE_ENV === 'development' && (
+              <LayoutDebugger
+                containerWidth={dimensions.width}
+                panelWidth={preferences.width}
+                isDetailPanelOpen={isDetailPanelOpen}
+                availableWidth={effectiveContainerWidth}
+                columns={columns}
+                cardWidth={cardWidth}
+                gridClass={getResponsiveGridClass()}
+                show={true}
+              />
+            )}
 
             {/* 产品网格 */}
             {isLoading && paginatedProducts.length === 0 ? (
@@ -465,13 +603,13 @@ export const ProductListWithQuery: React.FC = () => {
                   <motion.div
                     layout
                     className={cn(
-                      'grid mb-8',
-                      viewMode === 'grid'
-                        ? 'grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6'
-                        : 'grid-cols-1 gap-4'
+                      'mb-8',
+                      viewMode === 'grid' 
+                        ? getResponsiveGridClass()
+                        : 'grid grid-cols-1 gap-4'
                     )}
                   >
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence>
                       {paginatedProducts.map((product) => (
                         <ProductCard
                           key={product.id}
@@ -506,6 +644,15 @@ export const ProductListWithQuery: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 产品详情面板 */}
+      <ProductDetailPanel
+        product={selectedProduct}
+        isOpen={isDetailPanelOpen}
+        onClose={handleCloseDetailPanel}
+        onNavigate={handleProductNavigation}
+        canNavigate={canNavigate}
+      />
     </div>
   );
 };

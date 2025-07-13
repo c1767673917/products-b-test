@@ -79,6 +79,8 @@ export interface ProductCardProps {
   onQuickAction?: (action: 'favorite' | 'compare' | 'detail') => void;
   layout?: ViewMode;
   className?: string;
+  isFavorited?: boolean;
+  isInCompare?: boolean;
 }
 
 // 筛选器属性
