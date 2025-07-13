@@ -147,11 +147,11 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
   return (
     <div className={className}>
       {/* 图片网格 */}
-      <div 
-        className="grid gap-2 rounded-lg overflow-hidden"
-        style={{ 
+      <div
+        className="grid gap-2 sm:gap-3 rounded-lg overflow-hidden shadow-sm"
+        style={{
           gridTemplateColumns: `repeat(${imageColumns}, 1fr)`,
-          aspectRatio: imageColumns === 1 ? '3/4' : imageColumns === 2 ? '4/3' : 'auto'
+          aspectRatio: imageColumns === 1 ? '4/5' : imageColumns === 2 ? '5/4' : 'auto'
         }}
       >
         {availableImages.map((image, index) => (
@@ -160,9 +160,9 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
-            className="relative group cursor-pointer overflow-hidden rounded-md bg-gray-100"
+            className="relative group cursor-pointer overflow-hidden rounded-lg bg-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200"
             style={{
-              aspectRatio: imageColumns === 1 ? '3/4' : '1/1'
+              aspectRatio: imageColumns === 1 ? '4/5' : '1/1'
             }}
             onClick={() => handleImageClick(index)}
           >
@@ -171,9 +171,9 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
               alt={`${product.name} - ${image.label}`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            
+
             {/* 图片标签 */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
               <span className="text-white text-xs font-medium truncate block">
                 {image.label}
               </span>

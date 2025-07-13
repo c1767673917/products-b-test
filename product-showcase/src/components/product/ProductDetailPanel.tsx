@@ -287,44 +287,17 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                     )}
                   </div>
                 </div>
-
-                {/* 基本信息 */}
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="font-medium text-gray-500">品类</span>
-                    <p className="text-gray-900 break-words">
-                      {product.category.primary}
-                      {product.category.secondary && ` / ${product.category.secondary}`}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-500">产地</span>
-                    <p className="text-gray-900">
-                      {product.origin.province}
-                      {product.origin.city && ` ${product.origin.city}`}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-500">平台</span>
-                    <p className="text-gray-900">{product.platform}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-500">规格</span>
-                    <p className="text-gray-900 break-words">{product.specification || '暂无'}</p>
-                  </div>
-                </div>
               </motion.div>
 
-              {/* 图片画廊 */}
+              {/* 图片画廊 - 提前显示 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.15 }}
               >
-                <Card className="p-4">
-                  <h3 className="text-base font-semibold mb-3">产品图片</h3>
+                <Card className="p-3">
                   {isImageLoading && (
-                    <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                    <div className="aspect-[4/5] bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                       <div className="text-center">
                         <Spinner size="sm" />
                         <p className="text-xs text-gray-500 mt-2">图片加载中...</p>
@@ -332,11 +305,46 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                     </div>
                   )}
                   <div className={imagesPreloaded ? 'block' : 'hidden'}>
-                    <OptimizedImageGallery 
-                      product={product} 
-                      compact 
-                      containerWidth={currentWidth - 80} // 减去padding和边距
+                    <OptimizedImageGallery
+                      product={product}
+                      compact
+                      containerWidth={currentWidth - 60} // 减去padding和边距
                     />
+                  </div>
+                </Card>
+              </motion.div>
+
+              {/* 基本信息 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Card className="p-4">
+                  <h3 className="text-base font-semibold mb-3">基本信息</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="font-medium text-gray-500">品类</span>
+                      <p className="text-gray-900 break-words">
+                        {product.category.primary}
+                        {product.category.secondary && ` / ${product.category.secondary}`}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-500">产地</span>
+                      <p className="text-gray-900">
+                        {product.origin.province}
+                        {product.origin.city && ` ${product.origin.city}`}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-500">平台</span>
+                      <p className="text-gray-900">{product.platform}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-500">规格</span>
+                      <p className="text-gray-900 break-words">{product.specification || '暂无'}</p>
+                    </div>
                   </div>
                 </Card>
               </motion.div>
@@ -345,7 +353,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.25 }}
               >
                 <ProductInfo product={product} compact />
               </motion.div>

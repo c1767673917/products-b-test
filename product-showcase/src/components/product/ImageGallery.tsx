@@ -131,11 +131,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
   return (
     <div className={className}>
       {/* 主图显示区域 */}
-      <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group">
+      <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] xl:aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden group shadow-sm">
         <LazyImage
           src={currentImage.url}
           alt={`${product.name} - ${currentImage.label}`}
-          className="w-full h-full object-cover cursor-zoom-in"
+          className="w-full h-full object-cover cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
           onClick={handleFullscreen}
         />
         
@@ -176,16 +176,16 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
 
       {/* 缩略图导航 */}
       {availableImages.length > 1 && (
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+        <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3 overflow-x-auto pb-2">
           {availableImages.map((image, index) => (
             <motion.button
               key={image.type}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
+              className={`relative flex-shrink-0 w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border-2 transition-all duration-200 shadow-sm ${
                 index === currentImageIndex
-                  ? 'border-blue-500'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-blue-500 shadow-md'
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
               }`}
               onClick={() => handleImageClick(index)}
             >
@@ -194,7 +194,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
                 alt={`${product.name} - ${image.label}`}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-1 py-0.5 text-center truncate">
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs px-1 py-1 text-center truncate">
                 {image.label}
               </div>
             </motion.button>

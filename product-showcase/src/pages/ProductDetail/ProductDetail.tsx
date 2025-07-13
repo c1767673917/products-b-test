@@ -231,19 +231,18 @@ const ProductDetail: React.FC = () => {
       </motion.div>
 
       {/* 主要内容 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* 左侧：图片画廊 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {/* 左侧：图片画廊 - 占据更大空间，移动端优先显示 */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-2 space-y-4 order-1"
           >
-            <Card className="p-4 sm:p-6">
-              <h2 className="text-lg font-semibold mb-4">产品图片</h2>
+            <Card className="p-3 sm:p-4 lg:p-6 shadow-sm">
               {!imagesPreloaded && (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                <div className="aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] xl:aspect-[3/2] bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                   <div className="text-center">
                     <Spinner size="md" />
                     <p className="text-sm text-gray-500 mt-2">图片加载中...</p>
@@ -258,13 +257,13 @@ const ProductDetail: React.FC = () => {
 
           {/* 右侧：产品信息 */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="space-y-4 sm:space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-1 space-y-4 sm:space-y-6 order-2"
           >
-            <Card className="p-4 sm:p-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 leading-tight">
+            <Card className="p-4 sm:p-6 shadow-sm">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 leading-tight">
                 {product.name}
               </h1>
               
@@ -273,20 +272,20 @@ const ProductDetail: React.FC = () => {
                 <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
                   {product.price.discount ? (
                     <>
-                      <span className="text-2xl sm:text-3xl font-bold text-red-600">
+                      <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">
                         ¥{product.price.discount.toFixed(2)}
                       </span>
-                      <span className="text-base sm:text-lg text-gray-500 line-through">
+                      <span className="text-sm sm:text-base lg:text-lg text-gray-500 line-through">
                         ¥{product.price.normal.toFixed(2)}
                       </span>
                       {product.price.discountRate && (
-                        <span className="bg-red-100 text-red-800 text-xs sm:text-sm font-medium px-2 py-1 rounded">
+                        <span className="bg-red-100 text-red-800 text-xs sm:text-sm font-medium px-2 py-1 rounded-full">
                           {(product.price.discountRate * 100).toFixed(0)}% OFF
                         </span>
                       )}
                     </>
                   ) : (
-                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                       ¥{product.price.normal.toFixed(2)}
                     </span>
                   )}
@@ -295,26 +294,26 @@ const ProductDetail: React.FC = () => {
 
               {/* 基本信息 */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">品类</span>
                     <p className="text-sm text-gray-900 break-words">
                       {product.category.primary}
                       {product.category.secondary && ` / ${product.category.secondary}`}
                     </p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">产地</span>
                     <p className="text-sm text-gray-900">
                       {product.origin.province}
                       {product.origin.city && ` ${product.origin.city}`}
                     </p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">平台</span>
                     <p className="text-sm text-gray-900">{product.platform}</p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">规格</span>
                     <p className="text-sm text-gray-900 break-words">{product.specification || '暂无'}</p>
                   </div>
@@ -323,7 +322,9 @@ const ProductDetail: React.FC = () => {
             </Card>
 
             {/* 详细信息面板 */}
-            <ProductInfo product={product} />
+            <div className="lg:sticky lg:top-20">
+              <ProductInfo product={product} />
+            </div>
           </motion.div>
         </div>
 
@@ -331,8 +332,8 @@ const ProductDetail: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-8 sm:mt-12"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-6 sm:mt-8 lg:mt-12 lg:col-span-3"
         >
           <RelatedProducts currentProduct={product} />
         </motion.div>
