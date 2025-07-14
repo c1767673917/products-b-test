@@ -119,6 +119,21 @@ const DataPreview: React.FC = () => {
                   <p className="text-sm text-gray-600 mb-2">
                     {product.category.primary}
                   </p>
+
+                  {/* 口味和规格信息 */}
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    {product.flavor && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
+                        {product.flavor}
+                      </span>
+                    )}
+                    {product.specification && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
+                        {product.specification}
+                      </span>
+                    )}
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div>
                       {product.price.discount ? (
@@ -141,7 +156,7 @@ const DataPreview: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
-                    {product.origin.province} · {product.specification}
+                    {product.origin.province}
                   </div>
                 </div>
               </div>

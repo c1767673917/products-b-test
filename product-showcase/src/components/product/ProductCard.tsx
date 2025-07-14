@@ -136,6 +136,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     </span>
                   )}
                 </div>
+                {/* 口味和规格信息 */}
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  {product.flavor && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
+                      {product.flavor}
+                    </span>
+                  )}
+                  {product.specification && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
+                      {product.specification}
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 mb-2">
                   {product.price.discount ? (
                     <>
@@ -326,11 +339,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
-        {product.specification && (
-          <div className="mt-auto text-xs text-gray-500 line-clamp-2 leading-relaxed">
-            {product.specification}
-          </div>
-        )}
+        {/* 口味和规格信息 */}
+        <div className="flex flex-wrap items-center gap-2 mb-2 flex-shrink-0">
+          {product.flavor && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
+              {product.flavor}
+            </span>
+          )}
+          {product.specification && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
+              {product.specification}
+            </span>
+          )}
+        </div>
       </div>
     </motion.div>
   );
