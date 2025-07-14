@@ -187,7 +187,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
             transformStyle: 'preserve-3d',
             width: `${currentWidth}px`
           }}
-          className="fixed top-0 right-0 bottom-0 bg-white border-l border-gray-200 z-50 overflow-hidden transform-gpu"
+          className="fixed top-0 right-0 bottom-0 bg-white border-l border-gray-200 z-50 flex flex-col transform-gpu"
           onKeyDown={handleKeyDown}
           tabIndex={-1}
         >
@@ -273,8 +273,8 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
           </div>
 
           {/* 内容区域 */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-4 space-y-6">
+          <div className="flex-scroll-container overflow-y-auto scrollbar-thin product-detail-scroll">
+            <div className="p-4 space-y-4">
               {/* 产品名称和价格 */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}

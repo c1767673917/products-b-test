@@ -185,7 +185,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
 
   return (
     <div className={className}>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {sections.map((section, index) => {
           const sectionKey = section.title.toLowerCase().replace(/\s+/g, '-');
           const isExpanded = expandedSections.has(sectionKey);
@@ -194,13 +194,13 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
             <Card key={sectionKey} className="overflow-hidden">
               <button
                 onClick={() => toggleSection(sectionKey)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <div className="text-blue-600">
                     {section.icon}
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-base font-semibold text-gray-900">
                     {section.title}
                   </h3>
                 </div>
@@ -208,7 +208,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
                   animate={{ rotate: isExpanded ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+                  <ChevronDownIcon className="h-4 w-4 text-gray-400" />
                 </motion.div>
               </button>
               
@@ -221,8 +221,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="overflow-hidden"
               >
-                <div className="px-6 pb-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="px-4 pb-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {section.items.map((item, itemIndex) => (
                       <motion.div
                         key={item.label}
@@ -249,38 +249,38 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
 
       {/* 价格分析卡片 */}
       {product.price.discount && (
-        <Card className="mt-6 p-6 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <TagIcon className="h-5 w-5 text-green-600 mr-2" />
+        <Card className="mt-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+          <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center">
+            <TagIcon className="h-4 w-4 text-green-600 mr-2" />
             价格分析
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl font-bold text-gray-900">
                 ¥{product.price.normal.toFixed(2)}
               </div>
-              <div className="text-sm text-gray-600">原价</div>
+              <div className="text-xs text-gray-600">原价</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-xl font-bold text-green-600">
                 ¥{product.price.discount.toFixed(2)}
               </div>
-              <div className="text-sm text-gray-600">现价</div>
+              <div className="text-xs text-gray-600">现价</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-xl font-bold text-red-600">
                 ¥{(product.price.normal - product.price.discount).toFixed(2)}
               </div>
-              <div className="text-sm text-gray-600">节省</div>
+              <div className="text-xs text-gray-600">节省</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-xl font-bold text-orange-600">
                 {product.price.discountRate
                   ? `${product.price.discountRate.toFixed(0)}%`
                   : `${Math.round((1 - product.price.discount / product.price.normal) * 100)}%`
                 }
               </div>
-              <div className="text-sm text-gray-600">折扣</div>
+              <div className="text-xs text-gray-600">折扣</div>
             </div>
           </div>
         </Card>

@@ -375,7 +375,7 @@ const ProductDetail: React.FC = () => {
             </Card>
 
             {/* 详细信息面板 */}
-            <div className="lg:sticky lg:top-20">
+            <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-thin product-detail-scroll">
               <ProductInfo product={product} />
             </div>
           </motion.div>
