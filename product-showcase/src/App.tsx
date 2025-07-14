@@ -25,6 +25,7 @@ const ApiDemo = React.lazy(() =>
   }))
 );
 const PerformanceDemo = React.lazy(() => import('./pages/PerformanceDemo'));
+const TestResponsiveGrid = React.lazy(() => import('./pages/TestResponsiveGrid'));
 
 // 简单的调试组件
 const DebugPage: React.FC = () => {
@@ -136,6 +137,18 @@ const AnimatedRoutes: React.FC = () => {
               <PageTransitionWrapper type="fade">
                 <DebugPage />
               </PageTransitionWrapper>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/test-responsive-grid"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <TestResponsiveGrid />
+                </PageTransitionWrapper>
+              </Suspense>
             </ErrorBoundary>
           }
         />

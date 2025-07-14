@@ -180,7 +180,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
           {/* 页码按钮 */}
           <div className="flex items-center space-x-1">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               {pageNumbers.map((page, index) => (
                 <motion.div
                   key={`${page}-${index}`}

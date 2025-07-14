@@ -178,11 +178,11 @@ export const usePerformanceOptimization = () => {
     applyOptimizations(score);
     preloadCriticalResources();
     optimizeImageLoading();
-    
+
     const cleanup = monitorPerformance();
-    
+
     return cleanup;
-  }, [detectDevicePerformance, applyOptimizations, preloadCriticalResources, optimizeImageLoading, monitorPerformance]);
+  }, []); // 移除函数依赖，因为这些函数使用useCallback包装且不依赖外部状态
 
   // 获取性能报告
   const getPerformanceReport = useCallback((): PerformanceReport => {

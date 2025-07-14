@@ -74,6 +74,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ className 
           <>
             {/* 背景遮罩 */}
             <motion.div
+              key="backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -83,6 +84,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ className 
 
             {/* 设置面板 */}
             <motion.div
+              key="panel"
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}

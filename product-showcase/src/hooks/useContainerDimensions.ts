@@ -56,7 +56,7 @@ export const useContainerDimensions = () => {
         resizeObserverRef.current = null;
       }
     };
-  }, [updateDimensions]);
+  }, []); // 移除updateDimensions依赖，因为它是稳定的useCallback
 
   return {
     containerRef,

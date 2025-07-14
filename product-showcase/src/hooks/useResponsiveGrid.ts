@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 interface ResponsiveGridOptions {
   minCardWidth?: number;
@@ -36,29 +36,36 @@ export const useResponsiveGrid = (
     gapClass: 'gap-4'
   });
 
-  const config = { ...DEFAULT_OPTIONS, ...options };
+  // 使用useMemo来稳定config对象，避免每次重新创建
+  const config = useMemo(() => {
+    const result = { ...DEFAULT_OPTIONS, ...options };
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 useResponsiveGrid config 重新计算:', result);
+    }
+    return result;
+  }, [
+    options.minCardWidth,
+    options.maxColumns,
+    options.gap,
+    options.padding
+  ]); // 使用具体的属性作为依赖，而不是整个options对象
 
+  // 计算网格布局的纯函数，用于手动刷新
   const calculateGrid = useCallback(() => {
-    // 计算可用宽度
     let availableWidth = containerWidth - config.padding;
-    
-    // 如果详情面板打开，减去面板宽度
+
     if (isDetailPanelOpen) {
       availableWidth = availableWidth - panelWidth;
     }
 
-    // 确保最小宽度
     availableWidth = Math.max(availableWidth, config.minCardWidth);
 
-    // 计算最佳列数
     const possibleColumns = Math.floor((availableWidth + config.gap) / (config.minCardWidth + config.gap));
     const columns = Math.min(Math.max(1, possibleColumns), config.maxColumns);
 
-    // 计算实际卡片宽度
     const totalGapWidth = (columns - 1) * config.gap;
     const cardWidth = (availableWidth - totalGapWidth) / columns;
 
-    // 生成对应的 CSS 类名
     const gridClass = `grid-cols-${columns}`;
     const gapClass = config.gap <= 12 ? 'gap-3' : config.gap <= 16 ? 'gap-4' : 'gap-6';
 
@@ -72,9 +79,44 @@ export const useResponsiveGrid = (
   }, [containerWidth, panelWidth, isDetailPanelOpen, config]);
 
   useEffect(() => {
-    const newCalculation = calculateGrid();
+    // 添加调试信息（开发环境）
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔄 useResponsiveGrid useEffect 触发:', {
+        containerWidth,
+        panelWidth,
+        isDetailPanelOpen,
+        config
+      });
+    }
+
+    // 直接在useEffect中计算，避免函数依赖
+    let availableWidth = containerWidth - config.padding;
+
+    if (isDetailPanelOpen) {
+      availableWidth = availableWidth - panelWidth;
+    }
+
+    availableWidth = Math.max(availableWidth, config.minCardWidth);
+
+    const possibleColumns = Math.floor((availableWidth + config.gap) / (config.minCardWidth + config.gap));
+    const columns = Math.min(Math.max(1, possibleColumns), config.maxColumns);
+
+    const totalGapWidth = (columns - 1) * config.gap;
+    const cardWidth = (availableWidth - totalGapWidth) / columns;
+
+    const gridClass = `grid-cols-${columns}`;
+    const gapClass = config.gap <= 12 ? 'gap-3' : config.gap <= 16 ? 'gap-4' : 'gap-6';
+
+    const newCalculation = {
+      columns,
+      cardWidth,
+      availableWidth,
+      gridClass,
+      gapClass
+    };
+
     setGridCalculation(newCalculation);
-  }, [calculateGrid]);
+  }, [containerWidth, panelWidth, isDetailPanelOpen, config]); // 只依赖原始值
 
   // 获取响应式断点类名
   const getResponsiveGridClass = useCallback(() => {

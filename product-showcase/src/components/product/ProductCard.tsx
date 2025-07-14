@@ -59,13 +59,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
     onQuickAction?.('compare');
   };
 
-  // 处理查看详情
+  // 处理查看详情 - 优先使用右侧面板显示，保持左右分屏布局
   const handleViewDetail = () => {
-    // 使用原生的 navigate 直接跳转，避免复杂的动画冲突
-    navigate(`/products/${product.id}`);
-    
-    // 如果有自定义处理函数，也调用它
-    onQuickAction?.('detail');
+    if (onQuickAction) {
+      // 如果有 onQuickAction 回调，优先使用右侧详情面板
+      onQuickAction('detail');
+    } else {
+      // 如果没有 onQuickAction 回调（如相关产品），使用路由导航作为备用方案
+      navigate(`/products/${product.id}`);
+    }
   };
 
   // 计算折扣率

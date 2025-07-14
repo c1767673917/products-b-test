@@ -76,11 +76,13 @@ export const ProductListWithQuery: React.FC = () => {
   }, []);
 
   // 获取响应式网格计算 - 需要考虑详情面板占用的空间
-  const effectiveContainerWidth = isDetailPanelOpen && !isMobile 
-    ? Math.max(dimensions.width - preferences.width - 32, 300) // 减去面板宽度和间距，最小300px
-    : dimensions.width;
+  const effectiveContainerWidth = useMemo(() => {
+    return isDetailPanelOpen && !isMobile
+      ? Math.max(dimensions.width - preferences.width - 32, 300) // 减去面板宽度和间距，最小300px
+      : dimensions.width;
+  }, [isDetailPanelOpen, isMobile, dimensions.width, preferences.width]);
 
-  // 添加调试日志 (仅开发环境)
+  // 添加调试日志 (仅开发环境) - 移除effectiveContainerWidth依赖避免循环
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('📐 容器宽度计算:', {
@@ -91,7 +93,15 @@ export const ProductListWithQuery: React.FC = () => {
         是否移动端: isMobile
       });
     }
-  }, [dimensions.width, preferences.width, isDetailPanelOpen, effectiveContainerWidth, isMobile]);
+  }, [dimensions.width, preferences.width, isDetailPanelOpen, isMobile]); // 移除effectiveContainerWidth依赖
+
+  // 使用useMemo稳定options对象，避免每次重新创建
+  const gridOptions = useMemo(() => ({
+    minCardWidth: viewMode === 'grid' ? 180 : 300,
+    maxColumns: viewMode === 'grid' ? 6 : 1,
+    gap: viewMode === 'grid' ? 16 : 16,
+    padding: 64 // 容器左右padding
+  }), [viewMode]);
 
   const {
     getResponsiveGridClass,
@@ -103,12 +113,7 @@ export const ProductListWithQuery: React.FC = () => {
     effectiveContainerWidth, // 使用有效的容器宽度
     0, // 面板宽度影响已在上面计算
     false, // 不需要再次考虑面板状态
-    {
-      minCardWidth: viewMode === 'grid' ? 180 : 300,
-      maxColumns: viewMode === 'grid' ? 6 : 1,
-      gap: viewMode === 'grid' ? 16 : 16,
-      padding: 64 // 容器左右padding
-    }
+    gridOptions
   );
 
   // 添加网格计算结果调试日志 (仅开发环境)
@@ -487,6 +492,7 @@ export const ProductListWithQuery: React.FC = () => {
               <>
                 {/* 背景遮罩 */}
                 <motion.div
+                  key="mobile-filter-backdrop"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -496,11 +502,12 @@ export const ProductListWithQuery: React.FC = () => {
 
                 {/* 底部抽屉 */}
                 <motion.div
+                  key="mobile-filter-drawer"
                   initial={{ y: '100%' }}
                   animate={{ y: 0 }}
                   exit={{ y: '100%' }}
-                  transition={{ 
-                    type: 'tween', 
+                  transition={{
+                    type: 'tween',
                     duration: 0.2,
                     ease: [0.25, 0.46, 0.45, 0.94]
                   }}
