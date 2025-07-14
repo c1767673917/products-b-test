@@ -1,5 +1,6 @@
 // 使用React Query的产品列表页面
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Squares2X2Icon,
@@ -27,6 +28,7 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useResponsiveGrid } from '../../hooks/useResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import LayoutDebugger from '../../components/debug/LayoutDebugger';
+import { PageNavigation } from '../../components/layout/PageNavigation';
 import { cn } from '../../utils/cn';
 
 // 初始筛选状态
@@ -39,6 +41,9 @@ const initialFilters: FilterState = {
 };
 
 export const ProductListWithQuery: React.FC = () => {
+  // 路由状态
+  const location = useLocation();
+
   // 本地状态
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortOption, setSortOption] = useState<'name' | 'price-asc' | 'price-desc' | 'collect-time'>('name');
@@ -366,18 +371,15 @@ export const ProductListWithQuery: React.FC = () => {
       {/* 滚动进度条 */}
       <ScrollProgress />
 
-      {/* 顶部工具栏 */}
-      <div className="bg-white shadow-sm border-b sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
-            {/* 左侧：标题 */}
-            <div className="flex items-center space-x-4">
-              <h1 className="text-lg font-semibold text-gray-900">
-                产品展示 (React Query版本)
-              </h1>
-            </div>
+      {/* 页面导航 */}
+      <PageNavigation title="Product display" />
 
+      {/* 顶部工具栏 */}
+      <div className="bg-white shadow-sm border-b sticky top-12 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-end h-12">
             {/* 右侧：操作按钮 */}
+
             <div className="flex items-center space-x-2">
               <Button
                 variant="ghost"

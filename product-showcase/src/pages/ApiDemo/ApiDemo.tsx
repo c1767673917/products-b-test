@@ -18,6 +18,7 @@ import { Input } from '../../components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Loading';
 import { useToast } from '../../components/ui/ToastNotification';
+import { PageNavigation } from '../../components/layout/PageNavigation';
 
 export const ApiDemo: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<string>('');
@@ -77,20 +78,14 @@ export const ApiDemo: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            API集成和状态管理演示
-          </h1>
-          <p className="text-gray-600">
-            展示React Query、Zustand状态管理和缓存策略的集成效果
-          </p>
-        </motion.div>
+    <div className="min-h-screen bg-gray-50">
+      {/* 页面导航 */}
+      <PageNavigation
+        title="API集成和状态管理演示"
+        subtitle="展示React Query、Zustand状态管理和缓存策略的集成效果"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 左侧：API状态和缓存信息 */}
