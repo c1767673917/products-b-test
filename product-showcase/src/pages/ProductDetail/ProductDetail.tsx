@@ -333,7 +333,7 @@ const ProductDetail: React.FC = () => {
                       </span>
                       {product.price.discountRate && (
                         <span className="bg-red-100 text-red-800 text-xs sm:text-sm font-medium px-2 py-1 rounded-full">
-                          {(product.price.discountRate * 100).toFixed(0)}% OFF
+                          {product.price.discountRate.toFixed(0)}% OFF
                         </span>
                       )}
                     </>

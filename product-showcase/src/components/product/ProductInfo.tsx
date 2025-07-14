@@ -275,8 +275,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">
-                {product.price.discountRate 
-                  ? `${(product.price.discountRate * 100).toFixed(0)}%`
+                {product.price.discountRate
+                  ? `${product.price.discountRate.toFixed(0)}%`
                   : `${Math.round((1 - product.price.discount / product.price.normal) * 100)}%`
                 }
               </div>

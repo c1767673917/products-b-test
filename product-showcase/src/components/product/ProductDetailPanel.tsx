@@ -306,7 +306,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                         </span>
                         {product.price.discountRate && (
                           <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
-                            {(product.price.discountRate * 100).toFixed(0)}% OFF
+                            {product.price.discountRate.toFixed(0)}% OFF
                           </span>
                         )}
                       </>

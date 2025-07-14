@@ -70,8 +70,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  // 计算折扣率
+  // 计算折扣率 - 优先使用数据中的discountRate，否则实时计算
   const getDiscountRate = () => {
+    if (product.price.discountRate) {
+      return product.price.discountRate;
+    }
     if (product.price.discount && product.price.normal) {
       return Math.round((1 - product.price.discount / product.price.normal) * 100);
     }
