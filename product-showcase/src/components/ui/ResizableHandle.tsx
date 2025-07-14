@@ -70,7 +70,7 @@ const ResizableHandle: React.FC<ResizableHandleProps> = ({
   return (
     <div
       ref={handleRef}
-      className={`absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-500 transition-colors duration-200 group ${className}`}
+      className={`absolute -left-8 top-0 bottom-0 w-8 cursor-col-resize hover:bg-blue-500 hover:bg-opacity-15 transition-colors duration-200 group ${className}`}
       onMouseDown={handleMouseDown}
     >
       {/* 可视化拖拽指示器 */}

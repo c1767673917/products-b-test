@@ -98,13 +98,19 @@ export const ProductListWithQuery: React.FC = () => {
   // 添加调试日志 (仅开发环境)
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
+      const paddingRightValue = isDetailPanelOpen && !isMobile
+        ? Math.max(realTimePanelWidth - 120, 16)
+        : 16; // 1rem ≈ 16px
+
       console.log('📐 容器宽度计算:', {
         原始容器宽度: dimensions.width,
         偏好面板宽度: preferences.width,
         实时面板宽度: realTimePanelWidth,
         面板状态: isDetailPanelOpen,
         有效容器宽度: effectiveContainerWidth,
-        是否移动端: isMobile
+        是否移动端: isMobile,
+        实际paddingRight: `${paddingRightValue}px`,
+        间距计算: `${realTimePanelWidth} - 120 = ${realTimePanelWidth - 120}px (最小16px)`
       });
     }
   }, [dimensions.width, preferences.width, realTimePanelWidth, isDetailPanelOpen, effectiveContainerWidth, isMobile]);
@@ -454,26 +460,25 @@ export const ProductListWithQuery: React.FC = () => {
       </div>
 
       {/* 主要内容区域 */}
-      <div 
+      <div
         ref={containerRef}
         className={cn(
           "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-200 ease-out transform-gpu",
           isDetailPanelOpen && !isMobile ? "lg:pr-4" : ""
         )}
         style={{
-          willChange: 'margin-right, padding'
+          paddingRight: isDetailPanelOpen && !isMobile
+            ? `${Math.max(realTimePanelWidth - 120, 16)}px`
+            : '1rem',
+          willChange: 'padding-right',
+          transition: 'padding-right 0.1s ease-out' // 添加平滑过渡
         }}
       >
-        <div 
+        <div
           className={cn(
             "flex flex-col lg:flex-row gap-8 transition-all duration-200 ease-out transform-gpu",
             isDetailPanelOpen && isMobile ? "hidden" : ""
           )}
-          style={{
-            marginRight: isDetailPanelOpen && !isMobile ? `${realTimePanelWidth + 16}px` : '0',
-            willChange: 'margin-right',
-            transition: 'margin-right 0.1s ease-out' // 添加平滑过渡
-          }}
         >
           {/* 桌面端筛选面板 */}
           <AnimatePresence>
