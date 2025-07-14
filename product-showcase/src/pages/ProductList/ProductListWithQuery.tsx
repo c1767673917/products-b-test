@@ -118,10 +118,11 @@ export const ProductListWithQuery: React.FC = () => {
   // 使用useMemo稳定options对象，避免每次重新创建
   const gridOptions = useMemo(() => ({
     minCardWidth: viewMode === 'grid' ? 180 : 300,
-    maxColumns: viewMode === 'grid' ? 6 : 1,
+    maxColumns: viewMode === 'grid' ? (isDetailPanelOpen ? 6 : 5) : 1, // 未打开详情页时默认最大5列
     gap: viewMode === 'grid' ? 16 : 16,
-    padding: 64 // 容器左右padding
-  }), [viewMode]);
+    padding: 64, // 容器左右padding
+    maxCardWidth: viewMode === 'grid' ? 220 : 600 // 调整为更合理的最大卡片宽度
+  }), [viewMode, isDetailPanelOpen]);
 
   // 使用新的实时响应式网格 hook
   const {
