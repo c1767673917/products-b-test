@@ -1,5 +1,5 @@
 // 使用React Query的产品列表页面
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,6 +14,7 @@ import {
 import type { Product, FilterState } from '../../types/product';
 import ProductCard from '../../components/product/ProductCard';
 import ProductDetailPanel from '../../components/product/ProductDetailPanel';
+import ResponsiveProductGrid from '../../components/product/ResponsiveProductGrid';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Loading';
@@ -26,6 +27,7 @@ import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useResponsiveGrid } from '../../hooks/useResponsiveGrid';
+import { useRealTimeResponsiveGrid } from '../../hooks/useRealTimeResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import LayoutDebugger from '../../components/debug/LayoutDebugger';
 import { PageNavigation } from '../../components/layout/PageNavigation';
@@ -57,6 +59,7 @@ export const ProductListWithQuery: React.FC = () => {
   const [compareList, setCompareList] = useState<string[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
+  const [realTimePanelWidth, setRealTimePanelWidth] = useState(400); // 实时面板宽度
   const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
   const { showSuccess, showError, showInfo } = useToast();
   const { preferences } = usePanelPreferences();
@@ -75,25 +78,36 @@ export const ProductListWithQuery: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // 获取响应式网格计算 - 需要考虑详情面板占用的空间
+  // 初始化实时面板宽度
+  useEffect(() => {
+    setRealTimePanelWidth(preferences.width);
+  }, [preferences.width]);
+
+  // 处理面板宽度实时变化
+  const handlePanelWidthChange = useCallback((width: number) => {
+    setRealTimePanelWidth(width);
+  }, []);
+
+  // 获取响应式网格计算 - 使用实时面板宽度
   const effectiveContainerWidth = useMemo(() => {
     return isDetailPanelOpen && !isMobile
-      ? Math.max(dimensions.width - preferences.width - 32, 300) // 减去面板宽度和间距，最小300px
+      ? Math.max(dimensions.width - realTimePanelWidth - 32, 300) // 使用实时宽度
       : dimensions.width;
-  }, [isDetailPanelOpen, isMobile, dimensions.width, preferences.width]);
+  }, [isDetailPanelOpen, isMobile, dimensions.width, realTimePanelWidth]);
 
-  // 添加调试日志 (仅开发环境) - 移除effectiveContainerWidth依赖避免循环
+  // 添加调试日志 (仅开发环境)
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('📐 容器宽度计算:', {
         原始容器宽度: dimensions.width,
-        面板宽度: preferences.width,
+        偏好面板宽度: preferences.width,
+        实时面板宽度: realTimePanelWidth,
         面板状态: isDetailPanelOpen,
         有效容器宽度: effectiveContainerWidth,
         是否移动端: isMobile
       });
     }
-  }, [dimensions.width, preferences.width, isDetailPanelOpen, isMobile]); // 移除effectiveContainerWidth依赖
+  }, [dimensions.width, preferences.width, realTimePanelWidth, isDetailPanelOpen, effectiveContainerWidth, isMobile]);
 
   // 使用useMemo稳定options对象，避免每次重新创建
   const gridOptions = useMemo(() => ({
@@ -103,16 +117,17 @@ export const ProductListWithQuery: React.FC = () => {
     padding: 64 // 容器左右padding
   }), [viewMode]);
 
+  // 使用新的实时响应式网格 hook
   const {
     getResponsiveGridClass,
     columns,
     cardWidth,
     availableWidth,
     debug
-  } = useResponsiveGrid(
-    effectiveContainerWidth, // 使用有效的容器宽度
-    0, // 面板宽度影响已在上面计算
-    false, // 不需要再次考虑面板状态
+  } = useRealTimeResponsiveGrid(
+    dimensions.width, // 使用原始容器宽度
+    realTimePanelWidth, // 使用实时面板宽度
+    isDetailPanelOpen, // 面板状态
     gridOptions
   );
 
@@ -455,8 +470,9 @@ export const ProductListWithQuery: React.FC = () => {
             isDetailPanelOpen && isMobile ? "hidden" : ""
           )}
           style={{
-            marginRight: isDetailPanelOpen && !isMobile ? `${preferences.width + 16}px` : '0',
-            willChange: 'margin-right'
+            marginRight: isDetailPanelOpen && !isMobile ? `${realTimePanelWidth + 16}px` : '0',
+            willChange: 'margin-right',
+            transition: 'margin-right 0.1s ease-out' // 添加平滑过渡
           }}
         >
           {/* 桌面端筛选面板 */}
@@ -600,9 +616,9 @@ export const ProductListWithQuery: React.FC = () => {
             {process.env.NODE_ENV === 'development' && (
               <LayoutDebugger
                 containerWidth={dimensions.width}
-                panelWidth={preferences.width}
+                panelWidth={realTimePanelWidth}
                 isDetailPanelOpen={isDetailPanelOpen}
-                availableWidth={effectiveContainerWidth}
+                availableWidth={availableWidth}
                 columns={columns}
                 cardWidth={cardWidth}
                 gridClass={getResponsiveGridClass()}
@@ -629,15 +645,12 @@ export const ProductListWithQuery: React.FC = () => {
             ) : (
               <>
                 <ScrollStagger staggerDelay={0.05}>
-                  <motion.div
-                    className={cn(
-                      'mb-8',
-                      viewMode === 'grid' 
-                        ? getResponsiveGridClass()
-                        : 'grid grid-cols-1 gap-4'
-                    )}
-                  >
-                    <AnimatePresence>
+                  {viewMode === 'grid' ? (
+                    <ResponsiveProductGrid
+                      gridClass={getResponsiveGridClass()}
+                      columns={columns}
+                      cardWidth={cardWidth}
+                    >
                       {paginatedProducts.map((product) => (
                         <ProductCard
                           key={product.id}
@@ -648,8 +661,25 @@ export const ProductListWithQuery: React.FC = () => {
                           isInCompare={compareList.includes(product.id)}
                         />
                       ))}
-                    </AnimatePresence>
-                  </motion.div>
+                    </ResponsiveProductGrid>
+                  ) : (
+                    <motion.div
+                      className="mb-8 grid grid-cols-1 gap-4"
+                    >
+                      <AnimatePresence>
+                        {paginatedProducts.map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            layout={viewMode}
+                            onQuickAction={(action) => handleProductAction(product, action)}
+                            isFavorited={favorites.includes(product.id)}
+                            isInCompare={compareList.includes(product.id)}
+                          />
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
                 </ScrollStagger>
 
                 {/* 分页 */}
@@ -680,6 +710,7 @@ export const ProductListWithQuery: React.FC = () => {
         onClose={handleCloseDetailPanel}
         onNavigate={handleProductNavigation}
         canNavigate={canNavigate}
+        onWidthChange={handlePanelWidthChange}
       />
     </div>
   );

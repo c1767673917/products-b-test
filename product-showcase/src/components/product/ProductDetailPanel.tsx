@@ -30,6 +30,7 @@ interface ProductDetailPanelProps {
     prev: boolean;
     next: boolean;
   };
+  onWidthChange?: (width: number) => void; // 实时宽度变化回调
 }
 
 const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
@@ -37,7 +38,8 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   isOpen,
   onClose,
   onNavigate,
-  canNavigate
+  canNavigate,
+  onWidthChange
 }) => {
   const { showSuccess, showError, showInfo } = useToast();
   const [isImageLoading, setIsImageLoading] = useState(true);
@@ -57,6 +59,15 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   const handleWidthChange = (newWidth: number) => {
     setCurrentWidth(newWidth);
     setPanelWidth(newWidth);
+  };
+
+  // 处理拖拽过程中的实时宽度变化
+  const handleWidthResizing = (newWidth: number) => {
+    setCurrentWidth(newWidth);
+    // 通知父组件实时宽度变化
+    if (onWidthChange) {
+      onWidthChange(newWidth);
+    }
   };
 
   // 同步偏好设置的宽度
@@ -183,6 +194,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
           {/* 左侧拖拽手柄 */}
           <ResizableHandle
             onResize={handleWidthChange}
+            onResizing={handleWidthResizing}
             minWidth={300}
             maxWidth={Math.min(800, window.innerWidth * 0.8)}
           />

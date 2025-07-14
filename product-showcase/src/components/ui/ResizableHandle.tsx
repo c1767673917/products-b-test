@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface ResizableHandleProps {
   onResize: (width: number) => void;
+  onResizing?: (width: number) => void; // 拖拽过程中的实时回调
   minWidth?: number;
   maxWidth?: number;
   className?: string;
@@ -9,6 +10,7 @@ interface ResizableHandleProps {
 
 const ResizableHandle: React.FC<ResizableHandleProps> = ({
   onResize,
+  onResizing,
   minWidth = 300,
   maxWidth = 800,
   className = ''
@@ -36,9 +38,14 @@ const ResizableHandle: React.FC<ResizableHandleProps> = ({
 
     const deltaX = e.clientX - startX;
     const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidth - deltaX));
-    
+
+    // 拖拽过程中的实时回调
+    if (onResizing) {
+      onResizing(newWidth);
+    }
+
     onResize(newWidth);
-  }, [isDragging, startX, startWidth, minWidth, maxWidth, onResize]);
+  }, [isDragging, startX, startWidth, minWidth, maxWidth, onResize, onResizing]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
