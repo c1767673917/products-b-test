@@ -7,7 +7,7 @@ import { CategoryFilter } from './CategoryFilter';
 import { LocationFilter } from './LocationFilter';
 import { PlatformFilter } from './PlatformFilter';
 import { cn } from '../../utils/cn';
-import { useProductStore } from '../../stores/productStore';
+import { useProductStore, FilterState } from '../../stores/productStore';
 import { 
   FunnelIcon, 
   XMarkIcon,
@@ -17,9 +17,9 @@ import {
 } from '@heroicons/react/24/outline';
 
 export interface FilterPanelProps {
-  filters: any;
-  onFiltersChange: (filters: any) => void;
-  onClearFilters: () => void;
+  filters?: FilterState;
+  onFiltersChange?: (filters: FilterState) => void;
+  onClearFilters?: () => void;
   className?: string;
   collapsible?: boolean;
   defaultCollapsed?: boolean;
@@ -47,7 +47,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const clearFilters = propOnClearFilters || storeClearFilters;
   
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   // 计算活跃筛选器数量
   const activeFiltersCount = React.useMemo(() => {
@@ -61,10 +60,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   }, [filters]);
 
   const hasActiveFilters = activeFiltersCount > 0;
-
-  const toggleSection = (section: string) => {
-    setActiveSection(activeSection === section ? null : section);
-  };
 
   const handlePriceChange = (range: [number, number]) => {
     setFilters({ priceRange: range });
@@ -84,7 +79,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
   const handleClearFilters = () => {
     clearFilters();
-    setActiveSection(null);
   };
 
   return (
@@ -173,7 +167,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <PriceFilter
                 value={filters.priceRange}
                 onChange={handlePriceChange}
-                isMobile={isMobile}
+                defaultCollapsed={true}
               />
             </motion.div>
 
@@ -187,7 +181,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <CategoryFilter
                 value={filters.categories}
                 onChange={handleCategoryChange}
-                isMobile={isMobile}
+                defaultCollapsed={true}
               />
             </motion.div>
 
@@ -201,7 +195,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <LocationFilter
                 value={filters.locations}
                 onChange={handleLocationChange}
-                isMobile={isMobile}
+                defaultCollapsed={true}
               />
             </motion.div>
 
@@ -215,7 +209,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <PlatformFilter
                 value={filters.platforms}
                 onChange={handlePlatformChange}
-                isMobile={isMobile}
+                defaultCollapsed={true}
               />
             </motion.div>
 
