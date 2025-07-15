@@ -372,26 +372,16 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                   <h3 className="text-base font-semibold mb-3">基本信息</h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <span className="font-medium text-gray-500">品类</span>
-                      <p className="text-gray-900 break-words">
-                        {product.category.primary}
-                        {product.category.secondary && ` / ${product.category.secondary}`}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-500">产地</span>
-                      <p className="text-gray-900">
-                        {product.origin.province}
-                        {product.origin.city && ` ${product.origin.city}`}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-500">平台</span>
-                      <p className="text-gray-900">{product.platform}</p>
-                    </div>
-                    <div>
                       <span className="font-medium text-gray-500">规格</span>
                       <p className="text-gray-900 break-words">{product.specification || '暂无'}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-500">口味</span>
+                      <p className="text-gray-900 break-words">{product.flavor || '暂无'}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-500">包装规格</span>
+                      <p className="text-gray-900 break-words">{product.boxSpec || '暂无'}</p>
                     </div>
                   </div>
                 </Card>

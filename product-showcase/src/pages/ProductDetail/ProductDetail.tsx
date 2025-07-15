@@ -25,7 +25,7 @@ import {
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { showToast } = useToast();
+  const { showSuccess, showError, showInfo } = useToast();
   const { shouldEnableAnimation } = useAnimationPreferences();
   
   const { 
@@ -34,13 +34,12 @@ const ProductDetail: React.FC = () => {
     compareList,
     toggleFavorite, 
     addToCompare, 
-    removeFromCompare,
-    isLoading 
+    removeFromCompare
   } = useProductStore();
   
+  const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   // 响应式动画配置
   const responsiveConfig = getResponsiveAnimationConfig(screenWidth);
@@ -57,16 +56,19 @@ const ProductDetail: React.FC = () => {
       const foundProduct = products.find(p => p.id === id);
       if (foundProduct) {
         setProduct(foundProduct);
+        setIsLoading(false);
         // 设置页面标题
         document.title = `${foundProduct.name} - 产品详情`;
         // 预加载图片
         preloadImages(foundProduct);
       } else {
-        showToast('产品未找到', 'error');
+        showError('产品未找到');
         navigate('/products');
       }
+    } else if (products.length === 0) {
+      setIsLoading(true);
     }
-  }, [id, products, navigate, showToast]);
+  }, [id, products, navigate, showError]);
 
   // 图片预加载函数
   const preloadImages = (product: Product) => {
@@ -106,9 +108,8 @@ const ProductDetail: React.FC = () => {
     if (product) {
       toggleFavorite(product.id);
       const isFavorited = favorites.includes(product.id);
-      showToast(
-        isFavorited ? '已取消收藏' : '已添加到收藏',
-        isFavorited ? 'info' : 'success'
+      showSuccess(
+        isFavorited ? '已取消收藏' : '已添加到收藏'
       );
     }
   };
@@ -118,14 +119,14 @@ const ProductDetail: React.FC = () => {
       const isInCompare = compareList.includes(product.id);
       if (isInCompare) {
         removeFromCompare(product.id);
-        showToast('已从对比列表移除', 'info');
+        showInfo('已从对比列表移除');
       } else {
         if (compareList.length >= 4) {
-          showToast('对比列表最多只能添加4个产品', 'warning');
+          showError('对比列表最多只能添加4个产品');
           return;
         }
         addToCompare(product.id);
-        showToast('已添加到对比列表', 'success');
+        showSuccess('已添加到对比列表');
       }
     }
   };
@@ -141,7 +142,7 @@ const ProductDetail: React.FC = () => {
       } catch (err) {
         // 如果不支持原生分享，复制链接到剪贴板
         navigator.clipboard.writeText(window.location.href);
-        showToast('链接已复制到剪贴板', 'success');
+        showSuccess('链接已复制到剪贴板');
       }
     }
   };
@@ -349,26 +350,16 @@ const ProductDetail: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">品类</span>
-                    <p className="text-sm text-gray-900 break-words">
-                      {product.category.primary}
-                      {product.category.secondary && ` / ${product.category.secondary}`}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">产地</span>
-                    <p className="text-sm text-gray-900">
-                      {product.origin.province}
-                      {product.origin.city && ` ${product.origin.city}`}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">平台</span>
-                    <p className="text-sm text-gray-900">{product.platform}</p>
-                  </div>
-                  <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">规格</span>
                     <p className="text-sm text-gray-900 break-words">{product.specification || '暂无'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-sm font-medium text-gray-500">口味</span>
+                    <p className="text-sm text-gray-900 break-words">{product.flavor || '暂无'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-sm font-medium text-gray-500">包装规格</span>
+                    <p className="text-sm text-gray-900 break-words">{product.boxSpec || '暂无'}</p>
                   </div>
                 </div>
               </div>

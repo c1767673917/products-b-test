@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ChevronDownIcon, 
-  ChevronUpIcon,
   TagIcon,
   MapPinIcon,
   BuildingStorefrontIcon,
   CubeIcon,
-  SparklesIcon,
-  UserIcon,
-  CalendarIcon,
-  LinkIcon,
-  InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { Product } from '../../types/product';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
 
 interface ProductInfoProps {
   product: Product;
@@ -33,10 +26,34 @@ interface InfoSection {
   }>;
 }
 
+const SECTION_STORAGE_KEY = 'product-info-sections-state';
+
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact = false }) => {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['basic', 'price'])
-  );
+  // 从 localStorage 加载状态，默认全部展开
+  const loadSectionsState = (): Set<string> => {
+    try {
+      const saved = localStorage.getItem(SECTION_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return new Set(parsed);
+      }
+    } catch (error) {
+      console.warn('Failed to load sections state from localStorage:', error);
+    }
+    // 默认全部展开
+    return new Set(['price', 'origin', 'category', 'sales']);
+  };
+
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(loadSectionsState);
+
+  // 保存状态到 localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(Array.from(expandedSections)));
+    } catch (error) {
+      console.warn('Failed to save sections state to localStorage:', error);
+    }
+  }, [expandedSections]);
 
   const toggleSection = (sectionKey: string) => {
     const newExpanded = new Set(expandedSections);
@@ -65,27 +82,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
     }
   };
 
-  const formatDate = (timestamp: number): string => {
-    return new Date(timestamp).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   const sections: InfoSection[] = [
-    {
-      title: '基本信息',
-      icon: <InformationCircleIcon className="h-5 w-5" />,
-      items: [
-        { label: '产品名称', value: product.name },
-        { label: '产品序号', value: product.sequence },
-        { label: '记录ID', value: product.recordId },
-        { label: '产品ID', value: product.id },
-      ]
-    },
     {
       title: '价格信息',
       icon: <TagIcon className="h-5 w-5" />,
@@ -108,14 +105,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       ]
     },
     {
-      title: '分类信息',
-      icon: <CubeIcon className="h-5 w-5" />,
-      items: [
-        { label: '一级品类', value: product.category.primary },
-        { label: '二级品类', value: product.category.secondary },
-      ]
-    },
-    {
       title: '产地信息',
       icon: <MapPinIcon className="h-5 w-5" />,
       items: [
@@ -125,12 +114,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       ]
     },
     {
-      title: '商品规格',
+      title: '分类信息',
       icon: <CubeIcon className="h-5 w-5" />,
       items: [
-        { label: '规格', value: product.specification },
-        { label: '口味', value: product.flavor },
-        { label: '包装规格', value: product.boxSpec },
+        { label: '一级品类', value: product.category.primary },
+        { label: '二级品类', value: product.category.secondary },
       ]
     },
     {
@@ -140,14 +128,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
         { label: '采集平台', value: product.platform },
         { label: '生产商', value: product.manufacturer },
         { label: '商品链接', value: product.link, type: 'link' },
-      ]
-    },
-    {
-      title: '其他信息',
-      icon: <SparklesIcon className="h-5 w-5" />,
-      items: [
-        { label: '采集时间', value: formatDate(product.collectTime) },
-        { label: '备注', value: product.notes },
       ]
     }
   ];
@@ -187,7 +167,14 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
     <div className={className}>
       <div className="space-y-3">
         {sections.map((section, index) => {
-          const sectionKey = section.title.toLowerCase().replace(/\s+/g, '-');
+          // 使用固定的 key 映射来确保状态记忆正确
+          const sectionKeyMap: { [key: string]: string } = {
+            '价格信息': 'price',
+            '产地信息': 'origin',
+            '分类信息': 'category',
+            '销售信息': 'sales'
+          };
+          const sectionKey = sectionKeyMap[section.title];
           const isExpanded = expandedSections.has(sectionKey);
           
           return (
@@ -246,45 +233,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
           );
         })}
       </div>
-
-      {/* 价格分析卡片 */}
-      {product.price.discount && (
-        <Card className="mt-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-          <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center">
-            <TagIcon className="h-4 w-4 text-green-600 mr-2" />
-            价格分析
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="text-center">
-              <div className="text-xl font-bold text-gray-900">
-                ¥{product.price.normal.toFixed(2)}
-              </div>
-              <div className="text-xs text-gray-600">原价</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold text-green-600">
-                ¥{product.price.discount.toFixed(2)}
-              </div>
-              <div className="text-xs text-gray-600">现价</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold text-red-600">
-                ¥{(product.price.normal - product.price.discount).toFixed(2)}
-              </div>
-              <div className="text-xs text-gray-600">节省</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold text-orange-600">
-                {product.price.discountRate
-                  ? `${product.price.discountRate.toFixed(0)}%`
-                  : `${Math.round((1 - product.price.discount / product.price.normal) * 100)}%`
-                }
-              </div>
-              <div className="text-xs text-gray-600">折扣</div>
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 };
