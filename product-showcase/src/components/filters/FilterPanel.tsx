@@ -7,7 +7,8 @@ import { CategoryFilter } from './CategoryFilter';
 import { LocationFilter } from './LocationFilter';
 import { PlatformFilter } from './PlatformFilter';
 import { cn } from '../../utils/cn';
-import { useProductStore, FilterState } from '../../stores/productStore';
+import { useProductStore } from '../../stores/productStore';
+import { FilterState } from '../../types/product';
 import { 
   FunnelIcon, 
   XMarkIcon,
@@ -62,19 +63,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const hasActiveFilters = activeFiltersCount > 0;
 
   const handlePriceChange = (range: [number, number]) => {
-    setFilters({ priceRange: range });
+    setFilters({ ...filters, priceRange: range });
   };
 
   const handleCategoryChange = (categories: string[]) => {
-    setFilters({ categories });
+    setFilters({ ...filters, categories });
   };
 
   const handleLocationChange = (locations: string[]) => {
-    setFilters({ locations });
+    setFilters({ ...filters, locations });
   };
 
   const handlePlatformChange = (platforms: string[]) => {
-    setFilters({ platforms });
+    setFilters({ ...filters, platforms });
   };
 
   const handleClearFilters = () => {

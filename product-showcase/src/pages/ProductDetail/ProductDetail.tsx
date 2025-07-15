@@ -40,6 +40,7 @@ const ProductDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   // 响应式动画配置
   const responsiveConfig = getResponsiveAnimationConfig(screenWidth);

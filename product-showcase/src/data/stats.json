@@ -52,6 +52,11 @@
     "内蒙古": 2,
     "台湾": 2
   },
+  "priceRange": {
+    "min": 1.5,
+    "max": 450,
+    "average": 26.88
+  },
   "priceStats": {
     "min": 1.5,
     "max": 450,
