@@ -202,16 +202,6 @@ export const useRealTimeResponsiveGrid = (
         previousCalculationRef.current = newCalculation;
         setGridCalculation(newCalculation);
 
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🔄 实时网格计算更新:', {
-            容器宽度: containerWidth,
-            面板宽度: panelWidth,
-            面板状态: isDetailPanelOpen,
-            列数: newCalculation.columns,
-            卡片宽度: newCalculation.cardWidth,
-            可用宽度: newCalculation.availableWidth
-          });
-        }
       }
     });
   }, [containerWidth, panelWidth, isDetailPanelOpen, calculateGrid]);

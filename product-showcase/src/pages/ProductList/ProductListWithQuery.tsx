@@ -29,7 +29,6 @@ import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useResponsiveGrid } from '../../hooks/useResponsiveGrid';
 import { useRealTimeResponsiveGrid } from '../../hooks/useRealTimeResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
-import LayoutDebugger from '../../components/debug/LayoutDebugger';
 import { PageNavigation } from '../../components/layout/PageNavigation';
 import { cn } from '../../utils/cn';
 
@@ -95,25 +94,6 @@ export const ProductListWithQuery: React.FC = () => {
       : dimensions.width;
   }, [isDetailPanelOpen, isMobile, dimensions.width, realTimePanelWidth]);
 
-  // 添加调试日志 (仅开发环境)
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      const paddingRightValue = isDetailPanelOpen && !isMobile
-        ? Math.max(realTimePanelWidth - 120, 16)
-        : 16; // 1rem ≈ 16px
-
-      console.log('📐 容器宽度计算:', {
-        原始容器宽度: dimensions.width,
-        偏好面板宽度: preferences.width,
-        实时面板宽度: realTimePanelWidth,
-        面板状态: isDetailPanelOpen,
-        有效容器宽度: effectiveContainerWidth,
-        是否移动端: isMobile,
-        实际paddingRight: `${paddingRightValue}px`,
-        间距计算: `${realTimePanelWidth} - 120 = ${realTimePanelWidth - 120}px (最小16px)`
-      });
-    }
-  }, [dimensions.width, preferences.width, realTimePanelWidth, isDetailPanelOpen, effectiveContainerWidth, isMobile]);
 
   // 使用useMemo稳定options对象，避免每次重新创建
   const gridOptions = useMemo(() => ({
@@ -138,17 +118,6 @@ export const ProductListWithQuery: React.FC = () => {
     gridOptions
   );
 
-  // 添加网格计算结果调试日志 (仅开发环境)
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔢 网格计算结果:', {
-        列数: columns,
-        卡片宽度: cardWidth,
-        可用宽度: availableWidth,
-        CSS类名: getResponsiveGridClass()
-      });
-    }
-  }, [columns, cardWidth, availableWidth, getResponsiveGridClass]);
 
   // React Query hooks
   const productsQuery = useProducts();
@@ -618,19 +587,6 @@ export const ProductListWithQuery: React.FC = () => {
               </div>
             </ScrollReveal>
 
-            {/* 布局调试信息 (开发环境) */}
-            {process.env.NODE_ENV === 'development' && (
-              <LayoutDebugger
-                containerWidth={dimensions.width}
-                panelWidth={realTimePanelWidth}
-                isDetailPanelOpen={isDetailPanelOpen}
-                availableWidth={availableWidth}
-                columns={columns}
-                cardWidth={cardWidth}
-                gridClass={getResponsiveGridClass()}
-                show={true}
-              />
-            )}
 
             {/* 产品网格 */}
             {isLoading && paginatedProducts.length === 0 ? (
