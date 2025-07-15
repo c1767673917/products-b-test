@@ -156,19 +156,27 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
 
               {/* 优惠价格选项 */}
               <div className="pt-2 border-t border-gray-200">
-                <label className="flex items-center space-x-2 cursor-pointer">
+                <div 
+                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 transition-colors rounded p-2 -m-2"
+                  onClick={() => {
+                    useProductStore.getState().setFilters({ 
+                      showDiscountOnly: !filters.showDiscountOnly 
+                    });
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={filters.showDiscountOnly}
                     onChange={(e) => {
+                      e.stopPropagation();
                       useProductStore.getState().setFilters({ 
                         showDiscountOnly: e.target.checked 
                       });
                     }}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                   />
                   <span className="text-sm text-gray-700">只显示有优惠的产品</span>
-                </label>
+                </div>
               </div>
 
               {/* 价格统计信息 */}

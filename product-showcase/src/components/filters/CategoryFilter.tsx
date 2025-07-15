@@ -131,13 +131,19 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   return (
                     <div key={category.name} className="border border-gray-200 rounded-lg">
                       {/* 主品类 */}
-                      <div className="flex items-center p-3">
-                        <label className="flex items-center flex-1 cursor-pointer">
+                      <div 
+                        className="flex items-center p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => handleCategoryChange(category.name, !isSelected(category.name))}
+                      >
+                        <div className="flex items-center flex-1">
                           <input
                             type="checkbox"
                             checked={isSelected(category.name)}
-                            onChange={(e) => handleCategoryChange(category.name, e.target.checked)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleCategoryChange(category.name, e.target.checked);
+                            }}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                           />
                           <div className="ml-3 flex-1">
                             <div className="flex items-center justify-between">
@@ -150,11 +156,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                               </div>
                             </div>
                           </div>
-                        </label>
+                        </div>
                         
                         {hasSubcategories && (
                           <button
-                            onClick={() => toggleCategory(category.name)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleCategory(category.name);
+                            }}
                             className="ml-2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
                           >
                             {isExpanded ? (

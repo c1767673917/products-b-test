@@ -131,7 +131,10 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
             <CardContent className="pt-0">
               {/* 全选选项 */}
               <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                <label className="flex items-center justify-between cursor-pointer">
+                <div 
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors rounded p-2 -m-2"
+                  onClick={handleSelectAll}
+                >
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -139,8 +142,11 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                       ref={(input) => {
                         if (input) input.indeterminate = isPartialSelected;
                       }}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleSelectAll();
+                      }}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                     />
                     <span className="ml-3 text-sm font-medium text-gray-900">
                       全部平台 ({platformData.reduce((sum, p) => sum + p.count, 0)} 个产品)
@@ -155,7 +161,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                   >
                     {isAllSelected ? '取消全选' : '全选'}
                   </button>
-                </label>
+                </div>
               </div>
 
               {/* 平台列表 */}
@@ -178,12 +184,15 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handlePlatformChange(platform.name, !selected)}
                     >
-                      <label className="flex items-center cursor-pointer">
+                      <div className="flex items-center">
                         <input
                           type="checkbox"
                           checked={selected}
-                          onChange={(e) => handlePlatformChange(platform.name, e.target.checked)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handlePlatformChange(platform.name, e.target.checked);
+                          }}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                         />
                         
                         <div className="ml-3 flex-1">
@@ -216,7 +225,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                             </div>
                           </div>
                         </div>
-                      </label>
+                      </div>
                     </motion.div>
                   );
                 })}

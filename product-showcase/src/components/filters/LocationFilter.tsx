@@ -191,13 +191,20 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                     className="space-y-2 max-h-64 overflow-y-auto"
                   >
                     {filteredLocations.map((location) => (
-                      <div key={location.name} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                        <label className="flex items-center flex-1 cursor-pointer">
+                      <div 
+                        key={location.name} 
+                        className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                        onClick={() => handleLocationChange(location.name, !isSelected(location.name))}
+                      >
+                        <div className="flex items-center flex-1">
                           <input
                             type="checkbox"
                             checked={isSelected(location.name)}
-                            onChange={(e) => handleLocationChange(location.name, e.target.checked)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleLocationChange(location.name, e.target.checked);
+                            }}
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                           />
                           <div className="ml-3 flex-1">
                             <div className="flex items-center justify-between">
@@ -219,7 +226,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                               </div>
                             )}
                           </div>
-                        </label>
+                        </div>
                       </div>
                     ))}
                   </motion.div>
