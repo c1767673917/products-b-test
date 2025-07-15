@@ -169,7 +169,7 @@ class FeishuImageDownloader:
             api_url = f"{self.base_url}/open-apis/drive/v1/medias/batch_get_tmp_download_url"
             params = {
                 'file_tokens': file_token,
-                'extra': f'{{"bitablePerm":{{"tableId":"tblwdwrZMikMRyxq","rev":2778}}}}'
+                'extra': f'{{"bitablePerm":{{"tableId":"tblV96LaIHulg5V5","rev":2778}}}}'
             }
 
             print(f"🔗 获取下载链接: {api_url}")
@@ -447,8 +447,8 @@ def main():
 def download_missing_images():
     """补充下载缺失的图片"""
     # 配置信息
-    APP_ID = "cli_a8fa1d87c3fad00d"
-    APP_SECRET = "CDfRPlOw8VRQrPyLnpzNvd5wBmu6wROp"
+    APP_ID = "cli_a8e575c35763d013"
+    APP_SECRET = "41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf"
 
     print("🔄 开始补充下载缺失的图片...")
     print("=" * 60)

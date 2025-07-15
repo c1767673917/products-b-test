@@ -8,8 +8,21 @@ const __dirname = path.dirname(__filename);
 
 // 读取CSV文件
 function readCSVFile() {
-  // 使用最新的飞书数据文件
-  const csvPath = path.join(__dirname, '../../feishu_data_20250711_134230/data.csv');
+  // 自动查找最新的飞书数据文件
+  const projectRoot = path.join(__dirname, '../..');
+  const dataDirs = fs.readdirSync(projectRoot)
+    .filter(dir => dir.startsWith('feishu_data_') && fs.statSync(path.join(projectRoot, dir)).isDirectory())
+    .sort()
+    .reverse(); // 按时间倒序排列，最新的在前面
+
+  if (dataDirs.length === 0) {
+    console.error('❌ 未找到飞书数据目录，请先运行 feishu_data_analyzer.py');
+    return null;
+  }
+
+  const latestDir = dataDirs[0];
+  const csvPath = path.join(projectRoot, latestDir, 'data.csv');
+
   try {
     console.log(`📂 读取数据文件: ${csvPath}`);
     return fs.readFileSync(csvPath, 'utf-8');

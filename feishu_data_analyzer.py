@@ -244,8 +244,8 @@ def main():
     # 配置信息
     APP_ID = "cli_a8e575c35763d013"
     APP_SECRET = "41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf"
-    APP_TOKEN = "KfxmbvSgCaLjcIsI5v2crhPGnZf"
-    TABLE_ID = "tblMeJxvQlcWlct1"
+    APP_TOKEN = "QQYibwly4aGhvusDvFtcbkvUnPd"
+    TABLE_ID = "tblV96LaIHulg5V5"
     
     print("🚀 开始飞书多维表格数据分析...")
     print("=" * 60)

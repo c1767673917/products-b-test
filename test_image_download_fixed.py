@@ -11,8 +11,8 @@ from feishu_image_downloader import FeishuImageDownloader
 def test_download():
     """测试下载功能"""
     # 配置信息
-    APP_ID = "cli_a8fa1d87c3fad00d"
-    APP_SECRET = "CDfRPlOw8VRQrPyLnpzNvd5wBmu6wROp"
+    APP_ID = "cli_a8e575c35763d013"
+    APP_SECRET = "41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf"
     
     print("🧪 测试修复后的图片下载功能...")
     print("=" * 60)

@@ -7,10 +7,10 @@
 ## 🔧 技术实现
 
 ### API配置信息
-- **App ID**: `cli_a8fa1d87c3fad00d`
-- **App Secret**: `CDfRPlOw8VRQrPyLnpzNvd5wBmu6wROp`
-- **App Token**: `J4dFbm5S9azofMsW702cSOVwnsh`
-- **Table ID**: `tblwdwrZMikMRyxq`
+- **App ID**: `cli_a8e575c35763d013`
+- **App Secret**: `41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf`
+- **App Token**: `QQYibwly4aGhvusDvFtcbkvUnPd`
+- **Table ID**: `tblV96LaIHulg5V5`
 
 ### 实现的功能模块
 

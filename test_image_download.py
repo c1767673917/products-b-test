@@ -12,8 +12,8 @@ from feishu_image_downloader import FeishuImageDownloader
 def test_single_image_download():
     """测试单个图片下载"""
     # 配置信息
-    APP_ID = "cli_a8fa1d87c3fad00d"
-    APP_SECRET = "CDfRPlOw8VRQrPyLnpzNvd5wBmu6wROp"
+    APP_ID = "cli_a8e575c35763d013"
+    APP_SECRET = "41VyUJHWqFBoiOr5dOwgqctKwSn1RqWf"
     
     print("🧪 开始测试图片下载功能...")
     print("=" * 50)
