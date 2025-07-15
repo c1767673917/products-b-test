@@ -178,19 +178,4 @@ export const queryUtils = {
   },
 };
 
-// 开发环境下的调试工具
-if (import.meta.env.DEV) {
-  // 添加全局调试方法
-  (window as any).queryClient = queryClient;
-  (window as any).queryUtils = queryUtils;
-  
-  // 监听查询状态变化
-  queryClient.getQueryCache().subscribe((event) => {
-    if (event?.type === 'queryAdded') {
-      console.log('Query added:', event.query.queryKey);
-    }
-    if (event?.type === 'queryRemoved') {
-      console.log('Query removed:', event.query.queryKey);
-    }
-  });
-}
+

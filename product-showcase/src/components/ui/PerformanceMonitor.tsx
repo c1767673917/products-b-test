@@ -92,7 +92,7 @@ class WebVitalsMonitor {
       observer.observe({ entryTypes: ['layout-shift'] });
       this.observers.push(observer);
     } catch (e) {
-      console.warn('CLS monitoring not supported');
+      // CLS monitoring not supported
     }
   }
 
@@ -106,7 +106,7 @@ class WebVitalsMonitor {
       observer.observe({ entryTypes: ['first-input'] });
       this.observers.push(observer);
     } catch (e) {
-      console.warn('FID monitoring not supported');
+      // FID monitoring not supported
     }
   }
 

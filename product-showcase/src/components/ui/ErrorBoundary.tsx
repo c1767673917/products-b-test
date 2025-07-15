@@ -45,8 +45,7 @@ export class ErrorBoundary extends Component<Props, State> {
     // 调用错误回调
     this.props.onError?.(error, errorInfo);
 
-    // 记录错误到控制台
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // 错误记录已移除，可以在需要时重新启用
 
     // 可以在这里集成错误监控服务
     // 例如: Sentry.captureException(error, { extra: errorInfo });
@@ -81,8 +80,7 @@ export class ErrorBoundary extends Component<Props, State> {
         alert('错误报告已复制到剪贴板');
       })
       .catch(() => {
-        console.log('错误报告:', errorReport);
-        alert('错误报告已输出到控制台');
+        alert('无法复制错误报告到剪贴板');
       });
   };
 
@@ -212,13 +210,7 @@ export const PerformanceErrorBoundary: React.FC<{ children: ReactNode }> = ({ ch
   return (
     <ErrorBoundary
       onError={(error, errorInfo) => {
-        // 记录性能相关错误
-        console.error('Performance Error:', {
-          error: error.message,
-          stack: error.stack,
-          componentStack: errorInfo.componentStack,
-          timestamp: Date.now(),
-        });
+        // 性能错误记录已移除，可以在需要时重新启用
       }}
       fallback={
         <div className="p-8 text-center">

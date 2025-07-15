@@ -8,9 +8,7 @@ import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
 import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
 import {
-  CARD_HOVER_VARIANTS,
   PRODUCT_CARD_VARIANTS,
-  BUTTON_VARIANTS,
   ANIMATION_DURATION,
   ANIMATION_EASING,
   PERFORMANCE_CSS,

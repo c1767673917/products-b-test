@@ -1,6 +1,6 @@
 // 使用React Query的产品列表页面
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Squares2X2Icon,
@@ -26,7 +26,7 @@ import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useResponsiveGrid } from '../../hooks/useResponsiveGrid';
+
 import { useRealTimeResponsiveGrid } from '../../hooks/useRealTimeResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
 import { PageNavigation } from '../../components/layout/PageNavigation';

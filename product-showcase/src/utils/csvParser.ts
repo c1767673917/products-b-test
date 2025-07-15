@@ -148,7 +148,7 @@ export function csvRowToProduct(row: CSVRow): Product | null {
 
     return product;
   } catch (error) {
-    console.error('Error converting CSV row to product:', error, row);
+    // Error converting CSV row to product - silently skip invalid rows
     return null;
   }
 }

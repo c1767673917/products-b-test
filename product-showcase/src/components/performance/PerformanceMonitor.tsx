@@ -100,12 +100,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   // 性能警告
   useEffect(() => {
     if (metrics.isLowPerformance && enabled) {
-      console.warn('🚨 Performance Warning:', {
-        fps: metrics.fps,
-        frameTime: `${metrics.frameTime.toFixed(2)}ms`,
-        animations: metrics.animationCount,
-        memory: metrics.memoryUsage ? `${metrics.memoryUsage}MB` : 'N/A'
-      });
+      // 性能警告已移除，可以在需要时重新启用
     }
   }, [metrics.isLowPerformance, enabled]);
 

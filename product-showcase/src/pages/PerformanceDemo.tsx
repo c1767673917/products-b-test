@@ -14,7 +14,6 @@ import { VirtualGrid, VirtualList } from '../components/ui/VirtualGrid';
 import LazyImage, { useImagePreloader, ImageCache } from '../components/product/LazyImage';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { PageNavigation } from '../components/layout/PageNavigation';
 
 // 模拟产品数据
 const generateMockProducts = (count: number) => {
@@ -113,13 +112,11 @@ const PerformanceDemo: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* 页面导航 */}
-      <PageNavigation title="性能优化演示" />
-
-      <div className="max-w-7xl mx-auto p-6">
-        {/* 控制面板 */}
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* 标题和控制面板 */}
         <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">性能优化演示</h1>
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <Button

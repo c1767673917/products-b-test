@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiService } from '../services/apiService';
 import { queryKeys } from '../services/queryClient';
-import type { Product, FilterState } from '../types/product';
+import type { FilterState } from '../types/product';
 
 // 获取所有产品
 export const useProducts = () => {

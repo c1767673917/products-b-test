@@ -1,6 +1,6 @@
 // API集成演示页面
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+
 import { 
   useProducts, 
   useProduct, 
