@@ -56,12 +56,22 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
 
   const availableImages = getAvailableImages();
 
-  // 根据容器宽度动态计算列数
+  // 根据容器宽度和图片数量动态计算列数
   const calculateColumns = useCallback((width: number) => {
+    const imageCount = availableImages.length;
+
+    // 根据图片数量优化列数计算
+    if (imageCount === 1) return 1;
+    if (imageCount === 2) {
+      // 2张图片时：宽度足够就显示2列，否则1列
+      return width >= 400 ? 2 : 1;
+    }
+
+    // 3张及以上图片的原有逻辑
     if (width < 300) return 1;
     if (width < 500) return 2;
     if (width < 700) return 3;
-    return Math.min(4, availableImages.length);
+    return Math.min(4, imageCount);
   }, [availableImages.length]);
 
   useEffect(() => {
@@ -151,7 +161,8 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
         className="grid gap-2 sm:gap-3 rounded-lg overflow-hidden shadow-sm"
         style={{
           gridTemplateColumns: `repeat(${imageColumns}, 1fr)`,
-          aspectRatio: imageColumns === 1 ? '4/5' : imageColumns === 2 ? '5/4' : 'auto'
+          // 优化容器高度计算：只有1张图片时使用固定比例，其他情况自动适应
+          aspectRatio: imageColumns === 1 ? '4/5' : 'auto'
         }}
       >
         {availableImages.map((image, index) => (
@@ -162,7 +173,8 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
             transition={{ delay: index * 0.1 }}
             className="relative group cursor-pointer overflow-hidden rounded-lg bg-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200"
             style={{
-              aspectRatio: imageColumns === 1 ? '4/5' : '1/1'
+              // 优化图片项高度计算：根据列数动态调整宽高比
+              aspectRatio: imageColumns === 1 ? '4/5' : imageColumns === 2 ? '4/3' : '1/1'
             }}
             onClick={() => handleImageClick(index)}
           >
