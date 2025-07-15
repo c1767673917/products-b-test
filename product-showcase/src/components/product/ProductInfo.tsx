@@ -92,7 +92,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
         { 
           label: '折扣率', 
           value: product.price.discountRate 
-            ? `${(product.price.discountRate * 100).toFixed(1)}%` 
+            ? `${product.price.discountRate.toFixed(1)}%` 
             : undefined 
         },
         { 
