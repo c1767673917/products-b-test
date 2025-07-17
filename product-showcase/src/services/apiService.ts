@@ -1,6 +1,8 @@
 // API服务层 - 统一管理所有API调用
 import type { Product, FilterState, DataStats } from '../types/product';
 import { DataService } from './dataService';
+import { apiService as backendApiService } from './backendApiService';
+import { ENV_CONFIG } from '../config/api';
 
 // API响应类型
 export interface ApiResponse<T> {
@@ -26,9 +28,12 @@ export class ApiError extends Error {
 export class ApiService {
   private dataService: DataService;
   private baseDelay: number = 300; // 基础延迟时间
+  private useBackendApi: boolean;
 
   constructor() {
     this.dataService = new DataService();
+    // 根据配置决定是否使用后端API
+    this.useBackendApi = ENV_CONFIG.useBackendApi;
   }
 
   // 模拟网络延迟
@@ -58,11 +63,31 @@ export class ApiService {
   }
 
   // 获取所有产品
-  async getProducts(): Promise<ApiResponse<Product[]>> {
+  async getProducts(params?: { 
+    page?: number; 
+    limit?: number; 
+    category?: string; 
+    platform?: string; 
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  }): Promise<ApiResponse<Product[]>> {
     try {
-      await this.simulateNetworkDelay();
-      const products = await this.dataService.fetchAllProducts();
-      return this.wrapResponse(products, '产品数据获取成功');
+      if (this.useBackendApi) {
+        // 使用后端API
+        const response = await backendApiService.getProducts(params || {});
+        return {
+          data: response.data.products,
+          success: true,
+          message: response.message,
+          timestamp: Date.now()
+        };
+      } else {
+        // 使用本地数据
+        await this.simulateNetworkDelay();
+        const products = await this.dataService.fetchAllProducts();
+        return this.wrapResponse(products, '产品数据获取成功');
+      }
     } catch (error) {
       this.handleError(error);
     }
@@ -71,14 +96,26 @@ export class ApiService {
   // 根据ID获取产品
   async getProductById(id: string): Promise<ApiResponse<Product | null>> {
     try {
-      await this.simulateNetworkDelay(200);
-      const product = await this.dataService.fetchProductById(id);
-      
-      if (!product) {
-        throw new ApiError(`产品 ${id} 不存在`, 404, 'PRODUCT_NOT_FOUND');
+      if (this.useBackendApi) {
+        // 使用后端API
+        const response = await backendApiService.getProductById(id);
+        return {
+          data: response.data.product,
+          success: true,
+          message: response.message,
+          timestamp: Date.now()
+        };
+      } else {
+        // 使用本地数据
+        await this.simulateNetworkDelay(200);
+        const product = await this.dataService.fetchProductById(id);
+        
+        if (!product) {
+          throw new ApiError(`产品 ${id} 不存在`, 404, 'PRODUCT_NOT_FOUND');
+        }
+        
+        return this.wrapResponse(product, '产品详情获取成功');
       }
-      
-      return this.wrapResponse(product, '产品详情获取成功');
     } catch (error) {
       this.handleError(error);
     }
@@ -87,9 +124,21 @@ export class ApiService {
   // 获取数据统计
   async getStats(): Promise<ApiResponse<DataStats>> {
     try {
-      await this.simulateNetworkDelay(100);
-      const stats = await this.dataService.fetchStats();
-      return this.wrapResponse(stats, '统计数据获取成功');
+      if (this.useBackendApi) {
+        // 使用后端API
+        const response = await backendApiService.getStats();
+        return {
+          data: response.data,
+          success: true,
+          message: response.message,
+          timestamp: Date.now()
+        };
+      } else {
+        // 使用本地数据
+        await this.simulateNetworkDelay(100);
+        const stats = await this.dataService.fetchStats();
+        return this.wrapResponse(stats, '统计数据获取成功');
+      }
     } catch (error) {
       this.handleError(error);
     }
@@ -98,9 +147,21 @@ export class ApiService {
   // 搜索产品
   async searchProducts(query: string, limit?: number): Promise<ApiResponse<Product[]>> {
     try {
-      await this.simulateNetworkDelay(400);
-      const results = this.dataService.searchProducts(query, limit);
-      return this.wrapResponse(results, `搜索到 ${results.length} 个结果`);
+      if (this.useBackendApi) {
+        // 使用后端API
+        const response = await backendApiService.searchProducts({ q: query, limit });
+        return {
+          data: response.data.products,
+          success: true,
+          message: response.message,
+          timestamp: Date.now()
+        };
+      } else {
+        // 使用本地数据
+        await this.simulateNetworkDelay(400);
+        const results = this.dataService.searchProducts(query, limit);
+        return this.wrapResponse(results, `搜索到 ${results.length} 个结果`);
+      }
     } catch (error) {
       this.handleError(error);
     }

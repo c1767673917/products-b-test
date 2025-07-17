@@ -3,13 +3,31 @@ import { persist } from 'zustand/middleware';
 import type { Product, FilterState, ViewMode, SortOption } from '../types/product';
 import { apiService } from '../services/apiService';
 
+// 分页信息接口
+interface PaginationInfo {
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+// 加载状态枚举
+export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+
+// API操作类型
+export type ApiOperation = 'fetch' | 'search' | 'filter' | 'refresh';
+
 interface ProductState {
   // 产品数据
   products: Product[];
   filteredProducts: Product[];
   
+  // 分页信息
+  pagination: PaginationInfo;
+  
   // UI状态
-  loading: boolean;
+  loading: LoadingState;
+  apiOperation: ApiOperation | null;
   error: string | null;
   viewMode: ViewMode;
   sortOption: SortOption;
@@ -25,9 +43,12 @@ interface ProductState {
   favorites: string[];
   compareList: string[];
   
+  // API模式标识
+  useBackendApi: boolean;
+  
   // 操作方法
-  setProducts: (products: Product[]) => void;
-  setLoading: (loading: boolean) => void;
+  setProducts: (products: Product[], pagination?: PaginationInfo) => void;
+  setLoading: (loading: LoadingState, operation?: ApiOperation) => void;
   setError: (error: string | null) => void;
   setViewMode: (mode: ViewMode) => void;
   setSortOption: (option: SortOption) => void;
@@ -41,6 +62,8 @@ interface ProductState {
   removeFromCompare: (productId: string) => void;
   clearFilters: () => void;
   applyFilters: () => void;
+  loadProducts: (params?: { page?: number; search?: string; filters?: Partial<FilterState> }) => Promise<void>;
+  searchProducts: (query: string) => Promise<void>;
   initializeData: () => Promise<void>;
   refreshData: () => Promise<void>;
 }
@@ -59,58 +82,126 @@ export const useProductStore = create<ProductState>()(
       // 初始状态
       products: [],
       filteredProducts: [],
-      loading: false,
+      pagination: {
+        total: 0,
+        totalPages: 0,
+        hasNext: false,
+        hasPrev: false
+      },
+      loading: 'idle',
+      apiOperation: null,
       error: null,
       viewMode: 'grid',
       sortOption: 'name',
       searchQuery: '',
       currentPage: 1,
-      itemsPerPage: 0, // 0表示显示全部
+      itemsPerPage: 20, // 默认每页20条
       filters: initialFilters,
       showFilters: false,
       favorites: [],
       compareList: [],
+      useBackendApi: import.meta.env.VITE_USE_BACKEND_API === 'true',
 
       // 设置产品数据
-      setProducts: (products) => {
-        set({ products });
-        get().applyFilters();
+      setProducts: (products, pagination) => {
+        const state = get();
+        set({ 
+          products,
+          pagination: pagination || state.pagination
+        });
+        
+        // 如果使用本地API，需要应用筛选
+        if (!state.useBackendApi) {
+          get().applyFilters();
+        } else {
+          // 后端API返回的数据已经过筛选，直接设置为filteredProducts
+          set({ filteredProducts: products });
+        }
       },
 
       // 设置加载状态
-      setLoading: (loading) => set({ loading }),
+      setLoading: (loading, operation) => set({ 
+        loading, 
+        apiOperation: operation || null,
+        error: loading === 'loading' ? null : get().error
+      }),
 
       // 设置错误状态
-      setError: (error) => set({ error }),
+      setError: (error) => set({ 
+        error, 
+        loading: error ? 'error' : get().loading 
+      }),
 
       // 设置视图模式
       setViewMode: (viewMode) => set({ viewMode }),
 
       // 设置排序选项
       setSortOption: (sortOption) => {
+        const state = get();
         set({ sortOption, currentPage: 1 });
-        get().applyFilters();
+        
+        if (state.useBackendApi) {
+          // 后端API模式：重新加载数据
+          get().loadProducts({ page: 1 });
+        } else {
+          // 本地模式：应用筛选
+          get().applyFilters();
+        }
       },
 
       // 设置搜索查询
       setSearchQuery: (searchQuery) => {
+        const state = get();
         set({ searchQuery, currentPage: 1 });
-        get().applyFilters();
+        
+        if (state.useBackendApi) {
+          // 后端API模式：使用搜索API
+          if (searchQuery.trim()) {
+            get().searchProducts(searchQuery);
+          } else {
+            get().loadProducts({ page: 1 });
+          }
+        } else {
+          // 本地模式：应用筛选
+          get().applyFilters();
+        }
       },
 
       // 设置当前页
-      setCurrentPage: (currentPage) => set({ currentPage }),
+      setCurrentPage: (currentPage) => {
+        const state = get();
+        set({ currentPage });
+        
+        if (state.useBackendApi) {
+          // 后端API模式：加载指定页面数据
+          get().loadProducts({ page: currentPage });
+        }
+      },
 
       // 设置每页显示数量
       setItemsPerPage: (itemsPerPage) => {
+        const state = get();
         set({ itemsPerPage, currentPage: 1 });
+        
+        if (state.useBackendApi) {
+          // 后端API模式：重新加载数据
+          get().loadProducts({ page: 1 });
+        }
       },
 
       // 设置筛选条件
       setFilters: (newFilters) => {
-        const filters = { ...get().filters, ...newFilters };
+        const state = get();
+        const filters = { ...state.filters, ...newFilters };
         set({ filters, currentPage: 1 });
-        get().applyFilters();
+        
+        if (state.useBackendApi) {
+          // 后端API模式：重新加载数据
+          get().loadProducts({ page: 1, filters });
+        } else {
+          // 本地模式：应用筛选
+          get().applyFilters();
+        }
       },
 
       // 设置筛选面板显示状态
@@ -141,11 +232,19 @@ export const useProductStore = create<ProductState>()(
 
       // 清空筛选条件
       clearFilters: () => {
+        const state = get();
         set({ filters: initialFilters, searchQuery: '', currentPage: 1 });
-        get().applyFilters();
+        
+        if (state.useBackendApi) {
+          // 后端API模式：重新加载数据
+          get().loadProducts({ page: 1 });
+        } else {
+          // 本地模式：应用筛选
+          get().applyFilters();
+        }
       },
 
-      // 应用筛选和排序
+      // 应用筛选和排序（仅用于本地模式）
       applyFilters: () => {
         const { products, filters, searchQuery, sortOption } = get();
 
@@ -231,29 +330,127 @@ export const useProductStore = create<ProductState>()(
         set({ filteredProducts: filtered });
       },
 
-      // 初始化数据 - 使用API服务
-      initializeData: async () => {
-        set({ loading: true, error: null });
+      // 加载产品数据（适用于后端API模式）
+      loadProducts: async (params = {}) => {
+        const state = get();
+        const { page = state.currentPage, search = state.searchQuery, filters = state.filters } = params;
+        
+        set(state => ({ 
+          loading: 'loading',
+          apiOperation: 'fetch',
+          error: null,
+          currentPage: page
+        }));
 
         try {
-          // 使用API服务获取数据
-          const response = await apiService.getProducts();
-          const products = response.data;
+          // 构建API参数
+          const apiParams: any = {
+            page,
+            limit: state.itemsPerPage,
+            sortBy: state.sortOption.includes('price') ? 'price' : 
+                   state.sortOption === 'collect-time' ? 'time' : 'name',
+            sortOrder: state.sortOption === 'price-desc' ? 'desc' : 'asc'
+          };
 
-          set({ products, loading: false });
-          get().applyFilters();
+          // 添加筛选参数
+          if (filters.categories.length > 0) {
+            apiParams.category = filters.categories.join(',');
+          }
+          if (filters.platforms.length > 0) {
+            apiParams.platform = filters.platforms.join(',');
+          }
+          if (filters.locations.length > 0) {
+            apiParams.province = filters.locations.join(',');
+          }
+          if (filters.priceRange) {
+            apiParams.priceMin = filters.priceRange[0];
+            apiParams.priceMax = filters.priceRange[1];
+          }
+          if (search?.trim()) {
+            apiParams.search = search;
+          }
+
+          // 调用API
+          const response = await apiService.getProducts(apiParams);
+          
+          if (state.useBackendApi && 'data' in response && response.data) {
+            // 后端API响应结构
+            const data = response.data as any;
+            const products = data.products || response.data;
+            const pagination = data.pagination ? {
+              total: data.pagination.total,
+              totalPages: data.pagination.totalPages,
+              hasNext: data.pagination.hasNext,
+              hasPrev: data.pagination.hasPrev
+            } : state.pagination;
+
+            set({ 
+              products,
+              filteredProducts: products,
+              pagination,
+              loading: 'success',
+              apiOperation: null
+            });
+          } else {
+            // 本地API响应结构
+            const products = response.data;
+            set({ 
+              products,
+              loading: 'success',
+              apiOperation: null
+            });
+            get().applyFilters();
+          }
+
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '加载产品失败';
           set({
-            error: error instanceof Error ? error.message : '加载数据失败',
-            loading: false
+            error: errorMessage,
+            loading: 'error',
+            apiOperation: null
           });
         }
       },
 
+      // 搜索产品
+      searchProducts: async (query) => {
+        set({ 
+          loading: 'loading',
+          apiOperation: 'search',
+          error: null,
+          searchQuery: query,
+          currentPage: 1
+        });
+
+        try {
+          const response = await apiService.searchProducts(query, get().itemsPerPage);
+          const products = response.data;
+          
+          set({ 
+            filteredProducts: products,
+            loading: 'success',
+            apiOperation: null
+          });
+
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '搜索失败';
+          set({
+            error: errorMessage,
+            loading: 'error',
+            apiOperation: null
+          });
+        }
+      },
+
+      // 初始化数据
+      initializeData: async () => {
+        await get().loadProducts({ page: 1 });
+      },
+
       // 刷新数据
       refreshData: async () => {
-        const { initializeData } = get();
-        await initializeData();
+        set({ apiOperation: 'refresh' });
+        await get().loadProducts({ page: get().currentPage });
       }
     }),
     {
@@ -274,6 +471,7 @@ export const useProductStore = create<ProductState>()(
 export const useProducts = () => useProductStore(state => state.products);
 export const useFilteredProducts = () => useProductStore(state => state.filteredProducts);
 export const useProductFilters = () => useProductStore(state => state.filters);
+export const useProductPagination = () => useProductStore(state => state.pagination);
 export const useProductUI = () => useProductStore(state => ({
   viewMode: state.viewMode,
   sortOption: state.sortOption,
@@ -282,7 +480,9 @@ export const useProductUI = () => useProductStore(state => ({
   itemsPerPage: state.itemsPerPage,
   showFilters: state.showFilters,
   loading: state.loading,
-  error: state.error
+  apiOperation: state.apiOperation,
+  error: state.error,
+  useBackendApi: state.useBackendApi
 }));
 export const useProductActions = () => useProductStore(state => ({
   setViewMode: state.setViewMode,
@@ -296,6 +496,27 @@ export const useProductActions = () => useProductStore(state => ({
   addToCompare: state.addToCompare,
   removeFromCompare: state.removeFromCompare,
   clearFilters: state.clearFilters,
+  loadProducts: state.loadProducts,
+  searchProducts: state.searchProducts,
   initializeData: state.initializeData,
   refreshData: state.refreshData
 }));
+
+// 便捷的复合选择器
+export const useProductStore_V2 = () => {
+  const products = useProducts();
+  const filteredProducts = useFilteredProducts();
+  const filters = useProductFilters();
+  const pagination = useProductPagination();
+  const ui = useProductUI();
+  const actions = useProductActions();
+  
+  return {
+    products,
+    filteredProducts,
+    filters,
+    pagination,
+    ui,
+    actions
+  };
+};
