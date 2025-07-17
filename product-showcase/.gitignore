@@ -22,3 +22,24 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local image files (use cloud storage instead)
+public/images/*.jpg
+public/images/*.jpeg
+public/images/*.png
+public/images/*.gif
+public/images/*.webp
+# Keep important system files
+!public/images/placeholder-image.svg
+!public/images/*.txt
+!public/images/*.csv
+
+# Data analysis charts and generated images
+src/data/charts/*.png
+src/data/charts/*.jpg
+src/data/charts/*.jpeg
+src/data/charts/*.gif
+src/data/charts/*.webp
+
+# Backup directories
+backup/local-images-backup-*
