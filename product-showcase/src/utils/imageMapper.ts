@@ -1,5 +1,6 @@
 // 图片路径映射工具
 import { Product } from '../types/product';
+import { FrontendImageUtils } from '../config/api';
 
 // 图片类型映射
 const IMAGE_TYPE_MAP = {
@@ -32,12 +33,22 @@ function getImageExtension(sequence: string, imageType: string): string {
   return 'png'; // 默认扩展名
 }
 
-// 生成图片路径
+// 生成图片路径（现在直接使用MinIO路径）
 export function generateImagePath(sequence: string, imageType: string): string {
+  if (!sequence || !imageType) return '';
+
+  // 直接使用MinIO路径，不再支持本地fallback
+  return generateMinIOImagePath(sequence, imageType);
+}
+
+// 生成MinIO图片路径
+export function generateMinIOImagePath(sequence: string, imageType: string): string {
   if (!sequence || !imageType) return '';
   
   const extension = getImageExtension(sequence, imageType);
-  return `/src/assets/images/products/${sequence}_${imageType}_0.${extension}`;
+  const filename = `${sequence}_${imageType}_0.${extension}`;
+  
+  return FrontendImageUtils.buildImageUrl(`products/${filename}`);
 }
 
 // 验证图片文件是否存在（在实际应用中可以通过API检查）
@@ -49,15 +60,8 @@ export function validateImagePath(imagePath: string): boolean {
 
 // 获取图片的占位符路径
 export function getPlaceholderImage(imageType: string): string {
-  const placeholders = {
-    front: '/src/assets/images/placeholder-front.png',
-    back: '/src/assets/images/placeholder-back.png',
-    label: '/src/assets/images/placeholder-label.png',
-    package: '/src/assets/images/placeholder-package.png',
-    gift: '/src/assets/images/placeholder-gift.png',
-  };
-  
-  return placeholders[imageType as keyof typeof placeholders] || '/src/assets/images/placeholder.png';
+  // 使用public目录下的占位符图片
+  return '/placeholder-image.svg';
 }
 
 // 处理产品图片路径
@@ -66,8 +70,31 @@ export function processProductImages(product: Product): Product {
   
   // 检查并修复图片路径
   Object.entries(processedImages).forEach(([type, path]) => {
-    if (path && !validateImagePath(path)) {
-      // 如果路径无效，使用占位符
+    if (path) {
+      // 检查是否需要修复路径
+      if (FrontendImageUtils.needsPathFix(path)) {
+        // 修复废弃路径
+        if (path.startsWith('http')) {
+          const objectName = FrontendImageUtils.extractObjectName(path);
+          const fixedPath = FrontendImageUtils.fixImagePath(objectName);
+          processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(fixedPath);
+        } else {
+          processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(FrontendImageUtils.fixImagePath(path));
+        }
+      } else if (!path.startsWith('http')) {
+        // 如果不是完整URL，构建完整URL
+        processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(path);
+      }
+    } else if (product.sequence) {
+      // 如果没有图片路径，尝试根据序号生成MinIO路径
+      const minioPath = generateMinIOImagePath(product.sequence, type);
+      if (minioPath) {
+        processedImages[type as keyof typeof processedImages] = minioPath;
+      }
+    }
+    
+    // 如果仍然没有有效路径，使用占位符
+    if (!processedImages[type as keyof typeof processedImages] || !validateImagePath(processedImages[type as keyof typeof processedImages])) {
       processedImages[type as keyof typeof processedImages] = getPlaceholderImage(type);
     }
   });
@@ -112,11 +139,28 @@ export function getProductImagePaths(product: Product): string[] {
   return paths;
 }
 
-// 获取图片的缩略图路径（如果有的话）
+// 获取图片的缩略图路径
 export function getThumbnailPath(imagePath: string, size: 'small' | 'medium' | 'large' = 'medium'): string {
-  // 在实际应用中，这里可以生成不同尺寸的缩略图路径
-  // 现在我们直接返回原路径
-  return imagePath;
+  if (!imagePath) return imagePath;
+  
+  // 如果是完整URL，使用工具类构建缩略图
+  if (imagePath.startsWith('http')) {
+    const objectName = FrontendImageUtils.extractObjectName(imagePath);
+    return FrontendImageUtils.buildThumbnailUrl(objectName, size);
+  }
+  
+  // 否则使用工具类构建缩略图
+  return FrontendImageUtils.buildThumbnailUrl(imagePath, size);
+}
+
+// 获取优化后的图片路径
+export function getOptimizedImagePath(
+  imagePath: string, 
+  options: { width?: number; height?: number; quality?: number; format?: string } = {}
+): string {
+  if (!imagePath) return imagePath;
+  
+  return FrontendImageUtils.buildOptimizedImageUrl(imagePath, options);
 }
 
 // 图片懒加载工具

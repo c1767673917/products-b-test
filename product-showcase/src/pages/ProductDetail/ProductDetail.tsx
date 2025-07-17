@@ -5,6 +5,7 @@ import { ArrowLeftIcon, HeartIcon, ScaleIcon, ShareIcon } from '@heroicons/react
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { Product } from '../../types/product';
 import { useProductStore } from '../../stores/productStore';
+import { useProductDetailData } from '../../hooks/useProducts';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Spinner } from '../../components/ui/Loading';
@@ -29,16 +30,17 @@ const ProductDetail: React.FC = () => {
   const { shouldEnableAnimation } = useAnimationPreferences();
   
   const { 
-    products, 
     favorites, 
     compareList,
+    products: storeProducts,
     toggleFavorite, 
     addToCompare, 
     removeFromCompare
   } = useProductStore();
   
-  const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState<Product | null>(null);
+  // 使用React Query获取产品详情和相关产品
+  const { product, relatedProducts, isLoading, isError, error } = useProductDetailData(id || '');
+  
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
@@ -52,24 +54,34 @@ const ProductDetail: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // 处理产品数据加载
   useEffect(() => {
-    if (id && products.length > 0) {
-      const foundProduct = products.find(p => p.id === id);
-      if (foundProduct) {
-        setProduct(foundProduct);
-        setIsLoading(false);
-        // 设置页面标题
-        document.title = `${foundProduct.name} - 产品详情`;
-        // 预加载图片
-        preloadImages(foundProduct);
-      } else {
-        showError('产品未找到');
-        navigate('/products');
-      }
-    } else if (products.length === 0) {
-      setIsLoading(true);
+    if (isError && error) {
+      showError(`加载产品失败: ${error.message}`);
+      navigate('/products');
+      return;
     }
-  }, [id, products, navigate, showError]);
+
+    if (!id) {
+      showError('产品ID无效');
+      navigate('/products');
+      return;
+    }
+
+    // 如果React Query返回了产品数据，使用它
+    if (product.data) {
+      document.title = `${product.data.name} - 产品详情`;
+      preloadImages(product.data);
+    } 
+    // 否则尝试从本地store查找（向后兼容）
+    else if (storeProducts.length > 0) {
+      const foundProduct = storeProducts.find(p => p.id === id);
+      if (foundProduct) {
+        document.title = `${foundProduct.name} - 产品详情`;
+        preloadImages(foundProduct);
+      }
+    }
+  }, [id, product.data, storeProducts, isError, error, navigate, showError]);
 
   // 图片预加载函数
   const preloadImages = (product: Product) => {
@@ -106,9 +118,10 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleToggleFavorite = () => {
-    if (product) {
-      toggleFavorite(product.id);
-      const isFavorited = favorites.includes(product.id);
+    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    if (currentProduct) {
+      toggleFavorite(currentProduct.id);
+      const isFavorited = favorites.includes(currentProduct.id);
       showSuccess(
         isFavorited ? '已取消收藏' : '已添加到收藏'
       );
@@ -116,28 +129,30 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleToggleCompare = () => {
-    if (product) {
-      const isInCompare = compareList.includes(product.id);
+    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    if (currentProduct) {
+      const isInCompare = compareList.includes(currentProduct.id);
       if (isInCompare) {
-        removeFromCompare(product.id);
+        removeFromCompare(currentProduct.id);
         showInfo('已从对比列表移除');
       } else {
         if (compareList.length >= 4) {
           showError('对比列表最多只能添加4个产品');
           return;
         }
-        addToCompare(product.id);
+        addToCompare(currentProduct.id);
         showSuccess('已添加到对比列表');
       }
     }
   };
 
   const handleShare = async () => {
-    if (product) {
+    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    if (currentProduct) {
       try {
         await navigator.share({
-          title: product.name,
-          text: `查看这个产品：${product.name}`,
+          title: currentProduct.name,
+          text: `查看这个产品：${currentProduct.name}`,
           url: window.location.href,
         });
       } catch (err) {
@@ -147,6 +162,9 @@ const ProductDetail: React.FC = () => {
       }
     }
   };
+
+  // 获取当前产品数据
+  const currentProduct = product.data || storeProducts.find(p => p.id === id);
 
   if (isLoading) {
     return (
@@ -159,7 +177,7 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  if (!product) {
+  if (!currentProduct) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -174,8 +192,8 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const isFavorited = favorites.includes(product.id);
-  const isInCompare = compareList.includes(product.id);
+  const isFavorited = favorites.includes(currentProduct.id);
+  const isInCompare = compareList.includes(currentProduct.id);
 
   return (
     <motion.div
@@ -293,7 +311,7 @@ const ProductDetail: React.FC = () => {
                 </div>
               )}
               <div className={imagesPreloaded ? 'block' : 'hidden'}>
-                <ImageGallery product={product} />
+                <ImageGallery product={currentProduct} />
               </div>
             </Card>
           </motion.div>
@@ -319,29 +337,29 @@ const ProductDetail: React.FC = () => {
           >
             <Card className="p-4 sm:p-6 shadow-sm">
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                {product.name}
+                {currentProduct.name}
               </h1>
               
               {/* 价格信息 */}
               <div className="mb-6">
                 <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  {product.price.discount ? (
+                  {currentProduct.price.discount ? (
                     <>
                       <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">
-                        ¥{product.price.discount.toFixed(2)}
+                        ¥{currentProduct.price.discount.toFixed(2)}
                       </span>
                       <span className="text-sm sm:text-base lg:text-lg text-gray-500 line-through">
-                        ¥{product.price.normal.toFixed(2)}
+                        ¥{currentProduct.price.normal.toFixed(2)}
                       </span>
-                      {product.price.discountRate && (
+                      {currentProduct.price.discountRate && (
                         <span className="bg-red-100 text-red-800 text-xs sm:text-sm font-medium px-2 py-1 rounded-full">
-                          {product.price.discountRate.toFixed(0)}% OFF
+                          {currentProduct.price.discountRate.toFixed(0)}% OFF
                         </span>
                       )}
                     </>
                   ) : (
                     <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                      ¥{product.price.normal.toFixed(2)}
+                      ¥{currentProduct.price.normal.toFixed(2)}
                     </span>
                   )}
                 </div>
@@ -352,15 +370,15 @@ const ProductDetail: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">规格</span>
-                    <p className="text-sm text-gray-900 break-words">{product.specification || '暂无'}</p>
+                    <p className="text-sm text-gray-900 break-words">{currentProduct.specification || '暂无'}</p>
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">口味</span>
-                    <p className="text-sm text-gray-900 break-words">{product.flavor || '暂无'}</p>
+                    <p className="text-sm text-gray-900 break-words">{currentProduct.flavor || '暂无'}</p>
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">包装规格</span>
-                    <p className="text-sm text-gray-900 break-words">{product.boxSpec || '暂无'}</p>
+                    <p className="text-sm text-gray-900 break-words">{currentProduct.boxSpec || '暂无'}</p>
                   </div>
                 </div>
               </div>
@@ -368,7 +386,7 @@ const ProductDetail: React.FC = () => {
 
             {/* 详细信息面板 */}
             <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-thin product-detail-scroll">
-              <ProductInfo product={product} />
+              <ProductInfo product={currentProduct} />
             </div>
           </motion.div>
         </div>
@@ -392,7 +410,7 @@ const ProductDetail: React.FC = () => {
           style={PERFORMANCE_CSS}
           className={cn("mt-6 sm:mt-8 lg:mt-12 lg:col-span-3", GPU_ACCELERATED_CLASS)}
         >
-          <RelatedProducts currentProduct={product} />
+          <RelatedProducts currentProduct={currentProduct} relatedProducts={relatedProducts.data} />
         </motion.div>
       </div>
     </motion.div>

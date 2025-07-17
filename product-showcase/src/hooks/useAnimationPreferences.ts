@@ -1,5 +1,5 @@
 // 动画偏好设置和性能优化Hook
-import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useRef, createContext, useContext } from 'react';
 import { getResponsiveAnimationConfig, BREAKPOINTS } from '../constants/animations';
 
 export interface AnimationPreferences {
@@ -87,20 +87,24 @@ export const useAnimationPreferences = () => {
 
   // 保存偏好设置到localStorage
   const savePreferences = useCallback((newPreferences: Partial<AnimationPreferences>) => {
-    const updated = { ...preferences, ...newPreferences };
-    setPreferences(updated);
-    
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    } catch (error) {
-      console.warn('Failed to save animation preferences:', error);
-    }
-  }, [preferences]);
+    setPreferences(prev => {
+      const updated = { ...prev, ...newPreferences };
+      
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch (error) {
+        console.warn('Failed to save animation preferences:', error);
+      }
+      
+      return updated;
+    });
+  }, []);
 
   // 重置为默认设置
   const resetPreferences = useCallback(() => {
     const systemPrefs = getSystemPreferences();
     const reset = { ...defaultPreferences, ...systemPrefs };
+    
     setPreferences(reset);
     
     try {
@@ -115,14 +119,14 @@ export const useAnimationPreferences = () => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     
     const handleChange = (e: MediaQueryListEvent) => {
-      if (e.matches && !preferences.reduceMotion) {
+      if (e.matches) {
         savePreferences({ reduceMotion: true });
       }
     };
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [preferences.reduceMotion, savePreferences]);
+  }, [savePreferences]);
 
   // 获取优化后的动画配置（支持响应式）
   const getAnimationConfig = useCallback((baseDuration: number = 0.3) => {
@@ -189,6 +193,9 @@ export const useAnimationPreferences = () => {
     isLowPerformance: false,
   });
 
+  // 使用 useRef 来存储性能调整标志，避免无限循环
+  const performanceAdjustedRef = useRef(false);
+
   useEffect(() => {
     let frameCount = 0;
     let lastTime = performance.now();
@@ -206,9 +213,10 @@ export const useAnimationPreferences = () => {
           isLowPerformance,
         });
 
-        // 如果性能较低，自动调整设置
-        if (isLowPerformance && !preferences.reduceMotion) {
+        // 如果性能较低且未调整过，自动调整设置（只调整一次）
+        if (isLowPerformance && !preferences.reduceMotion && !performanceAdjustedRef.current) {
           console.warn('Low performance detected, adjusting animation settings');
+          performanceAdjustedRef.current = true;
           savePreferences({
             animationSpeed: 'fast',
             enableParallax: false,
@@ -233,7 +241,7 @@ export const useAnimationPreferences = () => {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [preferences.reduceMotion, savePreferences]);
+  }, [preferences.reduceMotion]); // 移除 savePreferences 依赖
 
   return {
     preferences,
