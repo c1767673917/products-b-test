@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片显示测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .test-item {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .test-item img {
+      max-width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .url-display {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
+    .loading { background-color: #fff3cd; color: #856404; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>图片显示测试</h1>
+    <p>测试产品图片是否能正常从MinIO加载显示</p>
+    
+    <div class="test-item">
+      <h3>测试1: 正面图片</h3>
+      <div class="url-display">
+        原始路径: /images/20250708-002_正面图片_0.jpg<br>
+        MinIO URL: http://152.89.168.61:9000/product-images/products/20250708-002_正面图片_0.jpg
+      </div>
+      <img id="img1" src="http://152.89.168.61:9000/product-images/products/20250708-002_正面图片_0.jpg" alt="正面图片">
+      <div id="status1" class="status loading">加载中...</div>
+    </div>
+    
+    <div class="test-item">
+      <h3>测试2: 背面图片</h3>
+      <div class="url-display">
+        原始路径: /images/20250708-002_背面图片_0.jpg<br>
+        MinIO URL: http://152.89.168.61:9000/product-images/products/20250708-002_背面图片_0.jpg
+      </div>
+      <img id="img2" src="http://152.89.168.61:9000/product-images/products/20250708-002_背面图片_0.jpg" alt="背面图片">
+      <div id="status2" class="status loading">加载中...</div>
+    </div>
+    
+    <div class="test-item">
+      <h3>测试3: 标签照片</h3>
+      <div class="url-display">
+        原始路径: /images/20250708-002_标签照片_0.jpg<br>
+        MinIO URL: http://152.89.168.61:9000/product-images/products/20250708-002_标签照片_0.jpg
+      </div>
+      <img id="img3" src="http://152.89.168.61:9000/product-images/products/20250708-002_标签照片_0.jpg" alt="标签照片">
+      <div id="status3" class="status loading">加载中...</div>
+    </div>
+    
+    <div class="test-item">
+      <h3>系统信息</h3>
+      <ul>
+        <li>前端应用: <a href="http://localhost:5173/" target="_blank">http://localhost:5173/</a></li>
+        <li>后端API: <a href="http://localhost:3000/health" target="_blank">http://localhost:3000/health</a></li>
+        <li>MinIO服务: <a href="http://152.89.168.61:9000/" target="_blank">http://152.89.168.61:9000/</a></li>
+        <li>图片测试页面: <a href="http://localhost:5173/image-test" target="_blank">http://localhost:5173/image-test</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    // 为每个图片添加加载状态监听
+    for (let i = 1; i <= 3; i++) {
+      const img = document.getElementById(`img${i}`);
+      const status = document.getElementById(`status${i}`);
+      
+      img.onload = function() {
+        status.textContent = '✅ 加载成功';
+        status.className = 'status success';
+        console.log(`图片${i} 加载成功`);
+      };
+      
+      img.onerror = function() {
+        status.textContent = '❌ 加载失败';
+        status.className = 'status error';
+        console.log(`图片${i} 加载失败`);
+      };
+    }
+    
+    // 输出测试信息到控制台
+    console.log('=== 图片显示测试 ===');
+    console.log('如果图片显示正常，说明修复成功');
+    console.log('如果图片显示失败，请检查：');
+    console.log('1. MinIO服务是否正常运行');
+    console.log('2. 图片文件是否存在于正确路径');
+    console.log('3. 网络连接是否正常');
+    console.log('4. 浏览器控制台是否有错误信息');
+  </script>
+</body>
+</html>

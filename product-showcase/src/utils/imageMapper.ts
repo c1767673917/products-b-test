@@ -94,7 +94,7 @@ export function processProductImages(product: Product): Product {
     }
     
     // 如果仍然没有有效路径，使用占位符
-    if (!processedImages[type as keyof typeof processedImages] || !validateImagePath(processedImages[type as keyof typeof processedImages])) {
+    if (!processedImages[type as keyof typeof processedImages] || !validateImagePath(processedImages[type as keyof typeof processedImages] || '')) {
       processedImages[type as keyof typeof processedImages] = getPlaceholderImage(type);
     }
   });

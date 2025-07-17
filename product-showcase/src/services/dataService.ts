@@ -2,6 +2,7 @@
 import type { Product, FilterState, DataStats } from '../types/product';
 import productsData from '../data/products.json';
 import statsData from '../data/stats.json';
+import { processProductImages, processProductsImages } from '../utils/imageMapper';
 
 // 模拟API延迟
 const simulateDelay = (ms: number = 500) =>
@@ -12,7 +13,7 @@ export class DataService {
   private stats: DataStats;
 
   constructor() {
-    this.products = productsData as Product[];
+    this.products = processProductsImages(productsData as Product[]);
     this.stats = statsData as DataStats;
   }
 
@@ -26,7 +27,7 @@ export class DataService {
   async fetchProductById(id: string): Promise<Product | null> {
     await simulateDelay(200);
     const product = this.products.find(product => product.id === id);
-    return product || null;
+    return product ? processProductImages(product) : null;
   }
 
   // 模拟异步获取数据统计
@@ -42,7 +43,8 @@ export class DataService {
 
   // 根据ID获取产品
   getProductById(id: string): Product | undefined {
-    return this.products.find(product => product.id === id);
+    const product = this.products.find(product => product.id === id);
+    return product ? processProductImages(product) : undefined;
   }
 
   // 获取数据统计

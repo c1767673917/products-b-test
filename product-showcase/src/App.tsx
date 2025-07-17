@@ -22,6 +22,7 @@ const ApiDemo = React.lazy(() =>
     default: module.ApiDemo
   }))
 );
+const ImageTestComponent = React.lazy(() => import('./components/ImageTestComponent'));
 
 
 
@@ -71,6 +72,18 @@ const AnimatedRoutes: React.FC = () => {
               <Suspense fallback={<PageLoader />}>
                 <PageTransitionWrapper type="fade">
                   <ApiDemo />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/image-test"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <ImageTestComponent />
                 </PageTransitionWrapper>
               </Suspense>
             </ErrorBoundary>

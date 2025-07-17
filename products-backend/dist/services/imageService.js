@@ -9,32 +9,17 @@ const crypto_1 = __importDefault(require("crypto"));
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const Image_1 = require("../models/Image");
+const imageConfig_1 = require("../config/imageConfig");
 class ImageService {
     constructor() {
         this.minioClient = new minio_1.Client({
-            endPoint: process.env.MINIO_ENDPOINT || '152.89.168.61',
-            port: parseInt(process.env.MINIO_PORT || '9000'),
-            useSSL: false,
-            accessKey: process.env.MINIO_ACCESS_KEY || 'lcsm',
-            secretKey: process.env.MINIO_SECRET_KEY || 'Sa2482047260@'
+            endPoint: imageConfig_1.IMAGE_CONFIG.MINIO.ENDPOINT,
+            port: imageConfig_1.IMAGE_CONFIG.MINIO.PORT,
+            useSSL: imageConfig_1.IMAGE_CONFIG.MINIO.USE_SSL,
+            accessKey: imageConfig_1.IMAGE_CONFIG.MINIO.ACCESS_KEY,
+            secretKey: imageConfig_1.IMAGE_CONFIG.MINIO.SECRET_KEY
         });
-        this.bucketName = process.env.MINIO_BUCKET || 'product-images';
-        this.config = {
-            thumbnailSizes: {
-                small: { width: 150, height: 150, quality: 80 },
-                medium: { width: 300, height: 300, quality: 85 },
-                large: { width: 600, height: 600, quality: 90 }
-            },
-            formats: {
-                webp: { quality: 85, lossless: false },
-                jpeg: { quality: 90, progressive: true }
-            },
-            optimization: {
-                autoOrient: true,
-                stripMetadata: true,
-                progressive: true
-            }
-        };
+        this.bucketName = imageConfig_1.IMAGE_CONFIG.MINIO.BUCKET_NAME;
     }
     /**
      * 上传图片到MinIO并创建数据库记录
@@ -50,12 +35,16 @@ class ImageService {
                 console.log(`图片已存在，复用: ${existingImage.imageId}`);
                 return existingImage;
             }
+            // 验证图片类型
+            if (!imageConfig_1.ImagePathUtils.isValidImageType(imageType)) {
+                throw new Error(`不支持的图片类型: ${imageType}`);
+            }
             // 获取图片信息
             const imageInfo = await (0, sharp_1.default)(buffer).metadata();
-            const mimeType = `image/${imageInfo.format}`;
-            // 生成唯一的对象名
+            const mimeType = imageConfig_1.ImagePathUtils.getMimeType(filename);
+            // 使用统一的路径生成方法
             const ext = path_1.default.extname(filename) || `.${imageInfo.format}`;
-            const objectName = `originals/${productId}_${imageType}_${Date.now()}${ext}`;
+            const objectName = imageConfig_1.ImagePathUtils.buildProductImagePath(productId, imageType) + ext;
             // 上传到MinIO
             await this.minioClient.putObject(this.bucketName, objectName, buffer, buffer.length, {
                 'Content-Type': mimeType,
@@ -65,7 +54,7 @@ class ImageService {
                 'X-Amz-Meta-SHA256': sha256Hash
             });
             // 生成公开访问URL
-            const publicUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${objectName}`;
+            const publicUrl = imageConfig_1.ImagePathUtils.buildPublicUrl(objectName);
             // 生成缩略图
             const thumbnails = await this.generateThumbnails(buffer, objectName);
             // 创建数据库记录
@@ -102,7 +91,7 @@ class ImageService {
      */
     async generateThumbnails(buffer, originalObjectName) {
         const thumbnails = [];
-        for (const [sizeName, sizeConfig] of Object.entries(this.config.thumbnailSizes)) {
+        for (const [sizeName, sizeConfig] of Object.entries(imageConfig_1.IMAGE_CONFIG.THUMBNAIL_SIZES)) {
             try {
                 // 生成缩略图
                 const thumbnailBuffer = await (0, sharp_1.default)(buffer)
@@ -112,9 +101,8 @@ class ImageService {
                 })
                     .webp({ quality: sizeConfig.quality })
                     .toBuffer();
-                // 生成缩略图对象名
-                const thumbnailObjectName = originalObjectName
-                    .replace('originals/', `thumbnails/${sizeName}/`)
+                // 使用统一的路径生成方法
+                const thumbnailObjectName = imageConfig_1.ImagePathUtils.buildThumbnailPath(sizeName, originalObjectName)
                     .replace(/\.(jpg|jpeg|png)$/i, '.webp');
                 // 上传缩略图
                 await this.minioClient.putObject(this.bucketName, thumbnailObjectName, thumbnailBuffer, thumbnailBuffer.length, {
@@ -122,7 +110,7 @@ class ImageService {
                     'X-Amz-Meta-Thumbnail-Size': sizeName,
                     'X-Amz-Meta-Original-Object': originalObjectName
                 });
-                const thumbnailUrl = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${this.bucketName}/${thumbnailObjectName}`;
+                const thumbnailUrl = imageConfig_1.ImagePathUtils.buildPublicUrl(thumbnailObjectName);
                 thumbnails.push({
                     size: sizeName,
                     url: thumbnailUrl,

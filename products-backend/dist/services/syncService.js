@@ -8,6 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const Product_1 = require("../models/Product");
 const Image_1 = require("../models/Image");
+const imageConfig_1 = require("../config/imageConfig");
 const mongoose_1 = __importDefault(require("mongoose"));
 class SyncService {
     constructor() {
@@ -521,14 +522,26 @@ class SyncService {
     async createImageRecord(productId, type, imagePath) {
         try {
             const imageId = `${productId}_${type}_${Date.now()}`;
+            // 处理图片路径，确保使用统一格式
+            let processedPath = imagePath;
+            // 如果是完整URL，提取对象名
+            if (imagePath.includes('http')) {
+                processedPath = imageConfig_1.ImagePathUtils.extractObjectName(imagePath);
+            }
+            // 如果是废弃路径，转换为新路径
+            if (imageConfig_1.ImagePathUtils.isDeprecatedPath(processedPath)) {
+                processedPath = imageConfig_1.ImagePathUtils.convertDeprecatedPath(processedPath);
+            }
+            // 构建完整的公开访问URL
+            const publicUrl = imageConfig_1.ImagePathUtils.buildPublicUrl(processedPath);
             await Image_1.Image.create({
                 imageId,
                 productId,
                 type,
-                bucketName: 'product-images',
-                objectName: imagePath.replace('http://152.89.168.61:9000/product-images/', ''),
-                originalName: path_1.default.basename(imagePath),
-                publicUrl: imagePath,
+                bucketName: imageConfig_1.IMAGE_CONFIG.MINIO.BUCKET_NAME,
+                objectName: processedPath,
+                originalName: path_1.default.basename(processedPath),
+                publicUrl,
                 processStatus: 'completed',
                 uploadedAt: new Date(),
                 lastAccessedAt: new Date(),
@@ -536,7 +549,7 @@ class SyncService {
                 isActive: true,
                 isPublic: true
             });
-            console.log(`创建图片记录: ${imageId}`);
+            console.log(`创建图片记录: ${imageId} -> ${processedPath}`);
         }
         catch (error) {
             console.error(`创建图片记录失败: ${error}`);

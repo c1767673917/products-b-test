@@ -1,7 +1,6 @@
 import { IImage } from '../models/Image';
 export declare class ImageService {
     private minioClient;
-    private config;
     private bucketName;
     constructor();
     /**

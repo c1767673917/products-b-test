@@ -64,9 +64,16 @@ export class FrontendImageUtils {
       return imagePath;
     }
     
-    // 如果是相对路径，构建完整URL
+    // 如果是相对路径（以 /images/ 开头），提取文件名并构建正确的路径
+    if (imagePath.startsWith('/images/')) {
+      const filename = imagePath.split('/').pop(); // 获取文件名
+      return `${API_CONFIG.imageBaseURL}/${API_CONFIG.imageService.bucketName}/${API_CONFIG.imageService.paths.products}/${filename}`;
+    }
+    
+    // 如果是其他以 / 开头的路径，去掉开头的 / 并构建URL
     if (imagePath.startsWith('/')) {
-      return `${API_CONFIG.imageBaseURL}/${API_CONFIG.imageService.bucketName}${imagePath}`;
+      const cleanPath = imagePath.substring(1);
+      return `${API_CONFIG.imageBaseURL}/${API_CONFIG.imageService.bucketName}/${cleanPath}`;
     }
     
     // 如果是对象名，构建完整URL
