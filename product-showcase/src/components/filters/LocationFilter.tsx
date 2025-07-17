@@ -11,13 +11,17 @@ export interface LocationFilterProps {
   onChange: (locations: string[]) => void;
   className?: string;
   defaultCollapsed?: boolean;
+  options?: { value: string; label: string; count: number; }[];
+  loading?: boolean;
 }
 
 export const LocationFilter: React.FC<LocationFilterProps> = ({
   value,
   onChange,
   className,
-  defaultCollapsed = true
+  defaultCollapsed = true,
+  options,
+  loading = false
 }) => {
   const products = useProductStore(state => state.products);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,6 +30,16 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
 
   // 计算产地分布
   const locationData = useMemo(() => {
+    // 优先使用传入的options数据
+    if (options && options.length > 0) {
+      return options.map(option => ({
+        name: option.label,
+        count: option.count,
+        cities: [] // 后端API暂不支持城市详情，后续可扩展
+      }));
+    }
+
+    // 回退到本地数据计算
     const locationMap = new Map<string, { count: number; cities: Set<string> }>();
     
     products.forEach(product => {
@@ -57,7 +71,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
         cities: Array.from(info.cities).sort()
       }))
       .sort((a, b) => b.count - a.count);
-  }, [products]);
+  }, [options, products]);
 
   // 筛选产地数据
   const filteredLocations = useMemo(() => {
@@ -96,9 +110,13 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
         >
           <CardTitle className="text-base font-medium">产地筛选</CardTitle>
           <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-600">
-              {value.length > 0 ? `已选择 ${value.length} 个产地` : `共 ${locationData.length} 个产地`}
-            </div>
+            {loading ? (
+              <div className="text-sm text-gray-500">加载中...</div>
+            ) : (
+              <div className="text-sm text-gray-600">
+                {value.length > 0 ? `已选择 ${value.length} 个产地` : `共 ${locationData.length} 个产地`}
+              </div>
+            )}
             {isCollapsed ? (
               <ChevronRightIcon className="w-4 h-4 text-gray-500" />
             ) : (
@@ -118,8 +136,14 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
             style={{ overflow: 'hidden' }}
           >
             <CardContent className="pt-0">
-              {/* 视图模式切换 */}
-              <div className="flex items-center justify-end space-x-2 mb-4">
+              {loading ? (
+                <div className="flex justify-center py-4">
+                  <div className="text-sm text-gray-500">加载筛选选项中...</div>
+                </div>
+              ) : (
+                <>
+                  {/* 视图模式切换 */}
+                  <div className="flex items-center justify-end space-x-2 mb-4">
                 <button
                   onClick={() => setViewMode('list')}
                   className={cn(
@@ -289,6 +313,8 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                   <div className="text-sm">未找到匹配的产地</div>
                   <div className="text-xs mt-1">尝试使用其他关键词搜索</div>
                 </div>
+              )}
+                </>
               )}
             </CardContent>
           </motion.div>

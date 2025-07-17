@@ -9,6 +9,7 @@ import { PlatformFilter } from './PlatformFilter';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
 import { FilterState } from '../../types/product';
+import { useFilterOptions } from '../../hooks/useProducts';
 import { 
   FunnelIcon, 
   XMarkIcon,
@@ -42,6 +43,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const storeClearFilters = useProductStore(state => state.clearFilters);
   const filteredProducts = useProductStore(state => state.filteredProducts);
   const products = useProductStore(state => state.products);
+  
+  // 获取筛选选项数据
+  const { data: filterOptions, isLoading: isFilterOptionsLoading } = useFilterOptions();
 
   const filters = propFilters || storeFilters;
   const setFilters = propOnFiltersChange || storeSetFilters;
@@ -183,6 +187,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 value={filters.categories}
                 onChange={handleCategoryChange}
                 defaultCollapsed={true}
+                options={filterOptions?.categories}
+                loading={isFilterOptionsLoading}
               />
             </motion.div>
 
@@ -197,6 +203,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 value={filters.locations}
                 onChange={handleLocationChange}
                 defaultCollapsed={true}
+                options={filterOptions?.locations}
+                loading={isFilterOptionsLoading}
               />
             </motion.div>
 
@@ -211,6 +219,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 value={filters.platforms}
                 onChange={handlePlatformChange}
                 defaultCollapsed={true}
+                options={filterOptions?.platforms}
+                loading={isFilterOptionsLoading}
               />
             </motion.div>
 

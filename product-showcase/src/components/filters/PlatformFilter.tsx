@@ -17,6 +17,8 @@ export interface PlatformFilterProps {
   onChange: (platforms: string[]) => void;
   className?: string;
   defaultCollapsed?: boolean;
+  options?: { value: string; label: string; count: number; }[];
+  loading?: boolean;
 }
 
 // 平台图标映射
@@ -53,13 +55,26 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
   value,
   onChange,
   className,
-  defaultCollapsed = true
+  defaultCollapsed = true,
+  options,
+  loading = false
 }) => {
   const products = useProductStore(state => state.products);
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   
   // 计算平台分布
   const platformData = useMemo(() => {
+    // 优先使用传入的options数据
+    if (options && options.length > 0) {
+      const totalCount = options.reduce((sum, option) => sum + option.count, 0);
+      return options.map(option => ({
+        name: option.label,
+        count: option.count,
+        percentage: totalCount > 0 ? (option.count / totalCount * 100) : 0
+      }));
+    }
+
+    // 回退到本地数据计算
     const platformMap = new Map<string, number>();
     
     products.forEach(product => {
@@ -75,7 +90,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
         percentage: products.length > 0 ? (count / products.length * 100) : 0
       }))
       .sort((a, b) => b.count - a.count);
-  }, [products]);
+  }, [options, products]);
 
   const handlePlatformChange = (platformName: string, checked: boolean) => {
     if (checked) {
@@ -107,9 +122,13 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
         >
           <CardTitle className="text-base font-medium">采集平台</CardTitle>
           <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-600">
-              {value.length > 0 ? `已选择 ${value.length} 个平台` : `共 ${platformData.length} 个平台`}
-            </div>
+            {loading ? (
+              <div className="text-sm text-gray-500">加载中...</div>
+            ) : (
+              <div className="text-sm text-gray-600">
+                {value.length > 0 ? `已选择 ${value.length} 个平台` : `共 ${platformData.length} 个平台`}
+              </div>
+            )}
             {isCollapsed ? (
               <ChevronRightIcon className="w-4 h-4 text-gray-500" />
             ) : (
@@ -129,8 +148,14 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
             style={{ overflow: 'hidden' }}
           >
             <CardContent className="pt-0">
-              {/* 全选选项 */}
-              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+              {loading ? (
+                <div className="flex justify-center py-4">
+                  <div className="text-sm text-gray-500">加载筛选选项中...</div>
+                </div>
+              ) : (
+                <>
+                  {/* 全选选项 */}
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                 <div 
                   className="flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors rounded p-2 -m-2"
                   onClick={handleSelectAll}
@@ -283,6 +308,8 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                   </div>
                 </div>
               </div>
+                </>              
+              )}
             </CardContent>
           </motion.div>
         )}

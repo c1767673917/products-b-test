@@ -10,13 +10,17 @@ export interface CategoryFilterProps {
   onChange: (categories: string[]) => void;
   className?: string;
   defaultCollapsed?: boolean;
+  options?: { value: string; label: string; count: number; }[];
+  loading?: boolean;
 }
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   value,
   onChange,
   className,
-  defaultCollapsed = true
+  defaultCollapsed = true,
+  options,
+  loading = false
 }) => {
   const products = useProductStore(state => state.products);
 
@@ -30,7 +34,17 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   
   // 计算品类分布和层级结构
   const categoryData = useMemo(() => {
-    console.log('CategoryFilter: 重新计算品类数据，products.length =', products.length);
+    // 优先使用传入的options数据
+    if (options && options.length > 0) {
+      return options.map(option => ({
+        name: option.label,
+        count: option.count,
+        subcategories: [] // 后端API暂不支持子分类，后续可扩展
+      }));
+    }
+
+    // 回退到本地数据计算
+    console.log('CategoryFilter: 使用本地数据计算品类，products.length =', products.length);
     const categoryMap = new Map<string, { count: number; subcategories: Map<string, number> }>();
 
     products.forEach(product => {
@@ -63,7 +77,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
     console.log('CategoryFilter: 计算得到的品类数据:', result);
     return result;
-  }, [products]);
+  }, [options, products]);
 
   const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set());
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
@@ -101,9 +115,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         >
           <CardTitle className="text-base font-medium">商品品类</CardTitle>
           <div className="flex items-center space-x-2">
-            <div className="text-sm text-gray-600">
-              {value.length > 0 ? `已选择 ${value.length} 个品类` : `共 ${categoryData.length} 个品类`}
-            </div>
+            {loading ? (
+              <div className="text-sm text-gray-500">加载中...</div>
+            ) : (
+              <div className="text-sm text-gray-600">
+                {value.length > 0 ? `已选择 ${value.length} 个品类` : `共 ${categoryData.length} 个品类`}
+              </div>
+            )}
             {isCollapsed ? (
               <ChevronRightIcon className="w-4 h-4 text-gray-500" />
             ) : (
@@ -123,8 +141,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             style={{ overflow: 'hidden' }}
           >
             <CardContent className="pt-0">
-              <div className="space-y-2 max-h-80 overflow-y-auto">
-                {categoryData.map((category) => {
+              {loading ? (
+                <div className="flex justify-center py-4">
+                  <div className="text-sm text-gray-500">加载筛选选项中...</div>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-80 overflow-y-auto">
+                  {categoryData.map((category) => {
                   const isExpanded = expandedCategories.has(category.name);
                   const hasSubcategories = category.subcategories.length > 0;
                   
@@ -203,8 +226,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                       </AnimatePresence>
                     </div>
                   );
-                })}
-              </div>
+                  })}
+                </div>
+              )}
 
               {/* 选中的品类标签 */}
               {value.length > 0 && (
