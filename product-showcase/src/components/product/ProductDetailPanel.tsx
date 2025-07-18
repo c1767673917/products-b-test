@@ -187,7 +187,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
             transformStyle: 'preserve-3d',
             width: `${currentWidth}px`
           }}
-          className="fixed top-0 right-0 bottom-0 bg-white border-l border-gray-200 z-50 flex flex-col transform-gpu"
+          className="sticky top-0 h-screen bg-white border-l border-gray-200 z-40 flex flex-col transform-gpu"
           onKeyDown={handleKeyDown}
           tabIndex={-1}
         >

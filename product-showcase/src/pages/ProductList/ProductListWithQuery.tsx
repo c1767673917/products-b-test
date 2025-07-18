@@ -87,12 +87,6 @@ export const ProductListWithQuery: React.FC = () => {
     setRealTimePanelWidth(width);
   }, []);
 
-  // 获取响应式网格计算 - 使用实时面板宽度
-  const effectiveContainerWidth = useMemo(() => {
-    return isDetailPanelOpen && !isMobile
-      ? Math.max(dimensions.width - realTimePanelWidth - 32, 300) // 使用实时宽度
-      : dimensions.width;
-  }, [isDetailPanelOpen, isMobile, dimensions.width, realTimePanelWidth]);
 
 
   // 使用useMemo稳定options对象，避免每次重新创建
@@ -363,272 +357,247 @@ export const ProductListWithQuery: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
-      {/* 滚动进度条 */}
-      <ScrollProgress />
+    <div className="min-h-screen bg-gray-50 flex flex-row">
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* 滚动进度条 */}
+        <ScrollProgress />
 
-      {/* 页面导航 */}
-      <PageNavigation title="Product display" />
+        {/* 页面导航 */}
+        <PageNavigation title="Product display" />
 
-      {/* 顶部工具栏 */}
-      <div className="bg-white shadow-sm border-b sticky top-12 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-end h-12">
-            {/* 右侧：操作按钮 */}
+        {/* 顶部工具栏 */}
+        <div className="bg-white shadow-sm border-b sticky top-12 z-30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-end h-12">
+              {/* 右侧：操作按钮 */}
 
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isLoading}
-              >
-                <ArrowPathIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">刷新</span>}
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleShare}
-              >
-                <ShareIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">分享</span>}
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <FunnelIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">筛选</span>}
-              </Button>
-
-              {/* 视图切换 */}
-              <div className="flex border rounded-lg">
+              <div className="flex items-center space-x-2">
                 <Button
-                  variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                  variant="ghost"
                   size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className="rounded-r-none"
+                  onClick={handleRefresh}
+                  disabled={isLoading}
                 >
-                  <Squares2X2Icon className="h-4 w-4" />
+                  <ArrowPathIcon className="h-4 w-4" />
+                  {!isMobile && <span className="ml-1">刷新</span>}
                 </Button>
+
                 <Button
-                  variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                  variant="ghost"
                   size="sm"
-                  onClick={() => setViewMode('list')}
-                  className="rounded-l-none"
+                  onClick={handleShare}
                 >
-                  <ListBulletIcon className="h-4 w-4" />
+                  <ShareIcon className="h-4 w-4" />
+                  {!isMobile && <span className="ml-1">分享</span>}
                 </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <FunnelIcon className="h-4 w-4" />
+                  {!isMobile && <span className="ml-1">筛选</span>}
+                </Button>
+
+                {/* 视图切换 */}
+                <div className="flex border rounded-lg">
+                  <Button
+                    variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className="rounded-r-none"
+                  >
+                    <Squares2X2Icon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className="rounded-l-none"
+                  >
+                    <ListBulletIcon className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 主要内容区域 */}
-      <div
-        ref={containerRef}
-        className={cn(
-          "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-200 ease-out transform-gpu",
-          isDetailPanelOpen && !isMobile ? "lg:pr-4" : ""
-        )}
-        style={{
-          paddingRight: isDetailPanelOpen && !isMobile
-            ? `${Math.max(realTimePanelWidth - 120, 16)}px`
-            : '1rem',
-          willChange: 'padding-right',
-          transition: 'padding-right 0.1s ease-out' // 添加平滑过渡
-        }}
-      >
+        {/* 主要内容区域 */}
         <div
-          className={cn(
-            "flex flex-col lg:flex-row gap-8 transition-all duration-200 ease-out transform-gpu",
-            isDetailPanelOpen && isMobile ? "hidden" : ""
-          )}
+          ref={containerRef}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"
         >
-          {/* 桌面端筛选面板 */}
-          <AnimatePresence>
-            {showFilters && !isMobile && (
-              <motion.div
-                initial={{ opacity: 0, x: -300 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -300 }}
-                transition={{ 
-                  type: 'tween', 
-                  duration: 0.2,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                style={{
-                  willChange: 'transform, opacity',
-                  backfaceVisibility: 'hidden'
-                }}
-                className="lg:w-80 flex-shrink-0 transform-gpu"
-              >
-                <FilterPanel
-                  filters={filters}
-                  onFiltersChange={handleFiltersChange}
-                  onClearFilters={handleClearFilters}
-                />
-              </motion.div>
+          <div
+            className={cn(
+              "flex flex-col lg:flex-row gap-8",
+              isDetailPanelOpen && isMobile ? "hidden" : ""
             )}
-          </AnimatePresence>
-
-          {/* 移动端筛选面板 - 底部抽屉 */}
-          <AnimatePresence>
-            {showFilters && isMobile && (
-              <>
-                {/* 背景遮罩 */}
+          >
+            {/* 桌面端筛选面板 */}
+            <AnimatePresence>
+              {showFilters && !isMobile && (
                 <motion.div
-                  key="mobile-filter-backdrop"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                  onClick={() => setShowFilters(false)}
-                />
-
-                {/* 底部抽屉 */}
-                <motion.div
-                  key="mobile-filter-drawer"
-                  initial={{ y: '100%' }}
-                  animate={{ y: 0 }}
-                  exit={{ y: '100%' }}
+                  initial={{ opacity: 0, x: -300 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -300 }}
                   transition={{
                     type: 'tween',
                     duration: 0.2,
                     ease: [0.25, 0.46, 0.45, 0.94]
                   }}
                   style={{
-                    willChange: 'transform',
+                    willChange: 'transform, opacity',
                     backfaceVisibility: 'hidden'
                   }}
-                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden transform-gpu"
+                  className="lg:w-80 flex-shrink-0 transform-gpu"
                 >
-                  {/* 抽屉头部 */}
-                  <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-2xl">
-                    <div className="flex items-center space-x-2">
-                      <FunnelIcon className="w-5 h-5 text-gray-600" />
-                      <h2 className="text-lg font-semibold text-gray-900">筛选条件</h2>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleClearFilters}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        清空
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowFilters(false)}
-                      >
-                        <XMarkIcon className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* 拖拽指示器 */}
-                  <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full"></div>
-
-                  {/* 筛选内容 */}
-                  <div className="overflow-y-auto max-h-[calc(80vh-80px)] p-4">
-                    <FilterPanel
-                      filters={filters}
-                      onFiltersChange={handleFiltersChange}
-                      onClearFilters={handleClearFilters}
-                      isMobile={true}
-                    />
-                  </div>
+                  <FilterPanel
+                    filters={filters}
+                    onFiltersChange={handleFiltersChange}
+                    onClearFilters={handleClearFilters}
+                  />
                 </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+              )}
+            </AnimatePresence>
 
-          {/* 主内容区域 */}
-          <div className="flex-1 min-w-0">
-            {/* 搜索和排序栏 */}
-            <ScrollReveal direction="down" delay={0.2}>
-              <div className="mb-6 space-y-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="搜索产品名称、品类、口味..."
-                      value={localSearchQuery}
-                      onChange={(e) => setLocalSearchQuery(e.target.value)}
-                      leftIcon={<MagnifyingGlassIcon className="h-4 w-4" />}
-                    />
-                  </div>
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as 'name' | 'price-asc' | 'price-desc' | 'collect-time')}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* 移动端筛选面板 - 底部抽屉 */}
+            <AnimatePresence>
+              {showFilters && isMobile && (
+                <>
+                  {/* 背景遮罩 */}
+                  <motion.div
+                    key="mobile-filter-backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={() => setShowFilters(false)}
+                  />
+
+                  {/* 底部抽屉 */}
+                  <motion.div
+                    key="mobile-filter-drawer"
+                    initial={{ y: '100%' }}
+                    animate={{ y: 0 }}
+                    exit={{ y: '100%' }}
+                    transition={{
+                      type: 'tween',
+                      duration: 0.2,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
+                    style={{
+                      willChange: 'transform',
+                      backfaceVisibility: 'hidden'
+                    }}
+                    className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh] overflow-hidden transform-gpu"
                   >
-                    <option value="name">按名称排序</option>
-                    <option value="price-asc">价格从低到高</option>
-                    <option value="price-desc">价格从高到低</option>
-                    <option value="collect-time">按采集时间</option>
-                  </select>
-                </div>
+                    {/* 抽屉头部 */}
+                    <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-2xl">
+                      <div className="flex items-center space-x-2">
+                        <FunnelIcon className="w-5 h-5 text-gray-600" />
+                        <h2 className="text-lg font-semibold text-gray-900">筛选条件</h2>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleClearFilters}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          清空
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowFilters(false)}
+                        >
+                          <XMarkIcon className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
 
-                {/* 结果统计 */}
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>
-                    共找到 {displayProducts.length} 个产品
-                    {searchQuery && ` (搜索: "${searchQuery}")`}
-                  </span>
-                  {isLoading && <Spinner size="sm" />}
-                </div>
-              </div>
-            </ScrollReveal>
+                    {/* 拖拽指示器 */}
+                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full"></div>
 
+                    {/* 筛选内容 */}
+                    <div className="overflow-y-auto max-h-[calc(80vh-80px)] p-4">
+                      <FilterPanel
+                        filters={filters}
+                        onFiltersChange={handleFiltersChange}
+                        onClearFilters={handleClearFilters}
+                        isMobile={true}
+                      />
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
 
-            {/* 产品网格 */}
-            {isLoading && paginatedProducts.length === 0 ? (
-              <div className="flex justify-center py-12">
-                <Spinner />
-              </div>
-            ) : paginatedProducts.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500">没有找到符合条件的产品</p>
-                <Button
-                  variant="outline"
-                  onClick={handleClearFilters}
-                  className="mt-4"
-                >
-                  清空筛选条件
-                </Button>
-              </div>
-            ) : (
-              <>
-                <ScrollStagger staggerDelay={0.05}>
-                  {viewMode === 'grid' ? (
-                    <ResponsiveProductGrid
-                      gridClass={getResponsiveGridClass()}
-                      columns={columns}
-                      cardWidth={cardWidth}
+            {/* 主内容区域 */}
+            <div className="flex-1 min-w-0">
+              {/* 搜索和排序栏 */}
+              <ScrollReveal direction="down" delay={0.2}>
+                <div className="mb-6 space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <Input
+                        placeholder="搜索产品名称、品类、口味..."
+                        value={localSearchQuery}
+                        onChange={(e) => setLocalSearchQuery(e.target.value)}
+                        leftIcon={<MagnifyingGlassIcon className="h-4 w-4" />}
+                      />
+                    </div>
+                    <select
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value as 'name' | 'price-asc' | 'price-desc' | 'collect-time')}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      {paginatedProducts.map((product) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          layout={viewMode}
-                          onQuickAction={(action) => handleProductAction(product, action)}
-                          isFavorited={favorites.includes(product.id)}
-                          isInCompare={compareList.includes(product.id)}
-                        />
-                      ))}
-                    </ResponsiveProductGrid>
-                  ) : (
-                    <motion.div
-                      className="mb-8 grid grid-cols-1 gap-4"
-                    >
-                      <AnimatePresence>
+                      <option value="name">按名称排序</option>
+                      <option value="price-asc">价格从低到高</option>
+                      <option value="price-desc">价格从高到低</option>
+                      <option value="collect-time">按采集时间</option>
+                    </select>
+                  </div>
+
+                  {/* 结果统计 */}
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>
+                      共找到 {displayProducts.length} 个产品
+                      {searchQuery && ` (搜索: "${searchQuery}")`}
+                    </span>
+                    {isLoading && <Spinner size="sm" />}
+                  </div>
+                </div>
+              </ScrollReveal>
+
+
+              {/* 产品网格 */}
+              {isLoading && paginatedProducts.length === 0 ? (
+                <div className="flex justify-center py-12">
+                  <Spinner />
+                </div>
+              ) : paginatedProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">没有找到符合条件的产品</p>
+                  <Button
+                    variant="outline"
+                    onClick={handleClearFilters}
+                    className="mt-4"
+                  >
+                    清空筛选条件
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <ScrollStagger staggerDelay={0.05}>
+                    {viewMode === 'grid' ? (
+                      <ResponsiveProductGrid
+                        gridClass={getResponsiveGridClass()}
+                        columns={columns}
+                        cardWidth={cardWidth}
+                      >
                         {paginatedProducts.map((product) => (
                           <ProductCard
                             key={product.id}
@@ -639,28 +608,45 @@ export const ProductListWithQuery: React.FC = () => {
                             isInCompare={compareList.includes(product.id)}
                           />
                         ))}
-                      </AnimatePresence>
-                    </motion.div>
-                  )}
-                </ScrollStagger>
+                      </ResponsiveProductGrid>
+                    ) : (
+                      <motion.div
+                        className="mb-8 grid grid-cols-1 gap-4"
+                      >
+                        <AnimatePresence>
+                          {paginatedProducts.map((product) => (
+                            <ProductCard
+                              key={product.id}
+                              product={product}
+                              layout={viewMode}
+                              onQuickAction={(action) => handleProductAction(product, action)}
+                              isFavorited={favorites.includes(product.id)}
+                              isInCompare={compareList.includes(product.id)}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </ScrollStagger>
 
-                {/* 分页 */}
-                <ScrollReveal direction="up" delay={0.3}>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalItems={displayProducts.length}
-                    itemsPerPage={itemsPerPage}
-                    itemsPerPageOptions={[0, 20, 100, 500]} // 添加0选项表示显示全部
-                    onPageChange={handlePageChange}
-                    onItemsPerPageChange={handleItemsPerPageChange}
-                    showItemsPerPageSelector={true}
-                    showPageInfo={true}
-                    disabled={isLoading}
-                  />
-                </ScrollReveal>
-              </>
-            )}
+                  {/* 分页 */}
+                  <ScrollReveal direction="up" delay={0.3}>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      totalItems={displayProducts.length}
+                      itemsPerPage={itemsPerPage}
+                      itemsPerPageOptions={[0, 20, 100, 500]} // 添加0选项表示显示全部
+                      onPageChange={handlePageChange}
+                      onItemsPerPageChange={handleItemsPerPageChange}
+                      showItemsPerPageSelector={true}
+                      showPageInfo={true}
+                      disabled={isLoading}
+                    />
+                  </ScrollReveal>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
