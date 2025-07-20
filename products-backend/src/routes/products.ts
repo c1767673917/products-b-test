@@ -80,7 +80,7 @@ export async function productRoutes(fastify: FastifyInstance) {
       }
       
       const skip = (page - 1) * limit;
-      const maxLimit = 100; // 最大限制
+      const maxLimit = 1000; // 最大限制
       const actualLimit = Math.min(limit, maxLimit);
       
       // 并行执行查询和计数

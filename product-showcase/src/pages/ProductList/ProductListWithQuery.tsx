@@ -93,23 +93,12 @@ export const ProductListWithQuery: React.FC = () => {
   // 使用useMemo稳定options对象，避免每次重新创建
   const gridOptions = useMemo(() => ({
     minCardWidth: viewMode === 'grid' ? 180 : 300,
-    maxColumns: viewMode === 'grid' ? (isDetailPanelOpen ? 6 : 5) : 1, // 未打开详情页时默认最大5列
     gap: viewMode === 'grid' ? 16 : 16,
-    padding: 64, // 容器左右padding
-    maxCardWidth: viewMode === 'grid' ? 220 : 600 // 调整为更合理的最大卡片宽度
-  }), [viewMode, isDetailPanelOpen]);
+  }), [viewMode]);
 
-  // 使用新的实时响应式网格 hook
-  const {
-    getResponsiveGridClass,
-    columns,
-    cardWidth,
-    availableWidth,
-    debug
-  } = useRealTimeResponsiveGrid(
-    dimensions.width, // 使用原始容器宽度
-    realTimePanelWidth, // 使用实时面板宽度
-    isDetailPanelOpen, // 面板状态
+  // 使用重构后的、更简单的响应式网格 hook
+  const { columns } = useRealTimeResponsiveGrid(
+    dimensions.width,
     gridOptions
   );
 
@@ -306,6 +295,8 @@ export const ProductListWithQuery: React.FC = () => {
 
   // 处理每页显示数量变化 - 更新每页数量，useProducts会自动重新请求数据
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    // 修复bug：当选择的值大于100时，会被错误地重置为100
+    // 直接使用用户选择的值
     setItemsPerPage(newItemsPerPage);
     // 重置到第一页
     setCurrentPage(1);
@@ -365,77 +356,76 @@ export const ProductListWithQuery: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-row">
-      <div className="flex-1 min-w-0 flex flex-col">
-        {/* 滚动进度条 */}
-        <ScrollProgress />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* 滚动进度条 */}
+      <ScrollProgress />
 
-        {/* 页面导航 */}
-        <PageNavigation title="Product display" />
+      {/* 页面导航 */}
+      <PageNavigation title="Product display" />
 
-        {/* 顶部工具栏 */}
-        <div className="bg-white shadow-sm border-b sticky top-12 z-30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-end h-12">
-              {/* 右侧：操作按钮 */}
+      {/* 顶部工具栏 */}
+      <div className="bg-white shadow-sm border-b sticky top-12 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-end h-12">
+            {/* 右侧：操作按钮 */}
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isLoading}
+              >
+                <ArrowPathIcon className="h-4 w-4" />
+                {!isMobile && <span className="ml-1">刷新</span>}
+              </Button>
 
-              <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+              >
+                <ShareIcon className="h-4 w-4" />
+                {!isMobile && <span className="ml-1">分享</span>}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <FunnelIcon className="h-4 w-4" />
+                {!isMobile && <span className="ml-1">筛选</span>}
+              </Button>
+
+              {/* 视图切换 */}
+              <div className="flex border rounded-lg">
                 <Button
-                  variant="ghost"
+                  variant={viewMode === 'grid' ? 'primary' : 'ghost'}
                   size="sm"
-                  onClick={handleRefresh}
-                  disabled={isLoading}
+                  onClick={() => setViewMode('grid')}
+                  className="rounded-r-none"
                 >
-                  <ArrowPathIcon className="h-4 w-4" />
-                  {!isMobile && <span className="ml-1">刷新</span>}
+                  <Squares2X2Icon className="h-4 w-4" />
                 </Button>
-
                 <Button
-                  variant="ghost"
+                  variant={viewMode === 'list' ? 'primary' : 'ghost'}
                   size="sm"
-                  onClick={handleShare}
+                  onClick={() => setViewMode('list')}
+                  className="rounded-l-none"
                 >
-                  <ShareIcon className="h-4 w-4" />
-                  {!isMobile && <span className="ml-1">分享</span>}
+                  <ListBulletIcon className="h-4 w-4" />
                 </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <FunnelIcon className="h-4 w-4" />
-                  {!isMobile && <span className="ml-1">筛选</span>}
-                </Button>
-
-                {/* 视图切换 */}
-                <div className="flex border rounded-lg">
-                  <Button
-                    variant={viewMode === 'grid' ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className="rounded-r-none"
-                  >
-                    <Squares2X2Icon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('list')}
-                    className="rounded-l-none"
-                  >
-                    <ListBulletIcon className="h-4 w-4" />
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* 主要内容区域 */}
+      {/* 主要内容区域 - 使用 Flexbox 实现左右布局 */}
+      <div className="flex-1 flex flex-row max-w-7xl mx-auto w-full gap-8">
         <div
           ref={containerRef}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full"
+          className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-8"
         >
           <div
             className={cn(
@@ -576,7 +566,7 @@ export const ProductListWithQuery: React.FC = () => {
                       {searchQuery && ` (搜索: "${searchQuery}")`}
                       {actualPagination.total > 0 && (
                         <span className="ml-2 text-gray-500">
-                          (第 {(actualPagination.page - 1) * actualPagination.limit + 1} - 
+                          (第 {(actualPagination.page - 1) * actualPagination.limit + 1} -
                           {Math.min(actualPagination.page * actualPagination.limit, actualPagination.total)} 项)
                         </span>
                       )}
@@ -605,18 +595,15 @@ export const ProductListWithQuery: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  {/*
-                    使用虚拟化网格/列表来解决大数量产品渲染时的性能问题。
-                    这会引入一个内嵌的滚动条，但在当前架构下是最高效的修复方案。
-                  */}
                   {viewMode === 'grid' ? (
-                    <VirtualGrid<Product>
-                      items={paginatedProducts}
-                      itemWidth={cardWidth}
-                      itemHeight={380} // 根据ProductCard估算的高度
-                      gap={16}
-                      useWindowScroll={true}
-                      renderItem={(product) => (
+                    <div
+                      className="grid w-full"
+                      style={{
+                        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                        gap: `${gridOptions.gap}px`
+                      }}
+                    >
+                      {paginatedProducts.map((product: Product) => (
                         <ProductCard
                           key={product.productId}
                           product={product}
@@ -625,14 +612,11 @@ export const ProductListWithQuery: React.FC = () => {
                           isFavorited={favorites.includes(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
                         />
-                      )}
-                    />
+                      ))}
+                    </div>
                   ) : (
-                    <VirtualList<Product>
-                      items={paginatedProducts}
-                      itemHeight={130} // 根据ProductCard列表模式估算的高度
-                      useWindowScroll={true}
-                      renderItem={(product) => (
+                    <div className="flex flex-col" style={{ gap: `${gridOptions.gap}px` }}>
+                      {paginatedProducts.map((product: Product) => (
                         <ProductCard
                           key={product.productId}
                           product={product}
@@ -641,8 +625,8 @@ export const ProductListWithQuery: React.FC = () => {
                           isFavorited={favorites.includes(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
                         />
-                      )}
-                    />
+                      ))}
+                    </div>
                   )}
 
                   {/* 分页 */}
@@ -651,8 +635,8 @@ export const ProductListWithQuery: React.FC = () => {
                       currentPage={actualPagination.page}
                       totalPages={actualPagination.totalPages}
                       totalItems={actualPagination.total}
-                      itemsPerPage={actualPagination.limit}
-                      itemsPerPageOptions={[20, 50, 100, 200, 1000]} // 移除0选项，使用大数字代表显示全部
+                      itemsPerPage={itemsPerPage} // 使用组件自身的状态，而不是后端返回的limit
+                      itemsPerPageOptions={[20, 50, 100, 200, 1000]}
                       onPageChange={handlePageChange}
                       onItemsPerPageChange={handleItemsPerPageChange}
                       showItemsPerPageSelector={true}
@@ -665,17 +649,17 @@ export const ProductListWithQuery: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 产品详情面板 */}
-      <ProductDetailPanel
-        product={selectedProduct}
-        isOpen={isDetailPanelOpen}
-        onClose={handleCloseDetailPanel}
-        onNavigate={handleProductNavigation}
-        canNavigate={canNavigate}
-        onWidthChange={handlePanelWidthChange}
-      />
+        {/* 产品详情面板 */}
+        <ProductDetailPanel
+          product={selectedProduct}
+          isOpen={isDetailPanelOpen}
+          onClose={handleCloseDetailPanel}
+          onNavigate={handleProductNavigation}
+          canNavigate={canNavigate}
+          onWidthChange={handlePanelWidthChange}
+        />
+      </div>
     </div>
   );
 };
