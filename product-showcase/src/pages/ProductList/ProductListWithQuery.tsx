@@ -422,7 +422,7 @@ export const ProductListWithQuery: React.FC = () => {
       </div>
 
       {/* 主要内容区域 - 使用 Flexbox 实现左右布局 */}
-      <div className="flex-1 flex flex-row max-w-7xl mx-auto w-full gap-8">
+      <div className="flex-1 flex flex-row max-w-7xl mx-auto w-full gap-1">
         <div
           ref={containerRef}
           className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-8"
