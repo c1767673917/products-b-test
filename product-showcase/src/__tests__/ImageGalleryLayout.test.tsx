@@ -7,25 +7,33 @@ import { Product } from '../types/product';
 // 测试用的产品数据
 const createTestProduct = (imageCount: number): Product => {
   const baseProduct: Product = {
-    id: 'test-product',
+    productId: 'test-product',
+    recordId: 'test-record-001',
     name: '测试产品',
-    brand: '测试品牌',
-    category: '测试分类',
-    flavor: '测试口味',
-    specification: '测试规格',
-    price: 10.00,
-    originalPrice: 12.00,
-    stock: 100,
-    description: '测试描述',
+    sequence: '001',
+    category: {
+      primary: '测试分类',
+      secondary: '子分类'
+    },
+    price: {
+      normal: 10.00,
+      discount: 8.00,
+      discountRate: 0.2
+    },
     images: {},
-    tags: [],
-    rating: 4.5,
-    reviewCount: 10,
-    isNew: false,
-    isHot: false,
-    isRecommended: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    origin: {
+      country: '中国',
+      province: '测试省',
+      city: '测试市'
+    },
+    platform: '测试平台',
+    specification: '测试规格',
+    flavor: '测试口味',
+    manufacturer: '测试厂商',
+    collectTime: Date.now(),
+    link: 'https://example.com',
+    boxSpec: '24×500ml',
+    notes: '测试备注'
   };
 
   // 根据imageCount添加对应数量的图片

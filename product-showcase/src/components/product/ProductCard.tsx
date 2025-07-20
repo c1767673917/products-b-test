@@ -64,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onQuickAction('detail');
     } else {
       // 如果没有 onQuickAction 回调（如相关产品），使用路由导航作为备用方案
-      navigate(`/products/${product.id}`);
+      navigate(`/products/${product.productId}`);
     }
   };
 

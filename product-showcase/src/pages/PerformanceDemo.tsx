@@ -18,7 +18,7 @@ import { Card } from '../components/ui/Card';
 // 模拟产品数据
 const generateMockProducts = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
-    id: i,
+    productId: i.toString(),
     name: `产品 ${i + 1}`,
     price: Math.floor(Math.random() * 500) + 10,
     image: `https://picsum.photos/300/300?random=${i}`,
@@ -74,7 +74,7 @@ const PerformanceDemo: React.FC = () => {
   };
 
   const renderProductCard = (product: any, index: number) => (
-    <Card key={product.id} className="p-4">
+    <Card key={product.productId} className="p-4">
       <div className="aspect-square mb-3">
         <LazyImage
           src={product.image}
@@ -92,7 +92,7 @@ const PerformanceDemo: React.FC = () => {
   );
 
   const renderProductListItem = (product: any, index: number) => (
-    <Card key={product.id} className="p-4 flex items-center space-x-4">
+    <Card key={product.productId} className="p-4 flex items-center space-x-4">
       <div className="w-16 h-16 flex-shrink-0">
         <LazyImage
           src={product.image}
@@ -283,7 +283,7 @@ const PerformanceDemo: React.FC = () => {
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-96 overflow-y-auto">
                 {products.slice(0, 50).map((product, index) => (
-                  <div key={product.id} className="aspect-square">
+                  <div key={product.productId} className="aspect-square">
                     <LazyImage
                       src={product.image}
                       alt={product.name}

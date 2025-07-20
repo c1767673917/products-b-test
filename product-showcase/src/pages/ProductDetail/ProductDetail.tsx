@@ -75,7 +75,7 @@ const ProductDetail: React.FC = () => {
     } 
     // 否则尝试从本地store查找（向后兼容）
     else if (storeProducts.length > 0) {
-      const foundProduct = storeProducts.find(p => p.id === id);
+      const foundProduct = storeProducts.find(p => p.productId === id);
       if (foundProduct) {
         document.title = `${foundProduct.name} - 产品详情`;
         preloadImages(foundProduct);
@@ -118,10 +118,10 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleToggleFavorite = () => {
-    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    const currentProduct = product.data || storeProducts.find(p => p.productId === id);
     if (currentProduct) {
-      toggleFavorite(currentProduct.id);
-      const isFavorited = favorites.includes(currentProduct.id);
+      toggleFavorite(currentProduct.productId);
+      const isFavorited = favorites.includes(currentProduct.productId);
       showSuccess(
         isFavorited ? '已取消收藏' : '已添加到收藏'
       );
@@ -129,25 +129,25 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleToggleCompare = () => {
-    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    const currentProduct = product.data || storeProducts.find(p => p.productId === id);
     if (currentProduct) {
-      const isInCompare = compareList.includes(currentProduct.id);
+      const isInCompare = compareList.includes(currentProduct.productId);
       if (isInCompare) {
-        removeFromCompare(currentProduct.id);
+        removeFromCompare(currentProduct.productId);
         showInfo('已从对比列表移除');
       } else {
         if (compareList.length >= 4) {
           showError('对比列表最多只能添加4个产品');
           return;
         }
-        addToCompare(currentProduct.id);
+        addToCompare(currentProduct.productId);
         showSuccess('已添加到对比列表');
       }
     }
   };
 
   const handleShare = async () => {
-    const currentProduct = product.data || storeProducts.find(p => p.id === id);
+    const currentProduct = product.data || storeProducts.find(p => p.productId === id);
     if (currentProduct) {
       try {
         await navigator.share({
@@ -164,7 +164,7 @@ const ProductDetail: React.FC = () => {
   };
 
   // 获取当前产品数据
-  const currentProduct = product.data || storeProducts.find(p => p.id === id);
+  const currentProduct = product.data || storeProducts.find(p => p.productId === id);
 
   if (isLoading) {
     return (
@@ -192,8 +192,8 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const isFavorited = favorites.includes(currentProduct.id);
-  const isInCompare = compareList.includes(currentProduct.id);
+  const isFavorited = favorites.includes(currentProduct.productId);
+  const isInCompare = compareList.includes(currentProduct.productId);
 
   return (
     <motion.div

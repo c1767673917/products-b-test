@@ -14,8 +14,8 @@ const pageVariants = PAGE_TRANSITION_VARIANTS.slide;
 
 // 页面过渡动画配置
 const pageTransition = {
-  type: 'tween',
-  ease: 'anticipate',
+  type: 'tween' as const,
+  ease: 'anticipate' as const,
   duration: 0.4,
 };
 
@@ -62,8 +62,8 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
   const getTransition = () => {
     const config = getAnimationConfig(duration);
     return {
-      type: 'tween',
-      ease: type === 'slide' ? 'easeInOut' : 'anticipate',
+      type: 'tween' as const,
+      ease: type === 'slide' ? 'easeInOut' as const : 'anticipate' as const,
       duration: config.duration,
     };
   };
@@ -124,7 +124,7 @@ export const ContentTransition: React.FC<{
       transition={{
         duration: 0.5,
         delay,
-        ease: 'easeOut',
+        ease: 'easeOut' as const,
       }}
       className={className}
     >

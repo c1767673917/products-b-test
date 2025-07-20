@@ -115,8 +115,8 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
   const handleToggleFavorite = () => {
     if (product) {
-      toggleFavorite(product.id);
-      const isFavorited = favorites.includes(product.id);
+      toggleFavorite(product.productId);
+      const isFavorited = favorites.includes(product.productId);
       showSuccess(
         isFavorited ? '已取消收藏' : '已添加到收藏'
       );
@@ -125,16 +125,16 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
   const handleToggleCompare = () => {
     if (product) {
-      const isInCompare = compareList.includes(product.id);
+      const isInCompare = compareList.includes(product.productId);
       if (isInCompare) {
-        removeFromCompare(product.id);
+        removeFromCompare(product.productId);
         showInfo('已从对比列表移除');
       } else {
         if (compareList.length >= 4) {
           showError('对比列表最多只能添加4个产品');
           return;
         }
-        addToCompare(product.id);
+        addToCompare(product.productId);
         showSuccess('已添加到对比列表');
       }
     }
@@ -167,7 +167,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
   if (!product) return null;
 
-  const isFavorited = favorites.includes(product.id);
+  const isFavorited = favorites.includes(product.productId);
 
   return (
     <AnimatePresence mode="wait">

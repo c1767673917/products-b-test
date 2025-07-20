@@ -1,7 +1,7 @@
 // 产品相关类型定义
 
 export interface Product {
-  id: string;
+  productId: string;
   recordId: string;
   name: string;
   sequence: string;

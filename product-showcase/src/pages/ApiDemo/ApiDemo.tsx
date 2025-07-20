@@ -230,9 +230,9 @@ export const ApiDemo: React.FC = () => {
                         <p className="text-sm text-gray-600">找到 {searchQuery_.data.length} 个结果:</p>
                         {searchQuery_.data.map(product => (
                           <div 
-                            key={product.id}
+                            key={product.productId}
                             className="p-2 border rounded cursor-pointer hover:bg-gray-50"
-                            onClick={() => handleProductSelect(product.id)}
+                            onClick={() => handleProductSelect(product.productId)}
                           >
                             <p className="font-medium text-sm">{product.name}</p>
                             <p className="text-xs text-gray-500">
@@ -261,9 +261,9 @@ export const ApiDemo: React.FC = () => {
                   <div className="space-y-2">
                     {popularQuery.data.map(product => (
                       <div 
-                        key={product.id}
+                        key={product.productId}
                         className="p-2 border rounded cursor-pointer hover:bg-gray-50"
-                        onClick={() => handleProductSelect(product.id)}
+                        onClick={() => handleProductSelect(product.productId)}
                       >
                         <p className="font-medium text-sm">{product.name}</p>
                         <p className="text-xs text-gray-500">

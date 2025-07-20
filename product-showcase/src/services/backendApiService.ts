@@ -2,7 +2,7 @@
 import { AxiosResponse } from 'axios';
 import httpClient, { imageUtils } from './httpClient';
 import { API_CONFIG } from '../config/api';
-import type { Product, FilterState } from '../types/product';
+import type { Product } from '../types/product';
 
 // API响应接口
 interface ApiResponse<T> {

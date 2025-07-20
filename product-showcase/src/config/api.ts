@@ -24,9 +24,6 @@ export const API_CONFIG = {
   retryAttempts: 3,
   retryDelay: 1000,
   
-  // 使用后端API标志
-  useBackendApi: import.meta.env.VITE_USE_BACKEND_API === 'true',
-  
   // API端点
   endpoints: {
     products: '/products',
@@ -42,7 +39,6 @@ export const API_CONFIG = {
 export const ENV_CONFIG = {
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
-  useBackendApi: API_CONFIG.useBackendApi,
   apiUrl: API_CONFIG.baseURL,
   imageUrl: API_CONFIG.imageBaseURL,
   enableImageOptimization: import.meta.env.VITE_ENABLE_IMAGE_OPTIMIZATION === 'true',

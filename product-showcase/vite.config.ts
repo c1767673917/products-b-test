@@ -40,7 +40,7 @@ export default defineConfig({
         drop_console: process.env.NODE_ENV === 'production',
         drop_debugger: true,
       },
-    },
+    } as any,
   },
   // 开发服务器配置
   server: {

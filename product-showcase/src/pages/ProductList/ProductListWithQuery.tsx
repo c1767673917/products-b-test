@@ -209,14 +209,14 @@ export const ProductListWithQuery: React.FC = () => {
 
   // 获取当前选中的产品
   const selectedProduct = selectedProductId 
-    ? displayProducts.find(p => p.id === selectedProductId) || null
+    ? displayProducts.find(p => p.productId === selectedProductId) || null
     : null;
 
   // 获取产品导航信息
   const getProductNavigation = () => {
     if (!selectedProductId) return { prev: false, next: false };
     
-    const currentIndex = displayProducts.findIndex(p => p.id === selectedProductId);
+    const currentIndex = displayProducts.findIndex(p => p.productId === selectedProductId);
     return {
       prev: currentIndex > 0,
       next: currentIndex < displayProducts.length - 1
@@ -229,7 +229,7 @@ export const ProductListWithQuery: React.FC = () => {
   const handleProductNavigation = (direction: 'prev' | 'next') => {
     if (!selectedProductId) return;
     
-    const currentIndex = displayProducts.findIndex(p => p.id === selectedProductId);
+    const currentIndex = displayProducts.findIndex(p => p.productId === selectedProductId);
     let newIndex = currentIndex;
     
     if (direction === 'prev' && currentIndex > 0) {
@@ -239,7 +239,7 @@ export const ProductListWithQuery: React.FC = () => {
     }
     
     if (newIndex !== currentIndex) {
-      setSelectedProductId(displayProducts[newIndex].id);
+      setSelectedProductId(displayProducts[newIndex].productId);
     }
   };
 
@@ -256,16 +256,16 @@ export const ProductListWithQuery: React.FC = () => {
     switch (action) {
       case 'favorite':
         setFavorites(prev => 
-          prev.includes(product.id) 
-            ? prev.filter(id => id !== product.id)
-            : [...prev, product.id]
+          prev.includes(product.productId) 
+            ? prev.filter(id => id !== product.productId)
+            : [...prev, product.productId]
         );
         showSuccess(
-          favorites.includes(product.id) ? '已取消收藏' : '已添加到收藏'
+          favorites.includes(product.productId) ? '已取消收藏' : '已添加到收藏'
         );
         break;
       case 'detail':
-        setSelectedProductId(product.id);
+        setSelectedProductId(product.productId);
         setIsDetailPanelOpen(true);
         break;
       case 'compare':
@@ -273,11 +273,11 @@ export const ProductListWithQuery: React.FC = () => {
           showError('最多只能对比4个产品');
           return;
         }
-        if (compareList.includes(product.id)) {
+        if (compareList.includes(product.productId)) {
           showInfo('该产品已在对比列表中');
           return;
         }
-        setCompareList(prev => [...prev, product.id]);
+        setCompareList(prev => [...prev, product.productId]);
         showSuccess('已添加到对比列表');
         break;
     }
@@ -600,12 +600,12 @@ export const ProductListWithQuery: React.FC = () => {
                       >
                         {paginatedProducts.map((product) => (
                           <ProductCard
-                            key={product.id}
+                            key={product.productId}
                             product={product}
                             layout={viewMode}
                             onQuickAction={(action) => handleProductAction(product, action)}
-                            isFavorited={favorites.includes(product.id)}
-                            isInCompare={compareList.includes(product.id)}
+                            isFavorited={favorites.includes(product.productId)}
+                            isInCompare={compareList.includes(product.productId)}
                           />
                         ))}
                       </ResponsiveProductGrid>
@@ -616,12 +616,12 @@ export const ProductListWithQuery: React.FC = () => {
                         <AnimatePresence>
                           {paginatedProducts.map((product) => (
                             <ProductCard
-                              key={product.id}
+                              key={product.productId}
                               product={product}
                               layout={viewMode}
                               onQuickAction={(action) => handleProductAction(product, action)}
-                              isFavorited={favorites.includes(product.id)}
-                              isInCompare={compareList.includes(product.id)}
+                              isFavorited={favorites.includes(product.productId)}
+                              isInCompare={compareList.includes(product.productId)}
                             />
                           ))}
                         </AnimatePresence>

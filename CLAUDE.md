@@ -55,7 +55,7 @@ npm run check-duplicates   # Check for duplicate product IDs
 ### State Management
 - **Zustand Store** (`src/stores/productStore.ts`): Main application state with persistence for user preferences
 - **TanStack Query** (`src/services/queryClient.ts`): Server state management and caching
-- **Local Data Service** (`src/services/dataService.ts`): Product data operations and filtering
+- **Backend API Service** (`src/services/backendApiService.ts`): Product data operations via REST API
 
 ### Key Components Structure
 - **Pages**: Route-level components in `src/pages/`
@@ -77,10 +77,10 @@ npm run check-duplicates   # Check for duplicate product IDs
   - `LazyImage`: Performance-optimized image component
 
 ### Data Flow
-1. Raw product data stored in `src/data/products.json`
-2. DataService provides filtering and search capabilities
+1. All product data fetched from backend API via HTTP requests
+2. BackendApiService handles API communication and response processing
 3. ProductStore manages UI state and user preferences
-4. TanStack Query handles API calls and caching (for external APIs)
+4. TanStack Query handles API calls and caching
 5. Components consume data through custom hooks
 
 ### Performance Features
@@ -88,7 +88,7 @@ npm run check-duplicates   # Check for duplicate product IDs
 - Image lazy loading with intersection observer
 - Code splitting with manual chunks in Vite config
 - Animation performance monitoring and user preferences
-- Debounced search and filtering
+- Server-side filtering and pagination
 
 ### Testing Strategy
 - Unit tests for core utilities and components
@@ -114,12 +114,12 @@ Products follow the `Product` interface in `src/types/product.ts` with:
 
 ### State Updates
 - Use ProductStore actions for UI state changes
-- Implement debouncing for search/filter operations
+- All data operations performed via backend API
 - Maintain URL synchronization for shareable states
-- Consider performance impact of filter operations
+- Server handles filtering, search, and pagination operations
 
 ### Image Management
-- Images stored in `public/images/` with standardized naming
+- Images served from backend MinIO storage with proper CDN integration
 - Use LazyImage component for performance
 - Implement proper fallbacks for missing images
 - Consider image optimization for production
@@ -128,6 +128,6 @@ Products follow the `Product` interface in `src/types/product.ts` with:
 
 - The application handles large datasets (500+ products) with performance optimizations
 - Animation preferences are user-configurable with system performance detection
-- All filtering operations are client-side for fast response times
+- All filtering and search operations are handled server-side via API
 - The data structure supports Chinese language content
-- Image paths follow a specific naming convention for automated processing
+- Images are served from MinIO storage with proper URL construction

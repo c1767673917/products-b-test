@@ -9,7 +9,9 @@ import { useProductStore } from '../stores/productStore';
 const mockProducts = [
   {
     id: 'test-product-1',
+    recordId: 'test-record-001',
     name: '测试产品',
+    sequence: '001',
     price: {
       normal: 100,
       discount: 80,
@@ -20,11 +22,15 @@ const mockProducts = [
       secondary: '零食'
     },
     origin: {
+      country: '中国',
       province: '北京',
       city: '北京市'
     },
     platform: '测试平台',
     specification: '100g',
+    flavor: '原味',
+    manufacturer: '测试厂商',
+    collectTime: Date.now(),
     images: {
       front: '/test-image-1.jpg',
       back: '/test-image-2.jpg',

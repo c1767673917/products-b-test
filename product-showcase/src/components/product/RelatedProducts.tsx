@@ -85,7 +85,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
     if (!products.length) return [];
 
     // 过滤掉当前产品
-    const otherProducts = products.filter(p => p.id !== currentProduct.id);
+    const otherProducts = products.filter(p => p.productId !== currentProduct.productId);
 
     // 计算每个产品的推荐分数
     const scoredProducts = otherProducts.map(product => {
@@ -206,7 +206,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {currentItems.map(({ product, scoreDetails }, index) => (
           <motion.div
-            key={product.id}
+            key={product.productId}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}

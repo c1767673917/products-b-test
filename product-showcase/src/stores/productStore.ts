@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Product, FilterState, ViewMode, SortOption } from '../types/product';
-import { apiService } from '../services/apiService';
+import { apiService } from '../services/backendApiService';
 
 // 分页信息接口
 interface PaginationInfo {
@@ -43,8 +43,6 @@ interface ProductState {
   favorites: string[];
   compareList: string[];
   
-  // API模式标识
-  useBackendApi: boolean;
   
   // 操作方法
   setProducts: (products: Product[], pagination?: PaginationInfo) => void;
@@ -61,7 +59,6 @@ interface ProductState {
   addToCompare: (productId: string) => void;
   removeFromCompare: (productId: string) => void;
   clearFilters: () => void;
-  applyFilters: () => void;
   loadProducts: (params?: { page?: number; search?: string; filters?: Partial<FilterState> }) => Promise<void>;
   searchProducts: (query: string) => Promise<void>;
   initializeData: () => Promise<void>;
@@ -100,23 +97,14 @@ export const useProductStore = create<ProductState>()(
       showFilters: false,
       favorites: [],
       compareList: [],
-      useBackendApi: import.meta.env.VITE_USE_BACKEND_API === 'true',
 
       // 设置产品数据
       setProducts: (products, pagination) => {
-        const state = get();
         set({ 
           products,
-          pagination: pagination || state.pagination
+          filteredProducts: products,
+          pagination: pagination || get().pagination
         });
-        
-        // 如果使用本地API，需要应用筛选
-        if (!state.useBackendApi) {
-          get().applyFilters();
-        } else {
-          // 后端API返回的数据已经过筛选，直接设置为filteredProducts
-          set({ filteredProducts: products });
-        }
       },
 
       // 设置加载状态
@@ -137,71 +125,42 @@ export const useProductStore = create<ProductState>()(
 
       // 设置排序选项
       setSortOption: (sortOption) => {
-        const state = get();
         set({ sortOption, currentPage: 1 });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：重新加载数据
-          get().loadProducts({ page: 1 });
-        } else {
-          // 本地模式：应用筛选
-          get().applyFilters();
-        }
+        // 后端API模式：重新加载数据
+        get().loadProducts({ page: 1 });
       },
 
       // 设置搜索查询
       setSearchQuery: (searchQuery) => {
-        const state = get();
         set({ searchQuery, currentPage: 1 });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：使用搜索API
-          if (searchQuery.trim()) {
-            get().searchProducts(searchQuery);
-          } else {
-            get().loadProducts({ page: 1 });
-          }
+        // 后端API模式：使用搜索API
+        if (searchQuery.trim()) {
+          get().searchProducts(searchQuery);
         } else {
-          // 本地模式：应用筛选
-          get().applyFilters();
+          get().loadProducts({ page: 1 });
         }
       },
 
       // 设置当前页
       setCurrentPage: (currentPage) => {
-        const state = get();
         set({ currentPage });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：加载指定页面数据
-          get().loadProducts({ page: currentPage });
-        }
+        // 后端API模式：加载指定页面数据
+        get().loadProducts({ page: currentPage });
       },
 
       // 设置每页显示数量
       setItemsPerPage: (itemsPerPage) => {
-        const state = get();
         set({ itemsPerPage, currentPage: 1 });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：重新加载数据
-          get().loadProducts({ page: 1 });
-        }
+        // 后端API模式：重新加载数据
+        get().loadProducts({ page: 1 });
       },
 
       // 设置筛选条件
       setFilters: (newFilters) => {
-        const state = get();
-        const filters = { ...state.filters, ...newFilters };
+        const filters = { ...get().filters, ...newFilters };
         set({ filters, currentPage: 1 });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：重新加载数据
-          get().loadProducts({ page: 1, filters });
-        } else {
-          // 本地模式：应用筛选
-          get().applyFilters();
-        }
+        // 后端API模式：重新加载数据
+        get().loadProducts({ page: 1, filters });
       },
 
       // 设置筛选面板显示状态
@@ -232,102 +191,9 @@ export const useProductStore = create<ProductState>()(
 
       // 清空筛选条件
       clearFilters: () => {
-        const state = get();
         set({ filters: initialFilters, searchQuery: '', currentPage: 1 });
-        
-        if (state.useBackendApi) {
-          // 后端API模式：重新加载数据
-          get().loadProducts({ page: 1 });
-        } else {
-          // 本地模式：应用筛选
-          get().applyFilters();
-        }
-      },
-
-      // 应用筛选和排序（仅用于本地模式）
-      applyFilters: () => {
-        const { products, filters, searchQuery, sortOption } = get();
-
-        // 直接从 store 中的 products 进行筛选，而不是创建新的 DataService 实例
-        let filtered = [...products];
-
-        // 价格筛选
-        if (filters.priceRange) {
-          const [minPrice, maxPrice] = filters.priceRange;
-          filtered = filtered.filter(product => {
-            const price = product.price.discount || product.price.normal;
-            return price >= minPrice && price <= maxPrice;
-          });
-        }
-
-        // 品类筛选
-        if (filters.categories.length > 0) {
-          filtered = filtered.filter(product =>
-            filters.categories.includes(product.category.primary)
-          );
-        }
-
-        // 产地筛选
-        if (filters.locations.length > 0) {
-          filtered = filtered.filter(product =>
-            filters.locations.includes(product.origin.province)
-          );
-        }
-
-        // 平台筛选
-        if (filters.platforms.length > 0) {
-          filtered = filtered.filter(product =>
-            filters.platforms.includes(product.platform)
-          );
-        }
-
-        // 只显示有优惠的产品
-        if (filters.showDiscountOnly) {
-          filtered = filtered.filter(product => product.price.discount !== undefined);
-        }
-
-        // 关键词搜索
-        if (searchQuery && searchQuery.trim()) {
-          const query = searchQuery.toLowerCase().trim();
-          filtered = filtered.filter(product => {
-            const searchFields = [
-              product.name,
-              product.category.primary,
-              product.category.secondary,
-              product.manufacturer || '',
-              product.flavor || '',
-              product.specification,
-            ].join(' ').toLowerCase();
-
-            return searchFields.includes(query);
-          });
-        }
-        
-        // 排序产品
-        switch (sortOption) {
-          case 'name':
-            filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-          case 'price-asc':
-            filtered = filtered.sort((a, b) => {
-              const priceA = a.price.discount || a.price.normal;
-              const priceB = b.price.discount || b.price.normal;
-              return priceA - priceB;
-            });
-            break;
-          case 'price-desc':
-            filtered = filtered.sort((a, b) => {
-              const priceA = a.price.discount || a.price.normal;
-              const priceB = b.price.discount || b.price.normal;
-              return priceB - priceA;
-            });
-            break;
-          case 'collect-time':
-            filtered = filtered.sort((a, b) => b.collectTime - a.collectTime);
-            break;
-        }
-        
-        set({ filteredProducts: filtered });
+        // 后端API模式：重新加载数据
+        get().loadProducts({ page: 1 });
       },
 
       // 加载产品数据（适用于后端API模式）
@@ -353,13 +219,13 @@ export const useProductStore = create<ProductState>()(
           };
 
           // 添加筛选参数
-          if (filters.categories.length > 0) {
+          if (filters.categories && filters.categories.length > 0) {
             apiParams.category = filters.categories.join(',');
           }
-          if (filters.platforms.length > 0) {
+          if (filters.platforms && filters.platforms.length > 0) {
             apiParams.platform = filters.platforms.join(',');
           }
-          if (filters.locations.length > 0) {
+          if (filters.locations && filters.locations.length > 0) {
             apiParams.province = filters.locations.join(',');
           }
           if (filters.priceRange) {
@@ -373,34 +239,30 @@ export const useProductStore = create<ProductState>()(
           // 调用API
           const response = await apiService.getProducts(apiParams);
           
-          if (state.useBackendApi && 'data' in response && response.data) {
-            // 后端API响应结构
-            const data = response.data as any;
-            const products = data.products || response.data;
-            const pagination = data.pagination ? {
-              total: data.pagination.total,
-              totalPages: data.pagination.totalPages,
-              hasNext: data.pagination.hasNext,
-              hasPrev: data.pagination.hasPrev
-            } : state.pagination;
-
-            set({ 
-              products,
-              filteredProducts: products,
-              pagination,
-              loading: 'success',
-              apiOperation: null
-            });
-          } else {
-            // 本地API响应结构
-            const products = response.data;
-            set({ 
-              products,
-              loading: 'success',
-              apiOperation: null
-            });
-            get().applyFilters();
-          }
+          // 后端API响应结构
+          const responseData = response.data;
+          const products = Array.isArray(responseData) ? responseData : responseData.products || [];
+          const pagination = responseData.pagination || {
+            page: 1,
+            limit: products.length,
+            total: products.length,
+            totalPages: 1,
+            hasNext: false,
+            hasPrev: false
+          };
+          
+          set({ 
+            products,
+            filteredProducts: products,
+            pagination: {
+              total: pagination.total,
+              totalPages: pagination.totalPages,
+              hasNext: pagination.hasNext,
+              hasPrev: pagination.hasPrev
+            },
+            loading: 'success',
+            apiOperation: null
+          });
 
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : '加载产品失败';
@@ -424,7 +286,8 @@ export const useProductStore = create<ProductState>()(
 
         try {
           const response = await apiService.searchProducts(query, get().itemsPerPage);
-          const products = response.data;
+          const responseData = response.data;
+          const products = Array.isArray(responseData) ? responseData : responseData.products || [];
           
           set({ 
             filteredProducts: products,
@@ -481,8 +344,7 @@ export const useProductUI = () => useProductStore(state => ({
   showFilters: state.showFilters,
   loading: state.loading,
   apiOperation: state.apiOperation,
-  error: state.error,
-  useBackendApi: state.useBackendApi
+  error: state.error
 }));
 export const useProductActions = () => useProductStore(state => ({
   setViewMode: state.setViewMode,
