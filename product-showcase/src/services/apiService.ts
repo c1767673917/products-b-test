@@ -50,12 +50,27 @@ export class ApiService {
     search?: string;
     sortBy?: 'price' | 'time' | 'name';
     sortOrder?: 'asc' | 'desc';
-  }): Promise<ApiResponse<Product[]>> {
+    priceMin?: number;
+    priceMax?: number;
+    province?: string;
+  }): Promise<ApiResponse<any>> {
     try {
       // 使用后端API
       const response = await backendApiService.getProducts(params || {});
+      
+      // 检查响应格式，如果有分页信息则返回完整响应
+      if (response.data && typeof response.data === 'object' && 'pagination' in response.data) {
+        return {
+          data: response.data, // 包含products和pagination
+          success: true,
+          message: response.message,
+          timestamp: Date.now()
+        };
+      }
+      
+      // 兼容旧格式：只有产品数组
       return {
-        data: response.data.products,
+        data: response.data.products || response.data,
         success: true,
         message: response.message,
         timestamp: Date.now()

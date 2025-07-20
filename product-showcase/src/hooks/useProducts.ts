@@ -8,12 +8,17 @@ import type { FilterState } from '../types/product';
 // 产品列表查询hooks
 // =========================
 
-// 获取产品列表 - 支持参数化查询
+// 获取产品列表 - 支持参数化查询（含分页）
 export const useProducts = (params: any = {}) => {
   return useQuery({
     queryKey: queryKeys.productsList(params),
     queryFn: async () => {
       const response = await apiService.getProducts(params);
+      // 检查是否是新的分页API格式
+      if (response.data && typeof response.data === 'object' && 'products' in response.data) {
+        return response.data; // 返回包含products和pagination的对象
+      }
+      // 兼容旧格式：直接返回产品数组
       return response.data;
     },
     staleTime: 3 * 60 * 1000, // 3分钟新鲜度

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分页功能测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .pagination-test { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { margin: 5px; padding: 8px 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>产品列表分页功能测试</h1>
+    
+    <div class="pagination-test">
+        <h3>API 分页测试</h3>
+        <button onclick="testPagination(1, 20)">第1页(20条)</button>
+        <button onclick="testPagination(2, 20)">第2页(20条)</button>
+        <button onclick="testPagination(1, 50)">第1页(50条)</button>
+        <button onclick="testPagination(2, 50)">第2页(50条)</button>
+        <button onclick="testPagination(1, 100)">第1页(100条)</button>
+        <button onclick="testPagination(1, 1000)">显示全部(1000条)</button>
+        <div id="pagination-result" class="result"></div>
+    </div>
+
+    <div class="pagination-test">
+        <h3>搜索 + 分页测试</h3>
+        <button onclick="testSearchPagination('牛肉', 1, 20)">搜索"牛肉"(第1页，20条)</button>
+        <button onclick="testSearchPagination('饼干', 1, 50)">搜索"饼干"(第1页，50条)</button>
+        <div id="search-result" class="result"></div>
+    </div>
+
+    <div class="pagination-test">
+        <h3>筛选 + 分页测试</h3>
+        <button onclick="testFilterPagination('休闲零食', 1, 20)">筛选"休闲零食"(第1页，20条)</button>
+        <button onclick="testFilterPagination('休闲零食', 2, 20)">筛选"休闲零食"(第2页，20条)</button>
+        <div id="filter-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+
+        async function testPagination(page, limit) {
+            try {
+                const response = await fetch(`${API_BASE}/products?page=${page}&limit=${limit}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const { pagination, products } = data.data;
+                    const result = `
+                        ✅ 成功获取第${pagination.page}页数据<br>
+                        📊 分页信息: ${pagination.page}/${pagination.totalPages} 页<br>
+                        📝 数据范围: 第${(pagination.page-1)*pagination.limit+1}-${Math.min(pagination.page*pagination.limit, pagination.total)}项 / 共${pagination.total}项<br>
+                        📦 实际返回: ${products.length} 个产品<br>
+                        🔗 hasNext: ${pagination.hasNext}, hasPrev: ${pagination.hasPrev}
+                    `;
+                    document.getElementById('pagination-result').innerHTML = result;
+                    document.getElementById('pagination-result').className = 'result success';
+                } else {
+                    throw new Error(data.message || '请求失败');
+                }
+            } catch (error) {
+                document.getElementById('pagination-result').innerHTML = `❌ 错误: ${error.message}`;
+                document.getElementById('pagination-result').className = 'result error';
+            }
+        }
+
+        async function testSearchPagination(query, page, limit) {
+            try {
+                const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const { pagination, products, query: searchQuery } = data.data;
+                    const result = `
+                        ✅ 搜索"${searchQuery}"成功<br>
+                        📊 分页信息: ${pagination.page}/${pagination.totalPages} 页<br>
+                        📝 搜索结果: 共找到${pagination.total}个相关产品<br>
+                        📦 本页返回: ${products.length} 个产品
+                    `;
+                    document.getElementById('search-result').innerHTML = result;
+                    document.getElementById('search-result').className = 'result success';
+                } else {
+                    throw new Error(data.message || '搜索失败');
+                }
+            } catch (error) {
+                document.getElementById('search-result').innerHTML = `❌ 搜索错误: ${error.message}`;
+                document.getElementById('search-result').className = 'result error';
+            }
+        }
+
+        async function testFilterPagination(category, page, limit) {
+            try {
+                const response = await fetch(`${API_BASE}/products?category=${encodeURIComponent(category)}&page=${page}&limit=${limit}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const { pagination, products } = data.data;
+                    const result = `
+                        ✅ 筛选"${category}"成功<br>
+                        📊 分页信息: ${pagination.page}/${pagination.totalPages} 页<br>
+                        📝 筛选结果: 共找到${pagination.total}个相关产品<br>
+                        📦 本页返回: ${products.length} 个产品
+                    `;
+                    document.getElementById('filter-result').innerHTML = result;
+                    document.getElementById('filter-result').className = 'result success';
+                } else {
+                    throw new Error(data.message || '筛选失败');
+                }
+            } catch (error) {
+                document.getElementById('filter-result').innerHTML = `❌ 筛选错误: ${error.message}`;
+                document.getElementById('filter-result').className = 'result error';
+            }
+        }
+
+        // 页面加载时测试基础分页
+        window.onload = () => {
+            testPagination(1, 20);
+        };
+    </script>
+</body>
+</html>

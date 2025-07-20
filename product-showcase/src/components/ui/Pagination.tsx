@@ -30,7 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   totalItems,
   itemsPerPage,
-  itemsPerPageOptions = [0, 20, 100, 500], // 默认包含0选项
+  itemsPerPageOptions = [20, 50, 100, 200, 1000], // 默认分页选项
   onPageChange,
   onItemsPerPageChange,
   showItemsPerPageSelector = true,
@@ -40,8 +40,8 @@ const Pagination: React.FC<PaginationProps> = ({
   disabled = false
 }) => {
   // 计算显示范围
-  const startItem = itemsPerPage === 0 ? 1 : (currentPage - 1) * itemsPerPage + 1;
-  const endItem = itemsPerPage === 0 ? totalItems : Math.min(currentPage * itemsPerPage, totalItems);
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   // 检测是否为移动端
   const [isMobile, setIsMobile] = React.useState(false);
@@ -116,29 +116,15 @@ const Pagination: React.FC<PaginationProps> = ({
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     if (newItemsPerPage !== itemsPerPage && !disabled) {
       onItemsPerPageChange(newItemsPerPage);
-      if (newItemsPerPage === 0) {
-        // 显示全部时，重置到第一页
-        if (currentPage !== 1) {
-          onPageChange(1);
-        }
-      } else if (itemsPerPage > 0) {
-        // 从分页模式切换到另一个分页模式
-        const currentFirstItem = (currentPage - 1) * itemsPerPage + 1;
-        const newPage = Math.ceil(currentFirstItem / newItemsPerPage);
-        if (newPage !== currentPage) {
-          onPageChange(newPage);
-        }
-      } else {
-        // 从显示全部切换到分页模式，重置到第一页
-        if (currentPage !== 1) {
-          onPageChange(1);
-        }
+      // 重置到第一页
+      if (currentPage !== 1) {
+        onPageChange(1);
       }
     }
   };
 
   // 只有在不显示选择器且没有分页需求时才隐藏组件
-  if (!showItemsPerPageSelector && (itemsPerPage === 0 || totalPages <= 1)) {
+  if (!showItemsPerPageSelector && totalPages <= 1) {
     return null;
   }
 
@@ -152,8 +138,8 @@ const Pagination: React.FC<PaginationProps> = ({
         </div>
       )}
 
-      {/* 中间：页码导航 - 只在分页模式且有多页时显示 */}
-      {itemsPerPage > 0 && totalPages > 1 && (
+      {/* 中间：页码导航 - 只在有多页时显示 */}
+      {totalPages > 1 && (
         <div className="flex items-center space-x-1 order-1 sm:order-2">
           {/* 首页按钮 */}
           <Button
@@ -247,7 +233,7 @@ const Pagination: React.FC<PaginationProps> = ({
           >
             {itemsPerPageOptions.map((option) => (
               <option key={option} value={option}>
-                {option === 0 ? '全部' : option}
+                {option === 1000 ? '全部' : option}
               </option>
             ))}
           </select>

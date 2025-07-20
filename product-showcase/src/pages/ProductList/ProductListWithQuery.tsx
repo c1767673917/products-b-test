@@ -113,9 +113,25 @@ export const ProductListWithQuery: React.FC = () => {
   );
 
 
-  // React Query hooks
-  const productsQuery = useProducts();
-  const filterQuery = useFilterProducts(filters, searchQuery);
+  // React Query hooks - 传递分页参数到后端
+  const apiParams = useMemo(() => ({
+    page: currentPage,
+    limit: itemsPerPage,
+    sortBy: sortOption.includes('price') ? 'price' : 
+           sortOption === 'collect-time' ? 'time' : 'name',
+    sortOrder: sortOption === 'price-desc' ? 'desc' : 'asc',
+    search: searchQuery || undefined,
+    // 筛选参数
+    ...(filters.categories.length > 0 && { category: filters.categories.join(',') }),
+    ...(filters.platforms.length > 0 && { platform: filters.platforms.join(',') }),
+    ...(filters.locations.length > 0 && { province: filters.locations.join(',') }),
+    ...(filters.priceRange && {
+      priceMin: filters.priceRange[0],
+      priceMax: filters.priceRange[1]
+    })
+  }), [currentPage, itemsPerPage, sortOption, searchQuery, filters]);
+
+  const productsQuery = useProducts(apiParams);
   const refreshMutation = useRefreshProducts();
 
   // ProductStore hooks
@@ -167,59 +183,56 @@ export const ProductListWithQuery: React.FC = () => {
     };
   }, []);
 
-  // 获取要显示的产品数据
+  // 获取要显示的产品数据 - 直接使用后端返回的数据，无需前端排序
   const displayProducts = useMemo(() => {
-    let products = filterQuery.data || productsQuery.data || [];
+    // 后端已经处理了排序和筛选，直接使用返回的产品列表
+    return productsQuery.data || [];
+  }, [productsQuery.data]);
 
-    // 排序
-    switch (sortOption) {
-      case 'name':
-        products = [...products].sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'price-asc':
-        products = [...products].sort((a, b) => {
-          const priceA = a.price.discount || a.price.normal;
-          const priceB = b.price.discount || b.price.normal;
-          return priceA - priceB;
-        });
-        break;
-      case 'price-desc':
-        products = [...products].sort((a, b) => {
-          const priceA = a.price.discount || a.price.normal;
-          const priceB = b.price.discount || b.price.normal;
-          return priceB - priceA;
-        });
-        break;
-      case 'collect-time':
-        products = [...products].sort((a, b) => b.collectTime - a.collectTime);
-        break;
+  // 获取后端返回的分页信息
+  const paginationInfo = useMemo(() => {
+    // 检查是否是新的API格式（带分页信息）
+    const response = productsQuery.data;
+    if (response && typeof response === 'object' && 'products' in response && 'pagination' in response) {
+      return {
+        products: response.products,
+        pagination: response.pagination
+      };
     }
+    // 兼容旧格式（直接返回产品数组）
+    return {
+      products: Array.isArray(response) ? response : [],
+      pagination: {
+        page: currentPage,
+        limit: itemsPerPage,
+        total: Array.isArray(response) ? response.length : 0,
+        totalPages: Array.isArray(response) ? Math.ceil(response.length / itemsPerPage) : 1,
+        hasNext: false,
+        hasPrev: false
+      }
+    };
+  }, [productsQuery.data, currentPage, itemsPerPage]);
 
-    return products;
-  }, [filterQuery.data, productsQuery.data, sortOption]);
+  // 使用后端分页数据
+  const actualProducts = paginationInfo.products;
+  const actualPagination = paginationInfo.pagination;
 
-  // 分页产品 - 如果itemsPerPage为0则显示全部
-  const paginatedProducts = useMemo(() => {
-    if (itemsPerPage === 0) {
-      return displayProducts; // 显示全部产品
-    }
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return displayProducts.slice(startIndex, startIndex + itemsPerPage);
-  }, [displayProducts, currentPage, itemsPerPage]);
+  // 使用后端分页的产品数据，无需前端再次分页
+  const paginatedProducts = actualProducts;
 
   // 获取当前选中的产品
   const selectedProduct = selectedProductId 
-    ? displayProducts.find(p => p.productId === selectedProductId) || null
+    ? actualProducts.find(p => p.productId === selectedProductId) || null
     : null;
 
   // 获取产品导航信息
   const getProductNavigation = () => {
     if (!selectedProductId) return { prev: false, next: false };
     
-    const currentIndex = displayProducts.findIndex(p => p.productId === selectedProductId);
+    const currentIndex = actualProducts.findIndex(p => p.productId === selectedProductId);
     return {
       prev: currentIndex > 0,
-      next: currentIndex < displayProducts.length - 1
+      next: currentIndex < actualProducts.length - 1
     };
   };
 
@@ -229,17 +242,17 @@ export const ProductListWithQuery: React.FC = () => {
   const handleProductNavigation = (direction: 'prev' | 'next') => {
     if (!selectedProductId) return;
     
-    const currentIndex = displayProducts.findIndex(p => p.productId === selectedProductId);
+    const currentIndex = actualProducts.findIndex(p => p.productId === selectedProductId);
     let newIndex = currentIndex;
     
     if (direction === 'prev' && currentIndex > 0) {
       newIndex = currentIndex - 1;
-    } else if (direction === 'next' && currentIndex < displayProducts.length - 1) {
+    } else if (direction === 'next' && currentIndex < actualProducts.length - 1) {
       newIndex = currentIndex + 1;
     }
     
     if (newIndex !== currentIndex) {
-      setSelectedProductId(displayProducts[newIndex].productId);
+      setSelectedProductId(actualProducts[newIndex].productId);
     }
   };
 
@@ -249,7 +262,8 @@ export const ProductListWithQuery: React.FC = () => {
     setSelectedProductId(null);
   };
 
-  const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(displayProducts.length / itemsPerPage);
+  // 使用后端返回的总页数
+  const totalPages = actualPagination.totalPages;
 
   // 处理产品操作
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
@@ -283,34 +297,27 @@ export const ProductListWithQuery: React.FC = () => {
     }
   };
 
-  // 处理分页
+  // 处理分页 - 更新当前页码，useProducts会自动重新请求数据
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 处理每页显示数量变化
+  // 处理每页显示数量变化 - 更新每页数量，useProducts会自动重新请求数据
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage);
-    if (newItemsPerPage === 0) {
-      // 显示全部时，重置到第一页
-      setCurrentPage(1);
-    } else {
-      // 计算切换后应该在哪一页，尽量保持当前显示的第一个项目位置
-      const currentFirstItem = (currentPage - 1) * itemsPerPage + 1;
-      const newPage = Math.ceil(currentFirstItem / newItemsPerPage);
-      setCurrentPage(newPage);
-    }
+    // 重置到第一页
+    setCurrentPage(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 处理筛选变化
+  // 处理筛选变化 - 更新筛选条件，useProducts会自动重新请求数据
   const handleFiltersChange = (newFilters: Partial<FilterState>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
     setCurrentPage(1);
   };
 
-  // 清空筛选
+  // 清空筛选 - 重置所有筛选条件，useProducts会自动重新请求数据
   const handleClearFilters = () => {
     setFilters(initialFilters);
     setSearchQuery('');
@@ -321,7 +328,7 @@ export const ProductListWithQuery: React.FC = () => {
 
   // 刷新数据
   const handleRefresh = () => {
-    refreshMutation.mutate(undefined, {
+    refreshMutation.mutate(apiParams, {
       onSuccess: () => {
         showSuccess('数据刷新成功');
       },
@@ -342,8 +349,8 @@ export const ProductListWithQuery: React.FC = () => {
   };
 
   // 加载状态
-  const isLoading = productsQuery.isLoading || filterQuery.isLoading || refreshMutation.isPending;
-  const error = productsQuery.error || filterQuery.error;
+  const isLoading = productsQuery.isLoading || refreshMutation.isPending;
+  const error = productsQuery.error;
 
   if (error) {
     return (
@@ -564,8 +571,14 @@ export const ProductListWithQuery: React.FC = () => {
                   {/* 结果统计 */}
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>
-                      共找到 {displayProducts.length} 个产品
+                      共找到 {actualPagination.total} 个产品
                       {searchQuery && ` (搜索: "${searchQuery}")`}
+                      {actualPagination.total > 0 && (
+                        <span className="ml-2 text-gray-500">
+                          (第 {(actualPagination.page - 1) * actualPagination.limit + 1} - 
+                          {Math.min(actualPagination.page * actualPagination.limit, actualPagination.total)} 项)
+                        </span>
+                      )}
                     </span>
                     {isLoading && <Spinner size="sm" />}
                   </div>
@@ -632,11 +645,11 @@ export const ProductListWithQuery: React.FC = () => {
                   {/* 分页 */}
                   <ScrollReveal direction="up" delay={0.3}>
                     <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      totalItems={displayProducts.length}
-                      itemsPerPage={itemsPerPage}
-                      itemsPerPageOptions={[0, 20, 100, 500]} // 添加0选项表示显示全部
+                      currentPage={actualPagination.page}
+                      totalPages={actualPagination.totalPages}
+                      totalItems={actualPagination.total}
+                      itemsPerPage={actualPagination.limit}
+                      itemsPerPageOptions={[20, 50, 100, 200, 1000]} // 移除0选项，使用大数字代表显示全部
                       onPageChange={handlePageChange}
                       onItemsPerPageChange={handleItemsPerPageChange}
                       showItemsPerPageSelector={true}
