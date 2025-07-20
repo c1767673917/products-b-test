@@ -26,6 +26,7 @@ import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { VirtualGrid, VirtualList } from '../../components/ui/VirtualGrid';
 
 import { useRealTimeResponsiveGrid } from '../../hooks/useRealTimeResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
@@ -221,15 +222,15 @@ export const ProductListWithQuery: React.FC = () => {
   const paginatedProducts = actualProducts;
 
   // 获取当前选中的产品
-  const selectedProduct = selectedProductId 
-    ? actualProducts.find(p => p.productId === selectedProductId) || null
+  const selectedProduct = selectedProductId
+    ? actualProducts.find((p: Product) => p.productId === selectedProductId) || null
     : null;
 
   // 获取产品导航信息
   const getProductNavigation = () => {
     if (!selectedProductId) return { prev: false, next: false };
-    
-    const currentIndex = actualProducts.findIndex(p => p.productId === selectedProductId);
+
+    const currentIndex = actualProducts.findIndex((p: Product) => p.productId === selectedProductId);
     return {
       prev: currentIndex > 0,
       next: currentIndex < actualProducts.length - 1
@@ -241,10 +242,10 @@ export const ProductListWithQuery: React.FC = () => {
   // 处理产品导航
   const handleProductNavigation = (direction: 'prev' | 'next') => {
     if (!selectedProductId) return;
-    
-    const currentIndex = actualProducts.findIndex(p => p.productId === selectedProductId);
+
+    const currentIndex = actualProducts.findIndex((p: Product) => p.productId === selectedProductId);
     let newIndex = currentIndex;
-    
+
     if (direction === 'prev' && currentIndex > 0) {
       newIndex = currentIndex - 1;
     } else if (direction === 'next' && currentIndex < actualProducts.length - 1) {
@@ -604,43 +605,45 @@ export const ProductListWithQuery: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <ScrollStagger staggerDelay={0.05}>
-                    {viewMode === 'grid' ? (
-                      <ResponsiveProductGrid
-                        gridClass={getResponsiveGridClass()}
-                        columns={columns}
-                        cardWidth={cardWidth}
-                      >
-                        {paginatedProducts.map((product) => (
-                          <ProductCard
-                            key={product.productId}
-                            product={product}
-                            layout={viewMode}
-                            onQuickAction={(action) => handleProductAction(product, action)}
-                            isFavorited={favorites.includes(product.productId)}
-                            isInCompare={compareList.includes(product.productId)}
-                          />
-                        ))}
-                      </ResponsiveProductGrid>
-                    ) : (
-                      <motion.div
-                        className="mb-8 grid grid-cols-1 gap-4"
-                      >
-                        <AnimatePresence>
-                          {paginatedProducts.map((product) => (
-                            <ProductCard
-                              key={product.productId}
-                              product={product}
-                              layout={viewMode}
-                              onQuickAction={(action) => handleProductAction(product, action)}
-                              isFavorited={favorites.includes(product.productId)}
-                              isInCompare={compareList.includes(product.productId)}
-                            />
-                          ))}
-                        </AnimatePresence>
-                      </motion.div>
-                    )}
-                  </ScrollStagger>
+                  {/*
+                    使用虚拟化网格/列表来解决大数量产品渲染时的性能问题。
+                    这会引入一个内嵌的滚动条，但在当前架构下是最高效的修复方案。
+                  */}
+                  {viewMode === 'grid' ? (
+                    <VirtualGrid<Product>
+                      items={paginatedProducts}
+                      itemWidth={cardWidth}
+                      itemHeight={380} // 根据ProductCard估算的高度
+                      gap={16}
+                      useWindowScroll={true}
+                      renderItem={(product) => (
+                        <ProductCard
+                          key={product.productId}
+                          product={product}
+                          layout="grid"
+                          onQuickAction={(action) => handleProductAction(product, action)}
+                          isFavorited={favorites.includes(product.productId)}
+                          isInCompare={compareList.includes(product.productId)}
+                        />
+                      )}
+                    />
+                  ) : (
+                    <VirtualList<Product>
+                      items={paginatedProducts}
+                      itemHeight={130} // 根据ProductCard列表模式估算的高度
+                      useWindowScroll={true}
+                      renderItem={(product) => (
+                        <ProductCard
+                          key={product.productId}
+                          product={product}
+                          layout="list"
+                          onQuickAction={(action) => handleProductAction(product, action)}
+                          isFavorited={favorites.includes(product.productId)}
+                          isInCompare={compareList.includes(product.productId)}
+                        />
+                      )}
+                    />
+                  )}
 
                   {/* 分页 */}
                   <ScrollReveal direction="up" delay={0.3}>

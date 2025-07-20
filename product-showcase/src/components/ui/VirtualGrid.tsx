@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 export interface VirtualGridProps<T> {
@@ -10,6 +10,7 @@ export interface VirtualGridProps<T> {
   containerHeight?: number;
   className?: string;
   overscan?: number;
+  useWindowScroll?: boolean;
 }
 
 export function VirtualGrid<T>({
@@ -18,18 +19,56 @@ export function VirtualGrid<T>({
   itemHeight,
   itemWidth,
   gap = 16,
-  containerHeight = 600,
+  containerHeight: initialContainerHeight = 600,
   className = '',
-  overscan = 5
+  overscan = 5,
+  useWindowScroll = false
 }: VirtualGridProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(initialContainerHeight);
+  const [containerTop, setContainerTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // 更新容器尺寸和位置
+  const updateContainerMetrics = useCallback(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.clientWidth);
+      if (useWindowScroll) {
+        setContainerTop(containerRef.current.offsetTop);
+        setContainerHeight(window.innerHeight);
+      }
+    }
+  }, [useWindowScroll]);
+
+  useEffect(() => {
+    updateContainerMetrics();
+    window.addEventListener('resize', updateContainerMetrics);
+    return () => window.removeEventListener('resize', updateContainerMetrics);
+  }, [updateContainerMetrics]);
+
+  // 处理滚动
+  useEffect(() => {
+    if (!useWindowScroll) return;
+
+    const handleScroll = () => {
+      setScrollTop(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [useWindowScroll]);
+
+  const handleContainerScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (!useWindowScroll) {
+      setScrollTop(e.currentTarget.scrollTop);
+    }
+  };
 
   // 计算每行可以显示的项目数
   const itemsPerRow = useMemo(() => {
     if (containerWidth === 0) return 1;
-    return Math.floor((containerWidth + gap) / (itemWidth + gap));
+    return Math.max(1, Math.floor((containerWidth + gap) / (itemWidth + gap)));
   }, [containerWidth, itemWidth, gap]);
 
   // 计算总行数
@@ -38,17 +77,16 @@ export function VirtualGrid<T>({
   // 计算可见范围
   const visibleRange = useMemo(() => {
     const rowHeight = itemHeight + gap;
-    const startRow = Math.floor(scrollTop / rowHeight);
-    const endRow = Math.min(
-      startRow + Math.ceil(containerHeight / rowHeight) + overscan,
-      totalRows
-    );
+    const relativeScrollTop = useWindowScroll ? Math.max(0, scrollTop - containerTop) : scrollTop;
     
-    return {
-      start: Math.max(0, startRow - overscan),
-      end: endRow
-    };
-  }, [scrollTop, itemHeight, gap, containerHeight, totalRows, overscan]);
+    const startRow = Math.floor(relativeScrollTop / rowHeight);
+    const visibleRows = Math.ceil(containerHeight / rowHeight);
+    
+    const startIndex = Math.max(0, startRow - overscan);
+    const endIndex = Math.min(totalRows, startRow + visibleRows + overscan);
+
+    return { start: startIndex, end: endIndex };
+  }, [scrollTop, containerTop, containerHeight, itemHeight, gap, totalRows, overscan, useWindowScroll]);
 
   // 获取可见的项目
   const visibleItems = useMemo(() => {
@@ -63,34 +101,23 @@ export function VirtualGrid<T>({
     }));
   }, [items, visibleRange, itemsPerRow]);
 
-  // 监听容器大小变化
-  useEffect(() => {
-    const updateContainerWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.clientWidth);
-      }
-    };
-
-    updateContainerWidth();
-    window.addEventListener('resize', updateContainerWidth);
-    return () => window.removeEventListener('resize', updateContainerWidth);
-  }, []);
-
-  // 处理滚动
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  };
-
   const totalHeight = totalRows * (itemHeight + gap) - gap;
 
   return (
     <div
       ref={containerRef}
-      className={`overflow-auto ${className}`}
-      style={{ height: containerHeight }}
-      onScroll={handleScroll}
+      className={!useWindowScroll ? `overflow-auto ${className}` : className}
+      style={{
+        height: useWindowScroll ? totalHeight : containerHeight,
+        position: 'relative'
+      }}
+      onScroll={handleContainerScroll}
     >
-      <div style={{ height: totalHeight, position: 'relative' }}>
+      <div style={{
+        height: useWindowScroll ? '100%' : totalHeight,
+        position: useWindowScroll ? 'sticky' : 'relative',
+        top: 0
+      }}>
         {visibleItems.map(({ item, originalIndex, row, col }) => (
           <motion.div
             key={originalIndex}
@@ -121,31 +148,68 @@ export interface VirtualListProps<T> {
   containerHeight?: number;
   className?: string;
   overscan?: number;
+  useWindowScroll?: boolean;
 }
 
 export function VirtualList<T>({
   items,
   renderItem,
   itemHeight,
-  containerHeight = 600,
+  containerHeight: initialContainerHeight = 600,
   className = '',
-  overscan = 5
+  overscan = 5,
+  useWindowScroll = false
 }: VirtualListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(initialContainerHeight);
+  const [containerTop, setContainerTop] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 更新容器尺寸和位置
+  const updateContainerMetrics = useCallback(() => {
+    if (containerRef.current) {
+      if (useWindowScroll) {
+        setContainerTop(containerRef.current.offsetTop);
+        setContainerHeight(window.innerHeight);
+      }
+    }
+  }, [useWindowScroll]);
+
+  useEffect(() => {
+    updateContainerMetrics();
+    window.addEventListener('resize', updateContainerMetrics);
+    return () => window.removeEventListener('resize', updateContainerMetrics);
+  }, [updateContainerMetrics]);
+
+  // 处理滚动
+  useEffect(() => {
+    if (!useWindowScroll) return;
+
+    const handleScroll = () => {
+      setScrollTop(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [useWindowScroll]);
+
+  const handleContainerScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (!useWindowScroll) {
+      setScrollTop(e.currentTarget.scrollTop);
+    }
+  };
 
   // 计算可见范围
   const visibleRange = useMemo(() => {
-    const startIndex = Math.floor(scrollTop / itemHeight);
-    const endIndex = Math.min(
-      startIndex + Math.ceil(containerHeight / itemHeight) + overscan,
-      items.length
-    );
+    const relativeScrollTop = useWindowScroll ? Math.max(0, scrollTop - containerTop) : scrollTop;
+    const startIndex = Math.floor(relativeScrollTop / itemHeight);
+    const visibleItemsCount = Math.ceil(containerHeight / itemHeight);
     
-    return {
-      start: Math.max(0, startIndex - overscan),
-      end: endIndex
-    };
-  }, [scrollTop, itemHeight, containerHeight, items.length, overscan]);
+    const start = Math.max(0, startIndex - overscan);
+    const end = Math.min(items.length, startIndex + visibleItemsCount + overscan);
+    
+    return { start, end };
+  }, [scrollTop, containerTop, containerHeight, itemHeight, items.length, overscan, useWindowScroll]);
 
   // 获取可见的项目
   const visibleItems = useMemo(() => {
@@ -155,20 +219,23 @@ export function VirtualList<T>({
     }));
   }, [items, visibleRange]);
 
-  // 处理滚动
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  };
-
   const totalHeight = items.length * itemHeight;
 
   return (
     <div
-      className={`overflow-auto ${className}`}
-      style={{ height: containerHeight }}
-      onScroll={handleScroll}
+      ref={containerRef}
+      className={!useWindowScroll ? `overflow-auto ${className}` : className}
+      style={{
+        height: useWindowScroll ? totalHeight : containerHeight,
+        position: 'relative'
+      }}
+      onScroll={handleContainerScroll}
     >
-      <div style={{ height: totalHeight, position: 'relative' }}>
+      <div style={{
+        height: useWindowScroll ? '100%' : totalHeight,
+        position: useWindowScroll ? 'sticky' : 'relative',
+        top: 0
+      }}>
         {visibleItems.map(({ item, originalIndex }) => (
           <motion.div
             key={originalIndex}
