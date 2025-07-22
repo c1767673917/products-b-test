@@ -78,7 +78,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
     const platformMap = new Map<string, number>();
     
     products.forEach(product => {
-      const platform = product.platform;
+      const platform = product.platform.display;
       platformMap.set(platform, (platformMap.get(platform) || 0) + 1);
     });
     

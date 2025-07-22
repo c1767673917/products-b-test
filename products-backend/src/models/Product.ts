@@ -3,12 +3,25 @@ import mongoose from 'mongoose';
 // TypeScript interface for Product
 export interface IProduct extends mongoose.Document {
   productId: string;
+  rxNumber: string;
   internalId: string;
-  name: string;
+  name: {
+    english?: string;
+    chinese?: string;
+    display: string; // 优先显示英文，如果没有则显示中文
+  };
   sequence: string;
   category: {
-    primary: string;
-    secondary: string;
+    primary: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    secondary: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
   };
   price: {
     normal: number;
@@ -28,9 +41,17 @@ export interface IProduct extends mongoose.Document {
     province: string;
     city?: string;
   };
-  platform: string;
+  platform: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   specification?: string;
-  flavor?: string;
+  flavor: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   manufacturer?: string;
   collectTime: Date;
   syncTime: Date;
@@ -42,30 +63,50 @@ export interface IProduct extends mongoose.Document {
 // Product Schema - 优化后的产品数据模型
 const ProductSchema = new mongoose.Schema({
   // 主键：使用飞书记录ID
-  productId: { 
-    type: String, 
-    required: true, 
-    unique: true, 
+  productId: {
+    type: String,
+    required: true,
+    unique: true,
     index: true,
     match: /^rec[a-zA-Z0-9]+$/,
     trim: true
   },
-  
+
+  // rx编号字段
+  rxNumber: {
+    type: String,
+    index: true,
+    trim: true
+  },
+
   // 辅助标识字段
-  internalId: { 
-    type: String, 
-    required: true,
+  internalId: {
+    type: String,
     index: true,
     trim: true
   },
   
-  // 基本信息
-  name: { 
-    type: String, 
-    required: true, 
-    index: true,
-    maxLength: 200,
-    trim: true
+  // 基本信息 - 支持中英文
+  name: {
+    english: {
+      type: String,
+      maxLength: 200,
+      trim: true,
+      index: true
+    },
+    chinese: {
+      type: String,
+      maxLength: 200,
+      trim: true,
+      index: true
+    },
+    display: {
+      type: String,
+      required: true,
+      index: true,
+      maxLength: 200,
+      trim: true
+    }
   },
   
   sequence: { 
@@ -74,19 +115,43 @@ const ProductSchema = new mongoose.Schema({
     trim: true
   },
   
-  // 分类信息
+  // 分类信息 - 支持中英文
   category: {
-    primary: { 
-      type: String, 
-      required: true,
-      index: true,
-      trim: true
+    primary: {
+      english: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      chinese: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      display: {
+        type: String,
+        required: true,
+        index: true,
+        trim: true
+      }
     },
-    secondary: { 
-      type: String, 
-      required: true,
-      index: true,
-      trim: true
+    secondary: {
+      english: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      chinese: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      display: {
+        type: String,
+        required: true,
+        index: true,
+        trim: true
+      }
     }
   },
   
@@ -147,16 +212,41 @@ const ProductSchema = new mongoose.Schema({
     }
   },
   
-  // 产品属性
-  platform: { 
-    type: String, 
-    required: true,
-    index: true,
-    trim: true
+  // 产品属性 - 支持中英文
+  platform: {
+    english: {
+      type: String,
+      trim: true,
+      index: true
+    },
+    chinese: {
+      type: String,
+      trim: true,
+      index: true
+    },
+    display: {
+      type: String,
+      required: true,
+      index: true,
+      trim: true
+    }
   },
-  
+
   specification: { type: String, trim: true },
-  flavor: { type: String, trim: true },
+  flavor: {
+    english: {
+      type: String,
+      trim: true
+    },
+    chinese: {
+      type: String,
+      trim: true
+    },
+    display: {
+      type: String,
+      trim: true
+    }
+  },
   manufacturer: { type: String, trim: true },
   
   // 其他信息
@@ -200,10 +290,14 @@ const ProductSchema = new mongoose.Schema({
 });
 
 // 复合索引
-ProductSchema.index({ 'category.primary': 1, 'category.secondary': 1 });
-ProductSchema.index({ platform: 1, status: 1 });
+ProductSchema.index({ 'category.primary.display': 1, 'category.secondary.display': 1 });
+ProductSchema.index({ 'platform.display': 1, status: 1 });
 ProductSchema.index({ collectTime: -1, syncTime: -1 });
 ProductSchema.index({ isVisible: 1, status: 1 });
+ProductSchema.index({ 'name.display': 1, status: 1 });
+ProductSchema.index({ 'name.english': 1, 'name.chinese': 1 });
+ProductSchema.index({ 'category.primary.english': 1, 'category.primary.chinese': 1 });
+ProductSchema.index({ 'platform.english': 1, 'platform.chinese': 1 });
 
 export const Product = mongoose.model('Product', ProductSchema);
 export default Product;

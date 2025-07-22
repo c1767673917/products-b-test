@@ -27,7 +27,6 @@ export interface FieldMapping {
   localFieldPath: string;      // 本地字段路径（支持嵌套，如 'category.primary'）
   type: FeishuFieldType;      // 字段类型
   required: boolean;          // 是否必填
-  fallback?: string;          // 备用字段ID
   transform?: FieldTransformer; // 自定义转换函数
   validate?: (value: any) => boolean; // 验证函数
   defaultValue?: any;         // 默认值
@@ -36,23 +35,45 @@ export interface FieldMapping {
 // 飞书字段映射配置
 export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
   // === 基础信息字段 ===
-  name: {
+  // 产品名称 - 英文
+  nameEnglish: {
     feishuFieldId: 'fldJZWSqLX', // Product Name
     feishuFieldName: 'Product Name',
-    localFieldPath: 'name',
+    localFieldPath: 'name.english',
     type: FeishuFieldType.TEXT,
-    required: true,
-    fallback: 'fld98c3F01', // 品名
+    required: false,
     transform: transformStringField
   },
 
-  productId: {
-    feishuFieldId: 'fldsbenBWp', // rx编号 (飞书记录ID)
-    feishuFieldName: 'rx编号',
-    localFieldPath: 'productId',
-    type: FeishuFieldType.AUTO_NUMBER,
+  // 产品名称 - 中文
+  nameChinese: {
+    feishuFieldId: 'fld98c3F01', // 品名
+    feishuFieldName: '品名',
+    localFieldPath: 'name.chinese',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 主要显示名称（优先使用英文，如果没有则使用中文）
+  name: {
+    feishuFieldId: 'fldJZWSqLX', // Product Name
+    feishuFieldName: 'Product Name',
+    localFieldPath: 'name.display',
+    type: FeishuFieldType.TEXT,
     required: true,
-    transform: (value: any) => String(value)
+    transform: transformStringField,
+    defaultValue: '未命名产品'
+  },
+
+  rxNumber: {
+    feishuFieldId: 'fldsbenBWp', // rx编号
+    feishuFieldName: 'rx编号',
+    localFieldPath: 'rxNumber',
+    type: FeishuFieldType.AUTO_NUMBER,
+    required: false, // 降级为可选
+    transform: (value: any) => String(value || ''),
+    defaultValue: ''
   },
 
   internalId: {
@@ -60,8 +81,9 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     feishuFieldName: '编号',
     localFieldPath: 'internalId',
     type: FeishuFieldType.AUTO_NUMBER,
-    required: true,
-    transform: (value: any) => String(value)
+    required: false, // 降级为可选
+    transform: (value: any) => String(value || ''),
+    defaultValue: ''
   },
 
   sequence: {
@@ -69,29 +91,72 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     feishuFieldName: '序号',
     localFieldPath: 'sequence',
     type: FeishuFieldType.FORMULA,
-    required: true,
-    transform: (value: any) => String(value)
+    required: false, // 降级为可选
+    transform: transformSequenceField,
+    defaultValue: ''
   },
 
   // === 分类信息字段 ===
-  categoryPrimary: {
+  // 一级分类 - 英文
+  categoryPrimaryEnglish: {
     feishuFieldId: 'fldoD52TeP', // Category Level 1
     feishuFieldName: 'Category Level 1',
-    localFieldPath: 'category.primary',
+    localFieldPath: 'category.primary.english',
     type: FeishuFieldType.LOOKUP,
-    required: true,
-    fallback: 'fldGtFPP20', // 品类一级
+    required: false,
     transform: transformSelectField
   },
 
+  // 一级分类 - 中文
+  categoryPrimaryChinese: {
+    feishuFieldId: 'fldGtFPP20', // 品类一级
+    feishuFieldName: '品类一级',
+    localFieldPath: 'category.primary.chinese',
+    type: FeishuFieldType.LOOKUP,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 主要显示的一级分类
+  categoryPrimary: {
+    feishuFieldId: 'fldoD52TeP', // Category Level 1
+    feishuFieldName: 'Category Level 1',
+    localFieldPath: 'category.primary.display',
+    type: FeishuFieldType.LOOKUP,
+    required: false,
+    transform: transformSelectField,
+    defaultValue: '未分类'
+  },
+
+  // 二级分类 - 英文
+  categorySecondaryEnglish: {
+    feishuFieldId: 'fldxk3XteX', // Category Level 2
+    feishuFieldName: 'Category Level 2',
+    localFieldPath: 'category.secondary.english',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 二级分类 - 中文
+  categorySecondaryChinese: {
+    feishuFieldId: 'fldrfy01PS', // 品类二级
+    feishuFieldName: '品类二级',
+    localFieldPath: 'category.secondary.chinese',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 主要显示的二级分类
   categorySecondary: {
     feishuFieldId: 'fldxk3XteX', // Category Level 2
     feishuFieldName: 'Category Level 2',
-    localFieldPath: 'category.secondary',
+    localFieldPath: 'category.secondary.display',
     type: FeishuFieldType.TEXT,
-    required: true,
-    fallback: 'fldrfy01PS', // 品类二级
-    transform: transformStringField
+    required: false,
+    transform: transformStringField,
+    defaultValue: ''
   },
 
   // === 价格信息字段 ===
@@ -100,9 +165,9 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     feishuFieldName: '正常售价',
     localFieldPath: 'price.normal',
     type: FeishuFieldType.NUMBER,
-    required: true,
-    transform: transformNumberField,
-    validate: (value: number) => value >= 0 && value <= 999999.99
+    required: false, // 降级为可选
+    transform: transformNumberFieldTolerant,
+    defaultValue: 0
   },
 
   priceDiscount: {
@@ -111,8 +176,7 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     localFieldPath: 'price.discount',
     type: FeishuFieldType.NUMBER,
     required: false,
-    transform: transformNumberField,
-    validate: (value: number) => value >= 0 && value <= 999999.99,
+    transform: transformNumberFieldTolerant,
     defaultValue: 0
   },
 
@@ -178,8 +242,9 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     feishuFieldName: 'Origin (Province)',
     localFieldPath: 'origin.province',
     type: FeishuFieldType.MULTI_SELECT,
-    required: true,
-    transform: transformMultiSelectToFirst
+    required: false, // 降级为可选
+    transform: transformMultiSelectToFirst,
+    defaultValue: ''
   },
 
   originCity: {
@@ -188,18 +253,40 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     localFieldPath: 'origin.city',
     type: FeishuFieldType.MULTI_SELECT,
     required: false,
-    transform: transformMultiSelectToFirst
+    transform: transformMultiSelectToFirst,
+    defaultValue: ''
   },
 
   // === 产品属性字段 ===
+  // 平台 - 英文
+  platformEnglish: {
+    feishuFieldId: 'fldkuD0wjJ', // Platform(平台)
+    feishuFieldName: 'Platform(平台)',
+    localFieldPath: 'platform.english',
+    type: FeishuFieldType.LOOKUP,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 平台 - 中文
+  platformChinese: {
+    feishuFieldId: 'fldlTALTDP', // 采集平台
+    feishuFieldName: '采集平台',
+    localFieldPath: 'platform.chinese',
+    type: FeishuFieldType.LOOKUP,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 主要显示的平台
   platform: {
     feishuFieldId: 'fldkuD0wjJ', // Platform(平台)
     feishuFieldName: 'Platform(平台)',
-    localFieldPath: 'platform',
+    localFieldPath: 'platform.display',
     type: FeishuFieldType.LOOKUP,
-    required: true,
-    fallback: 'fldlTALTDP', // 采集平台
-    transform: transformSelectField
+    required: false,
+    transform: transformSelectField,
+    defaultValue: '未知平台'
   },
 
   specification: {
@@ -211,13 +298,33 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     transform: transformStringField
   },
 
+  // 口味 - 英文
+  flavorEnglish: {
+    feishuFieldId: 'fldhkuLoKJ', // Flavor(口味)
+    feishuFieldName: 'Flavor(口味)',
+    localFieldPath: 'flavor.english',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 口味 - 中文
+  flavorChinese: {
+    feishuFieldId: 'fld6dbQGAn', // 口味
+    feishuFieldName: '口味',
+    localFieldPath: 'flavor.chinese',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 主要显示的口味
   flavor: {
     feishuFieldId: 'fldhkuLoKJ', // Flavor(口味)
     feishuFieldName: 'Flavor(口味)',
-    localFieldPath: 'flavor',
+    localFieldPath: 'flavor.display',
     type: FeishuFieldType.TEXT,
     required: false,
-    fallback: 'fld6dbQGAn', // 口味
     transform: transformStringField
   },
 
@@ -332,6 +439,46 @@ function transformNumberField(value: any): number {
 }
 
 /**
+ * 容错数字字段转换（更宽松）
+ */
+function transformNumberFieldTolerant(value: any): number {
+  try {
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'number') return Math.max(0, Math.round(value * 100) / 100);
+    if (typeof value === 'string') {
+      // 移除非数字字符，只保留数字和小数点
+      const cleanValue = value.replace(/[^\d.-]/g, '');
+      const num = parseFloat(cleanValue);
+      return isNaN(num) ? 0 : Math.max(0, Math.round(num * 100) / 100);
+    }
+    // 尝试转换其他类型
+    const num = Number(value);
+    return isNaN(num) ? 0 : Math.max(0, Math.round(num * 100) / 100);
+  } catch (error) {
+    return 0; // 任何错误都返回0
+  }
+}
+
+/**
+ * 容错序号字段转换
+ */
+function transformSequenceField(value: any): string {
+  try {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value.trim();
+    if (Array.isArray(value) && value.length > 0) {
+      const firstItem = value[0];
+      if (typeof firstItem === 'string') return firstItem.trim();
+      if (typeof firstItem === 'object' && firstItem.text) return firstItem.text.trim();
+    }
+    if (typeof value === 'object' && value.text) return value.text.trim();
+    return String(value).trim();
+  } catch (error) {
+    return ''; // 任何错误都返回空字符串
+  }
+}
+
+/**
  * 转换选择字段
  */
 function transformSelectField(value: any): string {
@@ -400,27 +547,25 @@ function transformDateField(value: any): Date {
 }
 
 /**
- * 转换附件字段（返回文件令牌数组）
+ * 转换附件字段（返回第一个文件令牌作为字符串）
  */
-function transformAttachmentField(value: any): string[] {
-  if (value === null || value === undefined) return [];
-  
-  if (Array.isArray(value)) {
-    return value.map(item => {
-      if (typeof item === 'string') return item;
-      if (typeof item === 'object') {
-        return item.file_token || item.token || item.attachment_token || '';
-      }
-      return '';
-    }).filter(Boolean);
+function transformAttachmentField(value: any): string {
+  if (value === null || value === undefined) return '';
+
+  if (Array.isArray(value) && value.length > 0) {
+    const firstItem = value[0];
+    if (typeof firstItem === 'string') return firstItem;
+    if (typeof firstItem === 'object') {
+      return firstItem.file_token || firstItem.token || firstItem.attachment_token || '';
+    }
+    return '';
   }
-  
+
   if (typeof value === 'object') {
-    const token = value.file_token || value.token || value.attachment_token;
-    return token ? [token] : [];
+    return value.file_token || value.token || value.attachment_token || '';
   }
-  
-  return [];
+
+  return '';
 }
 
 /**
@@ -443,8 +588,8 @@ function transformLinkField(value: any): string {
  * 根据飞书字段ID查找映射配置
  */
 export function findMappingByFeishuFieldId(fieldId: string): FieldMapping | undefined {
-  return Object.values(FEISHU_FIELD_MAPPING).find(mapping => 
-    mapping.feishuFieldId === fieldId || mapping.fallback === fieldId
+  return Object.values(FEISHU_FIELD_MAPPING).find(mapping =>
+    mapping.feishuFieldId === fieldId
   );
 }
 
@@ -474,7 +619,7 @@ export function getImageFields(): FieldMapping[] {
 }
 
 /**
- * 验证必填字段
+ * 验证必填字段（宽松模式）
  */
 export function validateRequiredFields(transformedData: any): {
   isValid: boolean;
@@ -483,10 +628,17 @@ export function validateRequiredFields(transformedData: any): {
   const requiredFields = getRequiredFields();
   const missingFields: string[] = [];
 
+  // 只检查核心必填字段
+  const coreRequiredPaths = ['name.display', 'productId'];
+
   for (const field of requiredFields) {
-    const value = getNestedValue(transformedData, field.localFieldPath);
-    if (value === null || value === undefined || value === '') {
-      missingFields.push(field.localFieldPath);
+    // 只对核心字段进行严格验证
+    if (coreRequiredPaths.includes(field.localFieldPath)) {
+      const value = getNestedValue(transformedData, field.localFieldPath);
+      if (value === null || value === undefined ||
+          (typeof value === 'string' && value.trim() === '')) {
+        missingFields.push(field.localFieldPath);
+      }
     }
   }
 

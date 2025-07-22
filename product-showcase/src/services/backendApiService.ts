@@ -285,18 +285,21 @@ export class ApiService {
   // 处理产品图片URL
   private processProductImages(product: Product): Product {
     const processedProduct = { ...product };
-    
-    if (processedProduct.images) {
-      // 处理每种类型的图片URL
-      Object.keys(processedProduct.images).forEach(key => {
-        const imagePath = processedProduct.images[key as keyof typeof processedProduct.images];
-        if (imagePath) {
-          processedProduct.images[key as keyof typeof processedProduct.images] = 
-            imageUtils.getImageUrl(imagePath);
-        }
-      });
+
+    // 确保 images 对象存在，如果不存在则创建一个空对象
+    if (!processedProduct.images || typeof processedProduct.images !== 'object') {
+      processedProduct.images = {};
     }
-    
+
+    // 处理每种类型的图片URL
+    Object.keys(processedProduct.images).forEach(key => {
+      const imagePath = processedProduct.images[key as keyof typeof processedProduct.images];
+      if (imagePath) {
+        processedProduct.images[key as keyof typeof processedProduct.images] =
+          imageUtils.getImageUrl(imagePath);
+      }
+    });
+
     return processedProduct;
   }
 

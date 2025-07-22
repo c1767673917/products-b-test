@@ -39,6 +39,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
       gift: '礼品图'
     };
 
+    // 添加空值检查，防止 product.images 为 undefined 或 null
+    if (!product.images || typeof product.images !== 'object') {
+      return [];
+    }
+
     return (Object.keys(product.images) as ImageType[])
       .filter(type => product.images[type])
       .map(type => ({

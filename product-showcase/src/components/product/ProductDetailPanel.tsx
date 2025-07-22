@@ -291,7 +291,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                 className="transform-gpu"
               >
                 <h1 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
-                  {product.name}
+                  {product.name.display}
                 </h1>
                 
                 <div className="mb-4">
@@ -377,7 +377,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                     </div>
                     <div>
                       <span className="font-medium text-gray-500">口味</span>
-                      <p className="text-gray-900 break-words">{product.flavor || '暂无'}</p>
+                      <p className="text-gray-900 break-words">{product.flavor?.display || '暂无'}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-500">包装规格</span>

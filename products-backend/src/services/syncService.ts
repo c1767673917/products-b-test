@@ -120,7 +120,6 @@ export class SyncService {
     this.shouldPause = false;
 
     const startTime = new Date();
-    let session: mongoose.ClientSession | null = null;
 
     try {
       this.logger.info('开始飞书数据同步', { syncId, mode: options.mode, options });
@@ -197,9 +196,6 @@ export class SyncService {
         }
       };
     } finally {
-      if (session) {
-        await (session as mongoose.ClientSession).endSession();
-      }
       this.currentSyncId = null;
       this.syncProgress = null;
       this.pausePromise = null;
@@ -246,76 +242,33 @@ export class SyncService {
       });
 
       if (!options.options?.dryRun) {
-        // 阶段3: 检测变更和更新数据库
-        const session = await mongoose.startSession();
-        
-        try {
-          await session.withTransaction(async () => {
-            for (let i = 0; i < transformResult.successful.length; i++) {
-              const transformedProduct = transformResult.successful[i];
-              
-              // 检查取消和暂停
-              await this.checkControlSignals();
+        // 阶段3: 检测变更和更新数据库（批量操作，无事务）
+        this.updateProgress(syncId, 'updating_database', '保存产品数据...');
 
-              try {
-                const existingProduct = await Product.findOne({ 
-                  productId: transformedProduct.productId 
-                }).session(session);
+        // 批量处理产品数据
+        const batchSize = options.options?.batchSize || 50;
+        const batches = this.chunkArray(transformResult.successful, batchSize);
 
-                if (existingProduct) {
-                  // 检测变更
-                  const changes = dataTransformService.detectChanges(
-                    transformedProduct, 
-                    existingProduct.toObject()
-                  );
+        for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+          const batch = batches[batchIndex];
 
-                  if (changes.hasChanges) {
-                    await Product.findOneAndUpdate(
-                      { productId: transformedProduct.productId },
-                      { 
-                        ...transformedProduct, 
-                        updatedAt: new Date(),
-                        version: existingProduct.version + 1
-                      },
-                      { session, new: true }
-                    );
-                    stats.updatedRecords++;
-                    this.logger.debug('产品更新成功', { 
-                      productId: transformedProduct.productId 
-                    });
-                  }
-                } else {
-                  // 创建新产品
-                  await Product.create([transformedProduct], { session });
-                  stats.createdRecords++;
-                  this.logger.debug('产品创建成功', { 
-                    productId: transformedProduct.productId 
-                  });
-                }
+          // 检查取消和暂停
+          await this.checkControlSignals();
 
-                stats.processedRecords++;
-                
-                // 更新进度
-                const progress = Math.floor((i + 1) / transformResult.successful.length * 100);
-                this.updateProgressPercentage(syncId, progress);
+          // 批量处理当前批次
+          await this.processBatch(batch, stats, errors, syncId);
 
-              } catch (error) {
-                stats.errors++;
-                const errorMsg = error instanceof Error ? error.message : '未知错误';
-                errors.push({
-                  type: 'database',
-                  message: `产品处理失败: ${errorMsg}`,
-                  productId: transformedProduct.productId,
-                  timestamp: new Date()
-                });
-                this.logger.error('产品处理失败', error, {
-                  productId: transformedProduct.productId
-                });
-              }
-            }
+          // 更新总体进度
+          const totalProcessed = (batchIndex + 1) * batchSize;
+          const progress = Math.min(100, Math.floor(totalProcessed / transformResult.successful.length * 100));
+          this.updateProgressPercentage(syncId, progress);
+
+          this.logger.info('批次处理完成', {
+            batchIndex: batchIndex + 1,
+            totalBatches: batches.length,
+            processed: Math.min(totalProcessed, transformResult.successful.length),
+            total: transformResult.successful.length
           });
-        } finally {
-          await session.endSession();
         }
 
         // 阶段4: 下载图片
@@ -803,6 +756,133 @@ export class SyncService {
       this.logger.error('获取同步历史失败', error);
       return [];
     }
+  }
+
+  /**
+   * 批量处理产品数据（无事务，简化版）
+   */
+  private async processBatch(
+    batch: any[],
+    stats: any,
+    errors: any[],
+    syncId: string
+  ): Promise<void> {
+    // 直接逐个处理，避免批量操作可能的事务问题
+    for (const transformedProduct of batch) {
+      try {
+        // 使用upsert操作，避免查询和更新的分离
+        // transformedProduct已经包含了正确的version，直接使用
+        const updateData = {
+          ...transformedProduct,
+          updatedAt: new Date()
+        };
+
+        const result = await Product.findOneAndUpdate(
+          { productId: transformedProduct.productId },
+          { $set: updateData },
+          {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: true,
+            // 明确禁用事务
+            session: null
+          }
+        );
+
+        if (result.isNew) {
+          stats.createdRecords++;
+          this.logger.debug('产品创建成功', {
+            productId: transformedProduct.productId
+          });
+        } else {
+          stats.updatedRecords++;
+          this.logger.debug('产品更新成功', {
+            productId: transformedProduct.productId
+          });
+        }
+
+        stats.processedRecords++;
+
+      } catch (error) {
+        stats.errors++;
+        const errorMsg = error instanceof Error ? error.message : '未知错误';
+        errors.push({
+          type: 'database',
+          message: `产品处理失败: ${errorMsg}`,
+          productId: transformedProduct.productId,
+          timestamp: new Date()
+        });
+        this.logger.error('产品处理失败', error, {
+          productId: transformedProduct.productId
+        });
+      }
+    }
+  }
+
+  /**
+   * 逐个处理批次（批量操作失败时的备用方案）
+   */
+  private async processBatchIndividually(
+    batch: any[],
+    stats: any,
+    errors: any[]
+  ): Promise<void> {
+    for (const transformedProduct of batch) {
+      try {
+        const existingProduct = await Product.findOne({
+          productId: transformedProduct.productId
+        });
+
+        if (existingProduct) {
+          const changes = dataTransformService.detectChanges(
+            transformedProduct,
+            existingProduct.toObject()
+          );
+
+          if (changes.hasChanges) {
+            await Product.findOneAndUpdate(
+              { productId: transformedProduct.productId },
+              {
+                ...transformedProduct,
+                updatedAt: new Date(),
+                version: existingProduct.version + 1
+              },
+              { new: true }
+            );
+            this.logger.debug('产品更新成功', {
+              productId: transformedProduct.productId
+            });
+          }
+        } else {
+          await Product.create(transformedProduct);
+          this.logger.debug('产品创建成功', {
+            productId: transformedProduct.productId
+          });
+        }
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : '未知错误';
+        errors.push({
+          type: 'database',
+          message: `产品个别处理失败: ${errorMsg}`,
+          productId: transformedProduct.productId,
+          timestamp: new Date()
+        });
+        this.logger.error('产品个别处理失败', error, {
+          productId: transformedProduct.productId
+        });
+      }
+    }
+  }
+
+  /**
+   * 将数组分割成指定大小的批次
+   */
+  private chunkArray<T>(array: T[], chunkSize: number): T[][] {
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
   }
 
   /**

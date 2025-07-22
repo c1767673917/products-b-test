@@ -76,7 +76,7 @@ export async function searchRoutes(fastify: FastifyInstance) {
       if (highlight) {
         processedProducts = products.map(product => ({
           ...product,
-          highlightedName: highlightText(product.name, q),
+          highlightedName: highlightText(product.name?.display || '', q),
           highlightedManufacturer: product.manufacturer ? highlightText(product.manufacturer, q) : undefined
         }));
       }

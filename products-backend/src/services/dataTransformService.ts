@@ -99,39 +99,66 @@ export class DataTransformService {
     try {
       this.logger.debug('开始转换飞书记录', { recordId: feishuRecord.record_id });
 
-      // 设置记录ID作为主键
+      // 设置飞书记录ID作为主键
       transformedData.productId = feishuRecord.record_id;
+
+      // 设置飞书记录ID作为内部引用
+      transformedData.feishuRecordId = feishuRecord.record_id;
 
       // 遍历所有映射配置进行转换
       for (const [key, mapping] of Object.entries(FEISHU_FIELD_MAPPING)) {
         try {
           const fieldValue = this.extractFieldValue(feishuRecord.fields, mapping);
           let transformedValue: any = null;
-          
+
           if (fieldValue !== null && fieldValue !== undefined) {
-            // 应用转换函数
-            transformedValue = fieldValue;
-            if (mapping.transform) {
-              transformedValue = mapping.transform(fieldValue);
+            // 应用转换函数（容错处理）
+            try {
+              transformedValue = fieldValue;
+              if (mapping.transform) {
+                transformedValue = mapping.transform(fieldValue);
+              }
+
+              // 设置到目标对象
+              setNestedValue(transformedData, mapping.localFieldPath, transformedValue);
+
+              this.logger.debug('字段转换成功', {
+                field: key,
+                feishuFieldId: mapping.feishuFieldId,
+                localPath: mapping.localFieldPath,
+                originalValue: fieldValue,
+                transformedValue
+              });
+            } catch (transformError) {
+              // 转换失败时使用默认值
+              transformedValue = mapping.defaultValue !== undefined ? mapping.defaultValue : null;
+              if (transformedValue !== null) {
+                setNestedValue(transformedData, mapping.localFieldPath, transformedValue);
+              }
+
+              warnings.push({
+                field: mapping.localFieldPath,
+                message: `字段转换失败，使用默认值: ${transformError instanceof Error ? transformError.message : '未知错误'}`,
+                value: fieldValue,
+                feishuFieldId: mapping.feishuFieldId
+              });
             }
-
-            // 设置到目标对象
-            setNestedValue(transformedData, mapping.localFieldPath, transformedValue);
-
-            this.logger.debug('字段转换成功', {
-              field: key,
-              feishuFieldId: mapping.feishuFieldId,
-              localPath: mapping.localFieldPath,
-              originalValue: fieldValue,
-              transformedValue
-            });
-          } else if (mapping.required) {
-            // 必填字段缺失
-            errors.push({
-              field: mapping.localFieldPath,
-              message: `必填字段缺失: ${mapping.feishuFieldName}`,
-              feishuFieldId: mapping.feishuFieldId
-            });
+          } else if (mapping.required && !mapping.defaultValue) {
+            // 只有核心必填字段且无默认值时才报错
+            if (['name'].includes(key)) { // 只有name是真正必填的
+              errors.push({
+                field: mapping.localFieldPath,
+                message: `核心字段缺失: ${mapping.feishuFieldName}`,
+                feishuFieldId: mapping.feishuFieldId
+              });
+            } else {
+              // 其他字段降级为警告
+              warnings.push({
+                field: mapping.localFieldPath,
+                message: `字段缺失: ${mapping.feishuFieldName}`,
+                feishuFieldId: mapping.feishuFieldId
+              });
+            }
           } else if (mapping.defaultValue !== undefined) {
             // 使用默认值
             transformedValue = mapping.defaultValue;
@@ -143,12 +170,23 @@ export class DataTransformService {
             });
           }
 
-          // 字段验证
+          // 字段验证（宽松处理）
           if (mapping.validate && transformedValue !== null && transformedValue !== undefined) {
-            if (!mapping.validate(transformedValue)) {
-              errors.push({
+            try {
+              if (!mapping.validate(transformedValue)) {
+                // 验证失败时降级为警告，不阻止保存
+                warnings.push({
+                  field: mapping.localFieldPath,
+                  message: `字段值验证失败: ${mapping.feishuFieldName}`,
+                  value: transformedValue,
+                  feishuFieldId: mapping.feishuFieldId
+                });
+              }
+            } catch (validateError) {
+              // 验证函数出错时也只记录警告
+              warnings.push({
                 field: mapping.localFieldPath,
-                message: `字段值验证失败: ${mapping.feishuFieldName}`,
+                message: `字段验证出错: ${validateError instanceof Error ? validateError.message : '未知错误'}`,
                 value: transformedValue,
                 feishuFieldId: mapping.feishuFieldId
               });
@@ -175,14 +213,35 @@ export class DataTransformService {
         transformedData.price.discountRate = Math.max(0, Math.min(1, discountRate));
       }
 
-      // 验证必填字段
+      // 后处理：设置显示字段的值（优先英文，如果没有则使用中文）
+      this.setDisplayFields(transformedData);
+
+      // 验证核心必填字段（宽松处理）
+      const coreFields = ['name.display']; // productId由飞书记录ID自动设置
+      const missingCoreFields = coreFields.filter(field => {
+        const value = this.getNestedValue(transformedData, field);
+        return !value || (typeof value === 'string' && value.trim() === '');
+      });
+
+      if (missingCoreFields.length > 0) {
+        missingCoreFields.forEach(field => {
+          errors.push({
+            field,
+            message: `核心字段缺失: ${field}`
+          });
+        });
+      }
+
+      // 其他字段验证降级为警告
       const validation = validateRequiredFields(transformedData);
       if (!validation.isValid) {
         validation.missingFields.forEach(field => {
-          errors.push({
-            field,
-            message: `必填字段缺失: ${field}`
-          });
+          if (!coreFields.includes(field)) {
+            warnings.push({
+              field,
+              message: `建议字段缺失: ${field}`
+            });
+          }
         });
       }
 
@@ -424,11 +483,27 @@ export class DataTransformService {
       }
 
       // 检查字符串字段长度
-      if (productData.name && productData.name.length > 200) {
+      if (productData.name?.display && productData.name.display.length > 200) {
         warnings.push({
-          field: 'name',
+          field: 'name.display',
           message: '产品名称过长（超过200字符）',
-          value: productData.name
+          value: productData.name.display
+        });
+      }
+
+      if (productData.name?.english && productData.name.english.length > 200) {
+        warnings.push({
+          field: 'name.english',
+          message: '英文产品名称过长（超过200字符）',
+          value: productData.name.english
+        });
+      }
+
+      if (productData.name?.chinese && productData.name.chinese.length > 200) {
+        warnings.push({
+          field: 'name.chinese',
+          message: '中文产品名称过长（超过200字符）',
+          value: productData.name.chinese
         });
       }
 
@@ -486,18 +561,121 @@ export class DataTransformService {
   }
 
   /**
-   * 从飞书字段中提取值（支持fallback）
+   * 从飞书字段中提取值（简化版本，直接提取对应字段的值）
    */
   private extractFieldValue(fields: { [key: string]: any }, mapping: FieldMapping): any {
-    // 优先使用主字段
-    let value = fields[mapping.feishuFieldId];
+    // 直接使用字段名称提取值（飞书API返回的是字段名作为键）
+    const value = fields[mapping.feishuFieldName];
 
-    // 如果主字段没有值且有fallback，使用fallback字段
-    if ((value === null || value === undefined || value === '') && mapping.fallback) {
-      value = fields[mapping.fallback];
-    }
+    this.logger.debug('提取字段值', {
+      fieldName: mapping.feishuFieldName,
+      fieldId: mapping.feishuFieldId,
+      localPath: mapping.localFieldPath,
+      value: value
+    });
 
     return value;
+  }
+
+  /**
+   * 设置显示字段的值（优先英文，如果没有则使用中文）
+   */
+  private setDisplayFields(transformedData: any): void {
+    // 设置产品名称显示值
+    if (transformedData.name) {
+      const englishName = transformedData.name.english;
+      const chineseName = transformedData.name.chinese;
+      transformedData.name.display = englishName || chineseName || '未命名产品';
+    }
+
+    // 设置分类显示值
+    if (transformedData.category) {
+      if (transformedData.category.primary) {
+        const englishPrimary = transformedData.category.primary.english;
+        const chinesePrimary = transformedData.category.primary.chinese;
+        transformedData.category.primary.display = englishPrimary || chinesePrimary || '未分类';
+      }
+
+      if (transformedData.category.secondary) {
+        const englishSecondary = transformedData.category.secondary.english;
+        const chineseSecondary = transformedData.category.secondary.chinese;
+        transformedData.category.secondary.display = englishSecondary || chineseSecondary || '';
+      }
+    }
+
+    // 设置平台显示值
+    if (transformedData.platform) {
+      const englishPlatform = transformedData.platform.english;
+      const chinesePlatform = transformedData.platform.chinese;
+      transformedData.platform.display = englishPlatform || chinesePlatform || '未知平台';
+    }
+
+    // 设置口味显示值
+    if (transformedData.flavor) {
+      const englishFlavor = transformedData.flavor.english;
+      const chineseFlavor = transformedData.flavor.chinese;
+      transformedData.flavor.display = englishFlavor || chineseFlavor || '';
+    }
+
+    this.logger.debug('设置显示字段完成', {
+      nameDisplay: transformedData.name?.display,
+      categoryPrimaryDisplay: transformedData.category?.primary?.display,
+      categorySecondaryDisplay: transformedData.category?.secondary?.display,
+      platformDisplay: transformedData.platform?.display,
+      flavorDisplay: transformedData.flavor?.display
+    });
+  }
+
+  /**
+   * 根据字段ID获取字段名称
+   * 基于feishu_data_analysis.json中的字段信息
+   */
+  private getFieldNameById(fieldId: string): string | null {
+    // 字段ID到字段名的映射表
+    const fieldIdToNameMapping: { [key: string]: string } = {
+      // 中文字段
+      'fld98c3F01': '品名',
+      'fldGtFPP20': '品类一级',
+      'fldrfy01PS': '品类二级',
+      'fldlTALTDP': '采集平台',
+      'fld6dbQGAn': '口味',
+
+      // 英文字段
+      'fldJZWSqLX': 'Product Name',
+      'fldoD52TeP': 'Category Level 1',
+      'fldxk3XteX': 'Category Level 2',
+      'fldkuD0wjJ': 'Platform(平台)',
+      'fldhkuLoKJ': 'Flavor(口味)',
+
+      // 其他常用字段
+      'fldLtVHZ5b': '正常售价',
+      'fldGvzGGFG': '优惠到手价',
+      'fldlyJcXRn': '采集时间',
+      'fldsbenBWp': 'rx编号',
+      'fldZW4Q5I2': '编号',
+      'fldRW7Bszz': '序号',
+      'fldkZNReiw': 'Origin (Country)',
+      'fldpRMAAXr': 'Origin (Province)',
+      'fldisZBrD1': 'Origin (City)',
+      'fldmUt5qWm': 'Specs(规格)',
+      'fldEFufAf2': 'Manufacturer(生产商)',
+      'fldUZibVDt': '商品链接',
+      'fld7HdKvwS': 'CTN(箱规)',
+      'fldwWN61Y0': '备注',
+      'fldcfIZwSn': 'Gift(赠品)',
+      'fldGrxT34A': 'Gift mechanism(赠品机制)',
+      'fldx4OdUsm': 'Client(委托方)',
+      'fldFeNTpIL': 'bar code(条码)',
+
+      // 图片字段
+      'fldRZvGjSK': 'Front image(正)',
+      'fldhXyI07b': 'Back image(背)',
+      'fldGLGCv2m': 'Tag photo(标签)',
+      'fldkUCi2Vh': 'Outer packaging image(外包装)',
+      'fldC0kw9Hh': 'Gift pictures(赠品图片)'
+    };
+
+    return fieldIdToNameMapping[fieldId] || null;
   }
 
   /**

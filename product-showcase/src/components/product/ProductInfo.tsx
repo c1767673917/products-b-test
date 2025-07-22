@@ -117,15 +117,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       title: '分类信息',
       icon: <CubeIcon className="h-5 w-5" />,
       items: [
-        { label: '一级品类', value: product.category.primary },
-        { label: '二级品类', value: product.category.secondary },
+        { label: '一级品类', value: product.category.primary.display },
+        { label: '二级品类', value: product.category.secondary?.display },
       ]
     },
     {
       title: '销售信息',
       icon: <BuildingStorefrontIcon className="h-5 w-5" />,
       items: [
-        { label: '采集平台', value: product.platform },
+        { label: '采集平台', value: product.platform.display },
         { label: '生产商', value: product.manufacturer },
         { label: '商品链接', value: product.link, type: 'link' },
       ]

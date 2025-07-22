@@ -35,7 +35,15 @@ app.register(rateLimit, {
 // 数据库连接
 async function connectDatabase() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await mongoose.connect(process.env.MONGODB_URI!, {
+      // 禁用事务相关功能
+      retryWrites: false,
+      w: 1,
+      // 其他连接选项
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
     app.log.info('MongoDB 连接成功');
   } catch (error) {
     app.log.error('MongoDB 连接失败:', error);

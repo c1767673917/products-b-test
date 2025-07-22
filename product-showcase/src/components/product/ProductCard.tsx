@@ -29,11 +29,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // 获取当前显示的图片
   const getCurrentImage = () => {
+    // 添加空值检查，防止 product.images 为 undefined 或 null
+    if (!product.images || typeof product.images !== 'object') {
+      return '/placeholder-image.svg';
+    }
     return product.images[currentImageType] || product.images.front || '/placeholder-image.svg';
   };
 
   // 获取可用的图片类型
   const getAvailableImages = (): ImageType[] => {
+    // 添加空值检查，防止 product.images 为 undefined 或 null
+    if (!product.images || typeof product.images !== 'object') {
+      return [];
+    }
     return (Object.keys(product.images) as ImageType[]).filter(
       key => product.images[key]
     );
@@ -106,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
             <LazyImage
               src={getCurrentImage()}
-              alt={product.name}
+              alt={product.name.display}
               className="w-full h-full object-cover rounded-md"
             />
             {discountRate > 0 && (
@@ -125,15 +133,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1 line-clamp-2 leading-tight">
-                  {product.name}
+                  {product.name.display}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {product.category.primary}
+                    {product.category.primary.display}
                   </span>
                   {product.category.secondary && (
                     <span className="text-xs text-gray-500 hidden sm:inline">
-                      {product.category.secondary}
+                      {product.category.secondary.display}
                     </span>
                   )}
                 </div>
@@ -141,7 +149,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {product.flavor && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
-                      {product.flavor}
+                      {product.flavor.display}
                     </span>
                   )}
                   {product.specification && (
@@ -167,7 +175,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   )}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {product.origin.province} · {product.platform}
+                  {product.origin.province} · {product.platform.display}
                 </div>
               </div>
 
@@ -242,7 +250,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="relative aspect-square overflow-hidden">
         <LazyImage
           src={getCurrentImage()}
-          alt={product.name}
+          alt={product.name.display}
           className={cn(
             "w-full h-full object-cover transition-transform duration-200",
             preferences.reduceMotion ? "" : "group-hover:scale-105"
@@ -309,7 +317,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       {/* 信息区域 */}
       <div className="p-3 sm:p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm sm:text-base leading-tight flex-shrink-0">
-          {product.name}
+          {product.name.display}
         </h3>
 
         <div className="flex items-center justify-between mb-2 flex-shrink-0">
@@ -333,7 +341,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="flex items-center justify-between mb-2 flex-shrink-0">
           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate max-w-full">
-            {product.category.primary}
+            {product.category.primary.display}
           </span>
           <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
             {product.origin.province}
@@ -344,7 +352,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className="flex flex-wrap items-center gap-2 mb-2 flex-shrink-0">
           {product.flavor && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
-              {product.flavor}
+              {product.flavor.display}
             </span>
           )}
           {product.specification && (

@@ -48,16 +48,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     const categoryMap = new Map<string, { count: number; subcategories: Map<string, number> }>();
 
     products.forEach(product => {
-      const primary = product.category.primary;
-      const secondary = product.category.secondary;
-      
+      const primary = product.category.primary.display;
+      const secondary = product.category.secondary?.display;
+
       if (!categoryMap.has(primary)) {
         categoryMap.set(primary, { count: 0, subcategories: new Map() });
       }
-      
+
       const categoryInfo = categoryMap.get(primary)!;
       categoryInfo.count++;
-      
+
       if (secondary) {
         const currentCount = categoryInfo.subcategories.get(secondary) || 0;
         categoryInfo.subcategories.set(secondary, currentCount + 1);

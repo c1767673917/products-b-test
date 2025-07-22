@@ -58,7 +58,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       name: '同平台推荐',
       description: '来自相同平台的产品',
       getScore: (product, current) => {
-        return product.platform === current.platform ? 20 : 0;
+        return product.platform.display === current.platform.display ? 20 : 0;
       }
     },
     {

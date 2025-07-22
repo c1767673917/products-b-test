@@ -66,8 +66,11 @@ export function getPlaceholderImage(imageType: string): string {
 
 // 处理产品图片路径
 export function processProductImages(product: Product): Product {
-  const processedImages = { ...product.images };
-  
+  // 确保 images 对象存在，如果不存在则创建一个空对象
+  const processedImages = product.images && typeof product.images === 'object'
+    ? { ...product.images }
+    : {};
+
   // 检查并修复图片路径
   Object.entries(processedImages).forEach(([type, path]) => {
     if (path) {
@@ -129,13 +132,18 @@ export async function preloadImages(imagePaths: string[]): Promise<void> {
 // 获取产品的所有图片路径
 export function getProductImagePaths(product: Product): string[] {
   const paths: string[] = [];
-  
+
+  // 添加空值检查，防止 product.images 为 undefined 或 null
+  if (!product.images || typeof product.images !== 'object') {
+    return paths;
+  }
+
   Object.values(product.images).forEach(path => {
     if (path) {
       paths.push(path);
     }
   });
-  
+
   return paths;
 }
 

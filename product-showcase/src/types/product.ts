@@ -3,42 +3,62 @@
 export interface Product {
   productId: string;
   recordId: string;
-  name: string;
+  name: {
+    english?: string;
+    chinese?: string;
+    display: string; // 优先显示英文，如果没有则显示中文
+  };
   sequence: string;
-  
+
   // 分类信息
   category: {
-    primary: string;
-    secondary: string;
+    primary: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    secondary: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
   };
-  
+
   // 价格信息
   price: {
     normal: number;
     discount?: number;
     discountRate?: number;
   };
-  
-  // 图片信息
-  images: {
+
+  // 图片信息 - 整个 images 对象也可能为空
+  images?: {
     front?: string;
     back?: string;
     label?: string;
     package?: string;
     gift?: string;
   };
-  
+
   // 产地信息
   origin: {
     country: string;
     province: string;
     city: string;
   };
-  
+
   // 其他信息
-  platform: string;
+  platform: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   specification: string;
-  flavor?: string;
+  flavor?: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   manufacturer?: string;
   collectTime: number;
   link?: string;
