@@ -89,28 +89,19 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       items: [
         { label: '正常售价', value: product.price.normal, type: 'price' },
         { label: '优惠价格', value: product.price.discount, type: 'price' },
-        { 
-          label: '折扣率', 
-          value: product.price.discountRate 
-            ? `${product.price.discountRate.toFixed(1)}%` 
-            : undefined 
+        {
+          label: '折扣率',
+          value: product.price.discountRate
+            ? `${product.price.discountRate.toFixed(1)}%`
+            : undefined
         },
-        { 
-          label: '节省金额', 
-          value: product.price.discount 
-            ? product.price.normal - product.price.discount 
-            : undefined, 
-          type: 'price' 
+        {
+          label: '节省金额',
+          value: product.price.discount
+            ? product.price.normal - product.price.discount
+            : undefined,
+          type: 'price'
         },
-      ]
-    },
-    {
-      title: '产地信息',
-      icon: <MapPinIcon className="h-5 w-5" />,
-      items: [
-        { label: '国家', value: product.origin.country },
-        { label: '省份', value: product.origin.province },
-        { label: '城市', value: product.origin.city },
       ]
     },
     {
@@ -128,6 +119,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
         { label: '采集平台', value: product.platform.display },
         { label: '生产商', value: product.manufacturer },
         { label: '商品链接', value: product.link, type: 'link' },
+      ]
+    },
+    {
+      title: '产地信息',
+      icon: <MapPinIcon className="h-5 w-5" />,
+      items: [
+        { label: '国家', value: product.origin.country },
+        { label: '省份', value: product.origin.province },
+        { label: '城市', value: product.origin.city },
       ]
     }
   ];

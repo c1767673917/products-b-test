@@ -14,22 +14,19 @@ export const useProductI18n = () => {
     if (typeof field === 'string') {
       return field;
     }
-    
+
     if (!field) {
       return fallback || t('common.unknown');
     }
 
-    // Use existing display logic if available (maintains backward compatibility)
-    if (field.display) {
-      return field.display;
-    }
-
-    // Apply language preference
+    // Apply language preference first (prioritize user's language choice)
     if (currentLanguage === 'en') {
-      return field.english || field.chinese || fallback || t('common.unknown');
+      // For English: prefer English, fallback to Chinese, then display, then fallback
+      return field.english || field.chinese || field.display || fallback || t('common.unknown');
+    } else {
+      // For Chinese: prefer Chinese, fallback to English, then display, then fallback
+      return field.chinese || field.english || field.display || fallback || t('common.unknown');
     }
-    
-    return field.chinese || field.english || fallback || t('common.unknown');
   };
 
   // Get localized product name

@@ -2,12 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useTranslation } from 'react-i18next';
 import { useProductI18n } from '../hooks/useProductI18n';
-import { useCurrentLanguage, useLanguageActions } from '../hooks/useLanguageHooks';
+import { useCurrentLanguage, useLanguageActions } from '../stores/languageStore';
 import type { Product } from '../types/product';
 
 // Mock dependencies
 vi.mock('react-i18next');
-vi.mock('../hooks/useLanguageHooks');
+vi.mock('../stores/languageStore');
 
 const mockT = vi.fn();
 const mockUseTranslation = useTranslation as vi.MockedFunction<typeof useTranslation>;
@@ -55,13 +55,13 @@ describe('useProductI18n', () => {
       mockUseCurrentLanguage.mockReturnValue('zh');
     });
 
-    it('should return Chinese name when available', () => {
+    it('should return Chinese name when available (prioritizing language over display)', () => {
       const { result } = renderHook(() => useProductI18n());
-      
+
       const mockProduct: Product = {
         productId: 'test-1',
-        name: { chinese: '测试产品', english: 'Test Product', display: '测试产品' },
-        category: { primary: { chinese: '食品', english: 'Food', display: '食品' } },
+        name: { chinese: '测试产品', english: 'Test Product', display: 'Test Product' },
+        category: { primary: { chinese: '食品', english: 'Food', display: 'Food' } },
       } as Product;
 
       const name = result.current.getProductName(mockProduct);
@@ -115,13 +115,13 @@ describe('useProductI18n', () => {
       mockUseCurrentLanguage.mockReturnValue('en');
     });
 
-    it('should return English name when available', () => {
+    it('should return English name when available (prioritizing language over display)', () => {
       const { result } = renderHook(() => useProductI18n());
-      
+
       const mockProduct: Product = {
         productId: 'test-1',
-        name: { chinese: '测试产品', english: 'Test Product', display: 'Test Product' },
-        category: { primary: { chinese: '食品', english: 'Food', display: 'Food' } },
+        name: { chinese: '测试产品', english: 'Test Product', display: '测试产品' },
+        category: { primary: { chinese: '食品', english: 'Food', display: '食品' } },
       } as Product;
 
       const name = result.current.getProductName(mockProduct);
@@ -130,7 +130,7 @@ describe('useProductI18n', () => {
 
     it('should fallback to Chinese name when English is not available', () => {
       const { result } = renderHook(() => useProductI18n());
-      
+
       const mockProduct: Product = {
         productId: 'test-1',
         name: { chinese: '测试产品', display: '测试产品' },
@@ -139,6 +139,21 @@ describe('useProductI18n', () => {
 
       const name = result.current.getProductName(mockProduct);
       expect(name).toBe('测试产品');
+    });
+
+    it('should prioritize language preference over display field', () => {
+      const { result } = renderHook(() => useProductI18n());
+
+      // Test case where display field has English but user prefers English
+      const mockProduct: Product = {
+        productId: 'test-1',
+        name: { chinese: '测试产品', english: 'Test Product', display: '测试产品' },
+        category: { primary: { chinese: '食品', english: 'Food', display: '食品' } },
+      } as Product;
+
+      const name = result.current.getProductName(mockProduct);
+      // Should return English name because current language is 'en', not the display field
+      expect(name).toBe('Test Product');
     });
   });
 

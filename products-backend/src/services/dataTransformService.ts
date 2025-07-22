@@ -581,80 +581,80 @@ export class DataTransformService {
   }
 
   /**
-   * 设置显示字段的值（优先英文，如果没有则使用中文）
+   * 设置显示字段的值（优先中文，如果没有则使用英文）
    */
   private setDisplayFields(transformedData: any): void {
-    // 设置产品名称显示值
+    // 设置产品名称显示值 - 优先中文
     if (transformedData.name) {
       const englishName = transformedData.name.english;
       const chineseName = transformedData.name.chinese;
-      transformedData.name.display = englishName || chineseName || '未命名产品';
+      transformedData.name.display = chineseName || englishName || '未命名产品';
     }
 
-    // 设置分类显示值
+    // 设置分类显示值 - 优先中文
     if (transformedData.category) {
       if (transformedData.category.primary) {
         const englishPrimary = transformedData.category.primary.english;
         const chinesePrimary = transformedData.category.primary.chinese;
-        transformedData.category.primary.display = englishPrimary || chinesePrimary || '未分类';
+        transformedData.category.primary.display = chinesePrimary || englishPrimary || '未分类';
       }
 
       if (transformedData.category.secondary) {
         const englishSecondary = transformedData.category.secondary.english;
         const chineseSecondary = transformedData.category.secondary.chinese;
-        transformedData.category.secondary.display = englishSecondary || chineseSecondary || '';
+        transformedData.category.secondary.display = chineseSecondary || englishSecondary || '';
       }
     }
 
-    // 设置平台显示值
+    // 设置平台显示值 - 优先中文
     if (transformedData.platform) {
       const englishPlatform = transformedData.platform.english;
       const chinesePlatform = transformedData.platform.chinese;
-      transformedData.platform.display = englishPlatform || chinesePlatform || '未知平台';
+      transformedData.platform.display = chinesePlatform || englishPlatform || '未知平台';
     }
 
-    // 设置口味显示值
+    // 设置口味显示值 - 优先中文
     if (transformedData.flavor) {
       const englishFlavor = transformedData.flavor.english;
       const chineseFlavor = transformedData.flavor.chinese;
-      transformedData.flavor.display = englishFlavor || chineseFlavor || '';
+      transformedData.flavor.display = chineseFlavor || englishFlavor || '';
     }
 
-    // 设置规格显示值
+    // 设置规格显示值 - 优先中文
     if (transformedData.specification) {
       const englishSpec = transformedData.specification.english;
       const chineseSpec = transformedData.specification.chinese;
-      transformedData.specification.display = englishSpec || chineseSpec || '';
+      transformedData.specification.display = chineseSpec || englishSpec || '';
     }
 
-    // 设置生产商显示值
+    // 设置生产商显示值 - 优先中文
     if (transformedData.manufacturer) {
       const englishManufacturer = transformedData.manufacturer.english;
       const chineseManufacturer = transformedData.manufacturer.chinese;
-      transformedData.manufacturer.display = englishManufacturer || chineseManufacturer || '';
+      transformedData.manufacturer.display = chineseManufacturer || englishManufacturer || '';
     }
 
-    // 设置产地显示值
+    // 设置产地显示值 - 优先中文
     if (transformedData.origin) {
       // 设置国家显示值
       if (transformedData.origin.country) {
         const englishCountry = transformedData.origin.country.english;
         const chineseCountry = transformedData.origin.country.chinese;
-        transformedData.origin.country.display = englishCountry || chineseCountry || '中国';
+        transformedData.origin.country.display = chineseCountry || englishCountry || '中国';
       }
 
       // 设置省份显示值
       if (transformedData.origin.province) {
         const englishProvince = transformedData.origin.province.english;
         const chineseProvince = transformedData.origin.province.chinese;
-        transformedData.origin.province.display = englishProvince || chineseProvince || '';
+        transformedData.origin.province.display = chineseProvince || englishProvince || '';
       }
 
       // 设置城市显示值
       if (transformedData.origin.city) {
         const englishCity = transformedData.origin.city.english;
         const chineseCity = transformedData.origin.city.chinese;
-        transformedData.origin.city.display = englishCity || chineseCity || '';
+        transformedData.origin.city.display = chineseCity || englishCity || '';
       }
     }
 

@@ -187,8 +187,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-gray-500">
-                  {getProductOrigin(product)} · {getProductPlatform(product)}
+                <div className="text-xs text-gray-500 mt-1">
+                  {getProductPlatform(product)}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {getProductOrigin(product)}
                 </div>
               </div>
 
@@ -356,9 +359,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate max-w-full">
             {getProductCategory(product, 'primary')}
           </span>
-          <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
-            {getProductOrigin(product)}
-          </span>
         </div>
 
         {/* 口味和规格信息 */}
@@ -373,6 +373,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
               {product.specification}
             </span>
           )}
+        </div>
+
+        {/* 产地信息 */}
+        <div className="mt-auto pt-2 text-xs text-gray-500 flex-shrink-0">
+          {getProductOrigin(product)}
         </div>
       </div>
     </motion.div>

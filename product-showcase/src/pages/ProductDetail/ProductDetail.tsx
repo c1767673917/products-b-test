@@ -72,18 +72,18 @@ const ProductDetail: React.FC = () => {
 
     // 如果React Query返回了产品数据，使用它
     if (product.data) {
-      document.title = `${product.data.name} - 产品详情`;
+      document.title = `${getProductName(product.data)} - 产品详情`;
       preloadImages(product.data);
-    } 
+    }
     // 否则尝试从本地store查找（向后兼容）
     else if (storeProducts.length > 0) {
       const foundProduct = storeProducts.find(p => p.productId === id);
       if (foundProduct) {
-        document.title = `${foundProduct.name} - 产品详情`;
+        document.title = `${getProductName(foundProduct)} - 产品详情`;
         preloadImages(foundProduct);
       }
     }
-  }, [id, product.data, storeProducts, isError, error, navigate, showError]);
+  }, [id, product.data, storeProducts, isError, error, navigate, showError, getProductName]);
 
   // 图片预加载函数
   const preloadImages = (product: Product) => {
