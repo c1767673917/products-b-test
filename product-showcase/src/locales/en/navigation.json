@@ -46,5 +46,10 @@
     "popular": "Popular Searches",
     "clear": "Clear search",
     "advanced": "Advanced Search"
+  },
+  "navigation": {
+    "list": "Product List",
+    "sync": "Data Sync",
+    "demo": "API Demo"
   }
 }

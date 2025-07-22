@@ -1,7 +1,7 @@
+import React from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '../i18n';
-import type { Product } from '../types/product';
 
 // Supported languages
 export type SupportedLanguage = 'en' | 'zh';
@@ -41,10 +41,13 @@ interface LanguageState {
   // Current language
   currentLanguage: SupportedLanguage;
   isLanguageLoading: boolean;
-  
+
   // Supported languages
   supportedLanguages: LanguageInfo[];
-  
+
+  // 防抖相关
+  lastChangeTime: number;
+
   // Actions
   changeLanguage: (language: SupportedLanguage) => Promise<void>;
   getCurrentLanguageInfo: () => LanguageInfo;
@@ -89,36 +92,52 @@ export const useLanguageStore = create<LanguageState>()(
       currentLanguage: 'zh', // Default to Chinese
       isLanguageLoading: false,
       supportedLanguages: SUPPORTED_LANGUAGES,
+      lastChangeTime: 0,
 
-      // Change language
+      // Change language - 使用稳定的引用和防抖
       changeLanguage: async (language: SupportedLanguage) => {
-        const currentLang = get().currentLanguage;
-        if (currentLang === language) return;
+        const state = get();
+        const now = Date.now();
 
-        set({ isLanguageLoading: true });
-        
+        // 防抖：如果距离上次切换不到500ms，则忽略
+        if (now - state.lastChangeTime < 500) {
+          return;
+        }
+
+        if (state.currentLanguage === language || state.isLanguageLoading) return;
+
+        set({
+          isLanguageLoading: true,
+          lastChangeTime: now
+        });
+
         try {
           // Change i18next language
           await i18n.changeLanguage(language);
-          
-          // Update store state  
-          set({ 
+
+          // Update store state
+          set({
             currentLanguage: language,
-            isLanguageLoading: false 
+            isLanguageLoading: false
           });
 
           // Update document lang attribute
           document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en-US';
-          
+
           // Update document title if needed
           const titleKey = 'navigation:titles.home';
           if (i18n.exists(titleKey)) {
             document.title = i18n.t(titleKey);
           }
-          
+
         } catch (error) {
           console.error('Failed to change language:', error);
-          set({ isLanguageLoading: false });
+          set({
+            isLanguageLoading: false,
+            // 保持当前语言不变
+            currentLanguage: state.currentLanguage
+          });
+          throw error; // 重新抛出错误以便上层处理
         }
       },
 
@@ -160,15 +179,33 @@ export const useLanguageStore = create<LanguageState>()(
 
 // Selector hooks for convenience
 export const useCurrentLanguage = () => useLanguageStore(state => state.currentLanguage);
-export const useLanguageActions = () => useLanguageStore(state => ({
-  changeLanguage: state.changeLanguage,
-  getDisplayValue: state.getDisplayValue,
-  getProductDisplayValue: state.getProductDisplayValue,
-  getCurrentLanguageInfo: state.getCurrentLanguageInfo
-}));
-export const useLanguageInfo = () => useLanguageStore(state => ({
-  currentLanguage: state.currentLanguage,
-  supportedLanguages: state.supportedLanguages,
-  isLanguageLoading: state.isLanguageLoading,
-  languageInfo: state.getCurrentLanguageInfo()
-}));
+export const useLanguageActions = () => {
+  const changeLanguage = useLanguageStore(state => state.changeLanguage);
+  const getDisplayValue = useLanguageStore(state => state.getDisplayValue);
+  const getProductDisplayValue = useLanguageStore(state => state.getProductDisplayValue);
+  const getCurrentLanguageInfo = useLanguageStore(state => state.getCurrentLanguageInfo);
+
+  return React.useMemo(() => ({
+    changeLanguage,
+    getDisplayValue,
+    getProductDisplayValue,
+    getCurrentLanguageInfo
+  }), [changeLanguage, getDisplayValue, getProductDisplayValue, getCurrentLanguageInfo]);
+};
+export const useLanguageInfo = () => {
+  const currentLanguage = useLanguageStore(state => state.currentLanguage);
+  const supportedLanguages = useLanguageStore(state => state.supportedLanguages);
+  const isLanguageLoading = useLanguageStore(state => state.isLanguageLoading);
+
+  // Use React.useMemo to cache the result and prevent infinite loops
+  return React.useMemo(() => {
+    const languageInfo = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
+
+    return {
+      currentLanguage,
+      supportedLanguages,
+      isLanguageLoading,
+      languageInfo
+    };
+  }, [currentLanguage, supportedLanguages, isLanguageLoading]);
+};

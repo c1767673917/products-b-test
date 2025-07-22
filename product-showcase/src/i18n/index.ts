@@ -59,6 +59,11 @@ export const resources = {
     navigation: {
       "titles": {
         "home": "Product Showcase"
+      },
+      "navigation": {
+        "list": "Product List",
+        "sync": "Data Sync",
+        "demo": "API Demo"
       }
     }
   },
@@ -117,6 +122,11 @@ export const resources = {
     navigation: {
       "titles": {
         "home": "产品展示系统"
+      },
+      "navigation": {
+        "list": "产品列表",
+        "sync": "数据同步",
+        "demo": "API 演示"
       }
     }
   }

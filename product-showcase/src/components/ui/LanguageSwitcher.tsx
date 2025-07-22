@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguageStore, useLanguageInfo, useLanguageActions, type SupportedLanguage } from '../../stores/languageStore';
+import { useLanguageInfo, useLanguageActions, type SupportedLanguage } from '../../stores/languageStore';
 import { cn } from '../../utils/cn';
 
 interface LanguageSwitcherProps {
@@ -22,15 +22,19 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
   
-  const { currentLanguage, supportedLanguages, isLanguageLoading, languageInfo } = useLanguageInfo();
+  const { currentLanguage, supportedLanguages, isLanguageLoading, languageInfo: currentLangInfo } = useLanguageInfo();
   const { changeLanguage } = useLanguageActions();
 
-  const handleLanguageChange = async (language: SupportedLanguage) => {
+  const handleLanguageChange = useCallback(async (language: SupportedLanguage) => {
     if (language === currentLanguage || isLanguageLoading) return;
     
-    setIsOpen(false);
-    await changeLanguage(language);
-  };
+    try {
+      setIsOpen(false);
+      await changeLanguage(language);
+    } catch (error) {
+      console.error('Language change failed:', error);
+    }
+  }, [currentLanguage, isLanguageLoading, changeLanguage]);
 
   // Size variants
   const sizeClasses = {
@@ -94,16 +98,17 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               isLanguageLoading && 'opacity-50 cursor-not-allowed'
             )}
           >
-            <span>{lang.flag}</span>
-            {showLabel && <span>{lang.nativeName}</span>}
+            <span className="text-lg">{lang.flag}</span>
+            {showLabel && (
+              <span className="font-medium">{lang.nativeName}</span>
+            )}
             {currentLanguage === lang.code && (
               <motion.div
-                layoutId="activeLanguageBackground"
-                className="absolute inset-0 bg-white rounded-md shadow-sm border"
+                layoutId="activeLanguageButton"
+                className="absolute inset-0 bg-white rounded-md shadow-sm -z-10"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
-                style={{ zIndex: -1 }}
               />
             )}
           </button>
@@ -129,10 +134,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         aria-expanded={isOpen}
       >
         <LanguageIcon className="w-5 h-5 text-gray-400" />
-        <span className="text-lg">{languageInfo.flag}</span>
+        <span className="text-lg">{currentLangInfo.flag}</span>
         {showLabel && (
           <span className="text-gray-700 font-medium">
-            {languageInfo.nativeName}
+            {currentLangInfo.nativeName}
           </span>
         )}
         <ChevronDownIcon 
@@ -198,8 +203,8 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 
       {/* Click outside to close */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
+        <div 
+          className="fixed inset-0 z-40" 
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
