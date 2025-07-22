@@ -1,7 +1,7 @@
 // API配置文件
 export const API_CONFIG = {
   // 后端API基础URL
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
   
   // 图片服务URL  
   imageBaseURL: import.meta.env.VITE_IMAGE_BASE_URL || 'http://152.89.168.61:9000',

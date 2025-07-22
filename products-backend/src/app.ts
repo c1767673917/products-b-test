@@ -29,8 +29,8 @@ app.register(rateLimit, {
   timeWindow: '1 minute'
 });
 
-// Phase 3: Register WebSocket support
-app.register(websocket);
+// Phase 3: Register WebSocket support (temporarily disabled for testing)
+// app.register(websocket);
 
 // 数据库连接
 async function connectDatabase() {
@@ -56,8 +56,8 @@ app.get('/health', async (request, reply) => {
 
 // API 路由前缀
 app.register(async function(fastify) {
-  // Phase 3: 注册WebSocket路由
-  await webSocketService.registerRoutes(fastify);
+  // Phase 3: 注册WebSocket路由 (temporarily disabled)
+  // await webSocketService.registerRoutes(fastify);
   
   // 注册产品相关路由
   const { productRoutes } = await import('./routes/products');

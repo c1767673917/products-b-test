@@ -198,7 +198,7 @@ export class SyncService {
       };
     } finally {
       if (session) {
-        await session.endSession();
+        await (session as mongoose.ClientSession).endSession();
       }
       this.currentSyncId = null;
       this.syncProgress = null;
@@ -1024,18 +1024,7 @@ export class SyncService {
         currentOperation: this.syncProgress.currentOperation,
         errors: [] // Should track actual errors
       } : null,
-      lastSync: currentStatus.lastSyncTime ? {
-        syncId: 'last-sync',
-        endTime: currentStatus.lastSyncTime,
-        status: 'completed',
-        duration: 0,
-        stats: {
-          created: 0,
-          updated: 0,
-          deleted: 0,
-          errors: 0
-        }
-      } : null
+      lastSync: null
     };
   }
 

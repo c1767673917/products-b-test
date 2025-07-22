@@ -44,7 +44,7 @@ class SyncScheduler {
     const incrementalTask = cron.schedule(this.config.incremental, async () => {
       try {
         console.log('执行定时增量同步...');
-        const result = await syncService.syncProducts({ mode: 'incremental' });
+        const result = await syncService.syncFromFeishu({ mode: 'incremental' });
         console.log('增量同步完成:', result.message);
         
         if (!result.success) {
@@ -62,7 +62,7 @@ class SyncScheduler {
     const fullTask = cron.schedule(this.config.full, async () => {
       try {
         console.log('执行定时全量同步...');
-        const result = await syncService.syncProducts({ mode: 'full' });
+        const result = await syncService.syncFromFeishu({ mode: 'full' });
         console.log('全量同步完成:', result.message);
         
         if (!result.success) {
@@ -80,7 +80,10 @@ class SyncScheduler {
     const imageTask = cron.schedule(this.config.images, async () => {
       try {
         console.log('执行定时图片同步...');
-        const result = await syncService.syncImages();
+        const result = await syncService.syncFromFeishu({ 
+          mode: 'selective',
+          options: { downloadImages: true }
+        });
         console.log('图片同步完成:', result.message);
         
         if (!result.success) {
@@ -204,11 +207,14 @@ class SyncScheduler {
       
       switch (type) {
         case 'full':
-          return await syncService.syncProducts({ mode: 'full' });
+          return await syncService.syncFromFeishu({ mode: 'full' });
         case 'incremental':
-          return await syncService.syncProducts({ mode: 'incremental' });
+          return await syncService.syncFromFeishu({ mode: 'incremental' });
         case 'images':
-          return await syncService.syncImages();
+          return await syncService.syncFromFeishu({ 
+            mode: 'selective',
+            options: { downloadImages: true }
+          });
         case 'validation':
           await this.performDataValidation();
           return { success: true, message: '数据验证完成' };

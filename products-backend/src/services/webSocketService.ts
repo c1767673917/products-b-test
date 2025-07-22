@@ -71,19 +71,19 @@ export class WebSocketService {
       const syncId = query.syncId || 'all';
       
       // 添加客户端连接
-      this.addClient(syncId, connection.socket);
+      this.addClient(syncId, connection as WebSocket);
       
-      connection.socket.on('close', () => {
-        this.removeClient(syncId, connection.socket);
+      (connection as WebSocket).on('close', () => {
+        this.removeClient(syncId, connection as WebSocket);
       });
 
-      connection.socket.on('error', (error) => {
+      (connection as WebSocket).on('error', (error: any) => {
         req.log.error('WebSocket连接错误:', error);
-        this.removeClient(syncId, connection.socket);
+        this.removeClient(syncId, connection as WebSocket);
       });
 
       // 发送连接确认消息
-      this.sendMessage(connection.socket, {
+      this.sendMessage(connection as WebSocket, {
         type: 'status_change',
         syncId,
         data: {

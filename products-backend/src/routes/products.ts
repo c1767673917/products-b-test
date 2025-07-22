@@ -151,7 +151,7 @@ export async function productRoutes(fastify: FastifyInstance) {
       
       // 查询相关产品（同分类的其他产品）
       const relatedProducts = await Product.find({
-        'category.primary': product.category.primary,
+        'category.primary': product.category?.primary,
         productId: { $ne: product.productId },
         status: 'active',
         isVisible: true

@@ -80,13 +80,16 @@ export class SyncController {
       // 构建同步选项
       const syncOptions: SyncOptions = {
         mode,
-        forceUpdate,
-        dryRun,
-        productIds
+        productIds,
+        options: {
+          dryRun,
+          downloadImages: true,
+          validateData: true
+        }
       };
 
       // 执行同步
-      const result = await syncService.syncProducts(syncOptions);
+      const result = await syncService.syncFromFeishu(syncOptions);
 
       // 返回结果
       return reply.send({
@@ -121,8 +124,16 @@ export class SyncController {
       const body = request.body as SyncImagesRequest;
       const { productIds, dryRun = false } = body;
 
-      // 执行图片同步
-      const result = await syncService.syncImages();
+      // 执行图片同步 (included in main sync process)
+      const result = await syncService.syncFromFeishu({
+        mode: 'selective',
+        productIds,
+        options: {
+          dryRun,
+          downloadImages: true,
+          validateData: false
+        }
+      });
 
       return reply.send({
         success: result.success,
@@ -186,14 +197,13 @@ export class SyncController {
       const query = request.query as { limit?: string };
       const limit = parseInt(query.limit || '20');
 
-      const status = syncService.getSyncStatus();
-      const history = status.syncHistory.slice(-limit);
+      const history = await syncService.getSyncHistory(limit);
 
       return reply.send({
         success: true,
         data: {
           history,
-          total: status.syncHistory.length,
+          total: history.length,
           limit,
           timestamp: new Date().toISOString()
         },
@@ -455,8 +465,7 @@ export class SyncController {
             message: '已有同步任务正在运行',
             details: {
               currentSyncId: currentStatus.currentSyncId,
-              currentSyncStatus: currentStatus.status,
-              estimatedCompletion: currentStatus.estimatedCompletion
+              currentSyncStatus: currentStatus.status
             }
           },
           timestamp: Date.now(),
@@ -471,11 +480,13 @@ export class SyncController {
       const syncOptions: SyncOptions = {
         mode,
         productIds,
-        downloadImages: options.downloadImages ?? true,
-        validateData: options.validateData ?? true,
-        dryRun: options.dryRun ?? false,
-        batchSize: options.batchSize ?? 50,
-        concurrentImages: options.concurrentImages ?? 5
+        options: {
+          downloadImages: options.downloadImages ?? true,
+          validateData: options.validateData ?? true,
+          dryRun: options.dryRun ?? false,
+          batchSize: options.batchSize ?? 50,
+          concurrentImages: options.concurrentImages ?? 5
+        }
       };
 
       // 估算同步时间 (简单实现)

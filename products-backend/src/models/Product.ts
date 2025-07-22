@@ -1,5 +1,44 @@
 import mongoose from 'mongoose';
 
+// TypeScript interface for Product
+export interface IProduct extends mongoose.Document {
+  productId: string;
+  internalId: string;
+  name: string;
+  sequence: string;
+  category: {
+    primary: string;
+    secondary: string;
+  };
+  price: {
+    normal: number;
+    discount: number;
+    discountRate: number;
+    currency: string;
+  };
+  images: {
+    front?: string;
+    back?: string;
+    label?: string;
+    package?: string;
+    gift?: string;
+  };
+  origin: {
+    country: string;
+    province: string;
+    city?: string;
+  };
+  platform: string;
+  specification?: string;
+  flavor?: string;
+  manufacturer?: string;
+  collectTime: Date;
+  syncTime: Date;
+  version: number;
+  status: 'active' | 'inactive' | 'deleted';
+  isVisible: boolean;
+}
+
 // Product Schema - 优化后的产品数据模型
 const ProductSchema = new mongoose.Schema({
   // 主键：使用飞书记录ID

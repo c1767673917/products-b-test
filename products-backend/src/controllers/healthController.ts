@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import mongoose from 'mongoose';
-import { feishuApiService } from '../services/feishuApiService';
+import { getFeishuApiService } from '../services/feishuApiService';
 import { imageService } from '../services/imageService';
 
 export class HealthController {
@@ -66,7 +66,7 @@ export class HealthController {
       const responseTime = Date.now() - startTime;
       
       return {
-        status: state === 1 ? 'up' : 'down',
+        status: state === 1 ? 'up' as const : 'down' as const,
         responseTime
       };
     } catch (error) {
@@ -86,7 +86,7 @@ export class HealthController {
       const responseTime = Date.now() - startTime;
       
       return {
-        status: isConnected ? 'up' : 'down',
+        status: isConnected ? 'up' as const : 'down' as const,
         responseTime
       };
     } catch (error) {
@@ -102,11 +102,11 @@ export class HealthController {
     
     try {
       // 尝试获取飞书访问令牌
-      const token = await feishuApiService.getAccessToken();
+      const token = await getFeishuApiService().getAccessToken();
       const responseTime = Date.now() - startTime;
       
       return {
-        status: token ? 'up' : 'down',
+        status: token ? 'up' as const : 'down' as const,
         responseTime,
         tokenValid: !!token
       };

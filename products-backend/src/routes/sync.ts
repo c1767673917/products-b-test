@@ -299,10 +299,10 @@ export async function syncRoutes(fastify: FastifyInstance) {
     }
   }, syncController.syncImages.bind(syncController));
 
-  // 获取同步状态
-  fastify.get('/sync/status', {
+  // 获取同步状态 (简化版)
+  fastify.get('/sync/status-simple', {
     schema: {
-      description: '获取同步状态',
+      description: '获取同步状态 (简化版)',
       tags: ['sync'],
       response: {
         200: {
@@ -325,10 +325,10 @@ export async function syncRoutes(fastify: FastifyInstance) {
     }
   }, syncController.getSyncStatus.bind(syncController));
 
-  // 获取同步历史
-  fastify.get('/sync/history', {
+  // 获取同步历史 (简化版)
+  fastify.get('/sync/history-simple', {
     schema: {
-      description: '获取同步历史',
+      description: '获取同步历史 (简化版)',
       tags: ['sync'],
       querystring: {
         type: 'object',
@@ -441,9 +441,9 @@ export async function syncRoutes(fastify: FastifyInstance) {
   }, syncController.repairDataIssues.bind(syncController));
 
   // 数据验证和修复 API (增强版)
-  fastify.post('/sync/validate', {
+  fastify.post('/sync/validate-enhanced', {
     schema: {
-      description: '验证数据库数据与图片存储的一致性',
+      description: '验证数据库数据与图片存储的一致性 (增强版)',
       tags: ['sync'],
       body: {
         type: 'object',
@@ -486,9 +486,9 @@ export async function syncRoutes(fastify: FastifyInstance) {
     }
   }, syncController.validateDataConsistencyEnhanced.bind(syncController));
 
-  fastify.post('/sync/repair', {
+  fastify.post('/sync/repair-enhanced', {
     schema: {
-      description: '修复检测到的数据问题',
+      description: '修复检测到的数据问题 (增强版)',
       tags: ['sync'],
       body: {
         type: 'object',

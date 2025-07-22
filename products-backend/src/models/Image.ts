@@ -41,6 +41,12 @@ export interface IImage extends Document {
   // 状态
   isActive: boolean;
   isPublic: boolean;
+
+  // 扩展元数据
+  metadata?: {
+    feishuFileToken?: string;
+    [key: string]: any;
+  };
 }
 
 const ImageSchema = new Schema<IImage>({

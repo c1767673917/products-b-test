@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { Pagination } from '../ui/Pagination';
+import Pagination from '../ui/Pagination';
 import { useSyncHistory } from '../../hooks/useSyncOperations';
 import type { SyncStatus, SyncMode } from '../../types/sync';
 
