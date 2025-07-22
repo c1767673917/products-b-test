@@ -2,3 +2,4 @@
 export { useUrlFilters, useFilterSummary } from './useUrlFilters';
 export { useDebounce, useDebouncedCallback } from './useDebounce';
 export { useToastNotification, ToastNotification } from './useToastNotification';
+export * from './useSyncOperations';

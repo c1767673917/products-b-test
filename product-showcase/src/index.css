@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 引入同步管理相关样式 */
+@import './styles/sync.css';
+
 /* 自定义样式 */
 .line-clamp-2 {
   display: -webkit-box;

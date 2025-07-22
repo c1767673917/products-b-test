@@ -2,8 +2,10 @@ import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
+import websocket from '@fastify/websocket';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
+import { webSocketService } from './services/webSocketService';
 
 // 加载环境变量
 config();
@@ -26,6 +28,9 @@ app.register(rateLimit, {
   max: 100,
   timeWindow: '1 minute'
 });
+
+// Phase 3: Register WebSocket support
+app.register(websocket);
 
 // 数据库连接
 async function connectDatabase() {
@@ -51,6 +56,9 @@ app.get('/health', async (request, reply) => {
 
 // API 路由前缀
 app.register(async function(fastify) {
+  // Phase 3: 注册WebSocket路由
+  await webSocketService.registerRoutes(fastify);
+  
   // 注册产品相关路由
   const { productRoutes } = await import('./routes/products');
   await fastify.register(productRoutes);
@@ -68,9 +76,17 @@ app.register(async function(fastify) {
   const { imageRoutes } = await import('./routes/images');
   await fastify.register(imageRoutes, { prefix: '/images' });
   
-  // 注册数据同步路由
+  // 注册数据同步路由 (增强版)
   const { syncRoutes } = await import('./routes/sync');
   await fastify.register(syncRoutes);
+  
+  // Phase 3: 注册配置管理路由
+  const { configRoutes } = await import('./routes/config');
+  await fastify.register(configRoutes);
+  
+  // Phase 3: 注册健康检查路由
+  const { healthRoutes } = await import('./routes/health');
+  await fastify.register(healthRoutes);
 }, { prefix: '/api/v1' });
 
 // 启动服务器

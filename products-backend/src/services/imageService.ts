@@ -4,10 +4,13 @@ import path from 'path';
 import sharp from 'sharp';
 import { Image, IImage } from '../models/Image';
 import { IMAGE_CONFIG, ImagePathUtils } from '../config/imageConfig';
+import { getFeishuApiService } from './feishuApiService';
+import winston from 'winston';
 
 export class ImageService {
   private minioClient: MinioClient;
   private bucketName: string;
+  private logger: winston.Logger;
 
   constructor() {
     this.minioClient = new MinioClient({
@@ -19,6 +22,21 @@ export class ImageService {
     });
 
     this.bucketName = IMAGE_CONFIG.MINIO.BUCKET_NAME;
+
+    // 创建日志器
+    this.logger = winston.createLogger({
+      level: 'info',
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+        winston.format.json()
+      ),
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.simple()
+        })
+      ]
+    });
   }
 
   /**
@@ -375,6 +393,349 @@ export class ImageService {
       return { status: 'ok', bucketExists };
     } catch (error) {
       return { status: 'error', bucketExists: false, error: (error as Error).message };
+    }
+  }
+
+  /**
+   * 从飞书下载图片并上传到MinIO
+   */
+  async downloadFromFeishu(
+    fileToken: string, 
+    productId: string, 
+    imageType: string
+  ): Promise<IImage> {
+    try {
+      this.logger.info('从飞书下载图片', { fileToken, productId, imageType });
+
+      // 检查是否已经下载过这个图片
+      const existingImage = await Image.findOne({ 
+        productId, 
+        type: imageType,
+        'metadata.feishuFileToken': fileToken,
+        isActive: true 
+      });
+
+      if (existingImage) {
+        this.logger.info('图片已存在，跳过下载', { 
+          imageId: existingImage.imageId,
+          fileToken 
+        });
+        return existingImage;
+      }
+
+      // 从飞书下载图片
+      const feishuService = getFeishuApiService();
+      const imageBuffer = await feishuService.downloadImage(fileToken);
+
+      // 生成文件名
+      const filename = this.generateFeishuImageName(productId, imageType, fileToken);
+
+      // 上传到MinIO
+      const imageRecord = await this.uploadImage(imageBuffer, filename, productId, imageType);
+
+      // 添加飞书相关的元数据
+      await Image.updateOne(
+        { imageId: imageRecord.imageId },
+        {
+          $set: {
+            'metadata.feishuFileToken': fileToken,
+            'metadata.source': 'feishu',
+            'metadata.downloadTime': new Date()
+          }
+        }
+      );
+
+      this.logger.info('飞书图片下载成功', {
+        imageId: imageRecord.imageId,
+        fileToken,
+        size: imageBuffer.length
+      });
+
+      return imageRecord;
+    } catch (error) {
+      this.logger.error('飞书图片下载失败', error, { fileToken, productId, imageType });
+      throw new Error(`飞书图片下载失败: ${error instanceof Error ? error.message : '未知错误'}`);
+    }
+  }
+
+  /**
+   * 批量下载飞书图片
+   */
+  async batchDownloadFromFeishu(
+    imageJobs: Array<{
+      productId: string;
+      imageType: string;
+      fileTokens: string[];
+    }>
+  ): Promise<{
+    successful: IImage[];
+    failed: Array<{
+      productId: string;
+      imageType: string;
+      fileToken: string;
+      error: string;
+    }>;
+  }> {
+    const successful: IImage[] = [];
+    const failed: Array<{
+      productId: string;
+      imageType: string;
+      fileToken: string;
+      error: string;
+    }> = [];
+
+    this.logger.info('开始批量下载飞书图片', { jobCount: imageJobs.length });
+
+    // 并发控制，避免过多同时下载
+    const concurrency = parseInt(process.env.SYNC_CONCURRENT_IMAGES || '5');
+    
+    for (let i = 0; i < imageJobs.length; i += concurrency) {
+      const batch = imageJobs.slice(i, i + concurrency);
+      
+      const downloadPromises = batch.map(async (job) => {
+        const { productId, imageType, fileTokens } = job;
+        
+        // 通常一个图片字段可能包含多个文件，我们取第一个
+        const fileToken = fileTokens[0];
+        if (!fileToken) return;
+
+        try {
+          const imageRecord = await this.downloadFromFeishu(fileToken, productId, imageType);
+          successful.push(imageRecord);
+        } catch (error) {
+          failed.push({
+            productId,
+            imageType,
+            fileToken,
+            error: error instanceof Error ? error.message : '未知错误'
+          });
+        }
+      });
+
+      await Promise.all(downloadPromises);
+
+      // 批次间延时，避免过于频繁的请求
+      if (i + concurrency < imageJobs.length) {
+        await this.sleep(500);
+      }
+    }
+
+    this.logger.info('批量下载飞书图片完成', {
+      total: imageJobs.length,
+      successful: successful.length,
+      failed: failed.length
+    });
+
+    return { successful, failed };
+  }
+
+  /**
+   * 验证图片完整性
+   */
+  async validateImageIntegrity(objectName: string): Promise<{
+    exists: boolean;
+    accessible: boolean;
+    size?: number;
+    error?: string;
+  }> {
+    try {
+      const stat = await this.minioClient.statObject(this.bucketName, objectName);
+      
+      return {
+        exists: true,
+        accessible: true,
+        size: stat.size
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '未知错误';
+      
+      return {
+        exists: false,
+        accessible: false,
+        error: errorMessage
+      };
+    }
+  }
+
+  /**
+   * 修复损坏的图片
+   */
+  async repairBrokenImages(): Promise<{
+    total: number;
+    repaired: number;
+    failed: number;
+    errors: string[];
+  }> {
+    const result = {
+      total: 0,
+      repaired: 0,
+      failed: 0,
+      errors: [] as string[]
+    };
+
+    try {
+      this.logger.info('开始检查和修复损坏的图片...');
+
+      // 查找所有活跃的图片记录
+      const images = await Image.find({ isActive: true }).lean();
+      result.total = images.length;
+
+      for (const image of images) {
+        try {
+          // 验证图片是否存在且可访问
+          const integrity = await this.validateImageIntegrity(image.objectName);
+          
+          if (!integrity.exists || !integrity.accessible) {
+            this.logger.warn('发现损坏的图片', {
+              imageId: image.imageId,
+              objectName: image.objectName,
+              error: integrity.error
+            });
+
+            // 尝试从飞书重新下载（如果有飞书文件令牌）
+            if (image.metadata?.feishuFileToken) {
+              try {
+                const feishuService = getFeishuApiService();
+                const imageBuffer = await feishuService.downloadImage(image.metadata.feishuFileToken);
+                
+                // 重新上传到MinIO
+                await this.minioClient.putObject(
+                  this.bucketName,
+                  image.objectName,
+                  imageBuffer,
+                  imageBuffer.length,
+                  {
+                    'Content-Type': image.mimeType,
+                    'X-Amz-Meta-Repair-Time': new Date().toISOString(),
+                    'X-Amz-Meta-Source': 'feishu-repair'
+                  }
+                );
+
+                result.repaired++;
+                this.logger.info('图片修复成功', {
+                  imageId: image.imageId,
+                  objectName: image.objectName
+                });
+              } catch (repairError) {
+                result.failed++;
+                const errorMsg = `修复失败 ${image.imageId}: ${repairError instanceof Error ? repairError.message : '未知错误'}`;
+                result.errors.push(errorMsg);
+                this.logger.error('图片修复失败', repairError, {
+                  imageId: image.imageId
+                });
+              }
+            } else {
+              // 没有飞书文件令牌，标记为不可修复
+              result.failed++;
+              const errorMsg = `无法修复 ${image.imageId}: 缺少飞书文件令牌`;
+              result.errors.push(errorMsg);
+            }
+          }
+        } catch (error) {
+          result.failed++;
+          const errorMsg = `检查失败 ${image.imageId}: ${error instanceof Error ? error.message : '未知错误'}`;
+          result.errors.push(errorMsg);
+        }
+      }
+
+      this.logger.info('图片修复完成', result);
+      return result;
+    } catch (error) {
+      this.logger.error('图片修复过程失败', error);
+      throw new Error(`图片修复失败: ${error instanceof Error ? error.message : '未知错误'}`);
+    }
+  }
+
+  /**
+   * 清理未使用的图片
+   */
+  async cleanupUnusedImages(): Promise<{
+    cleaned: number;
+    errors: string[];
+  }> {
+    const result = {
+      cleaned: 0,
+      errors: [] as string[]
+    };
+
+    try {
+      this.logger.info('开始清理未使用的图片...');
+
+      // 查找所有非活跃的图片
+      const unusedImages = await Image.find({ isActive: false }).lean();
+
+      for (const image of unusedImages) {
+        try {
+          // 从MinIO删除文件
+          await this.minioClient.removeObject(this.bucketName, image.objectName);
+
+          // 删除缩略图
+          for (const thumbnail of image.thumbnails) {
+            const thumbnailPath = thumbnail.url.split(`/${this.bucketName}/`)[1];
+            if (thumbnailPath) {
+              try {
+                await this.minioClient.removeObject(this.bucketName, thumbnailPath);
+              } catch (thumbError) {
+                this.logger.warn('删除缩略图失败', thumbError, {
+                  thumbnailPath,
+                  imageId: image.imageId
+                });
+              }
+            }
+          }
+
+          // 从数据库删除记录
+          await Image.deleteOne({ imageId: image.imageId });
+
+          result.cleaned++;
+          this.logger.debug('清理图片成功', {
+            imageId: image.imageId,
+            objectName: image.objectName
+          });
+        } catch (error) {
+          const errorMsg = `清理失败 ${image.imageId}: ${error instanceof Error ? error.message : '未知错误'}`;
+          result.errors.push(errorMsg);
+          this.logger.error('清理图片失败', error, {
+            imageId: image.imageId
+          });
+        }
+      }
+
+      this.logger.info('图片清理完成', result);
+      return result;
+    } catch (error) {
+      this.logger.error('图片清理过程失败', error);
+      throw new Error(`图片清理失败: ${error instanceof Error ? error.message : '未知错误'}`);
+    }
+  }
+
+  /**
+   * 生成飞书图片文件名
+   */
+  private generateFeishuImageName(productId: string, imageType: string, fileToken: string): string {
+    // 使用产品ID、图片类型和文件令牌的前8位来生成唯一文件名
+    const tokenPrefix = fileToken.substring(0, 8);
+    return `${productId}_${imageType}_${tokenPrefix}.jpg`;
+  }
+
+  /**
+   * 睡眠函数
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Check MinIO connection for health check
+   */
+  async checkConnection(): Promise<boolean> {
+    try {
+      // Try to check if bucket exists as a simple connection test
+      const exists = await this.minioClient.bucketExists(this.bucketName);
+      return true; // If no error thrown, connection is working
+    } catch (error) {
+      this.logger.warn('MinIO连接检查失败', error);
+      return false;
     }
   }
 }

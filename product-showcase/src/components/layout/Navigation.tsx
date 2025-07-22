@@ -8,6 +8,7 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }
   
   const navItems = [
     { path: '/', label: '产品列表' },
+    { path: '/sync-management', label: '数据同步' },
     { path: '/api-demo', label: 'API演示' },
     { path: '/image-test', label: '图片测试' }
   ];

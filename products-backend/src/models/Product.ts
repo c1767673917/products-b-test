@@ -1,108 +1,170 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface IProduct extends Document {
-  productId: string;
-  recordId: string;
-  name: string;
-  sequence: string;
+// Product Schema - 优化后的产品数据模型
+const ProductSchema = new mongoose.Schema({
+  // 主键：使用飞书记录ID
+  productId: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    index: true,
+    match: /^rec[a-zA-Z0-9]+$/,
+    trim: true
+  },
+  
+  // 辅助标识字段
+  internalId: { 
+    type: String, 
+    required: true,
+    index: true,
+    trim: true
+  },
+  
+  // 基本信息
+  name: { 
+    type: String, 
+    required: true, 
+    index: true,
+    maxLength: 200,
+    trim: true
+  },
+  
+  sequence: { 
+    type: String, 
+    required: true,
+    trim: true
+  },
+  
+  // 分类信息
   category: {
-    primary: string;
-    secondary: string;
-  };
+    primary: { 
+      type: String, 
+      required: true,
+      index: true,
+      trim: true
+    },
+    secondary: { 
+      type: String, 
+      required: true,
+      index: true,
+      trim: true
+    }
+  },
+  
+  // 价格信息
   price: {
-    normal: number;
-    discount: number;
-    discountRate: number;
-    currency: string;
-  };
+    normal: { 
+      type: Number, 
+      required: true,
+      min: 0,
+      max: 999999.99
+    },
+    discount: { 
+      type: Number, 
+      default: 0,
+      min: 0,
+      max: 999999.99
+    },
+    discountRate: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 1
+    },
+    currency: {
+      type: String,
+      default: 'CNY',
+      enum: ['CNY', 'USD', 'EUR']
+    }
+  },
+  
+  // 图片信息
   images: {
-    front?: string;
-    back?: string;
-    label?: string;
-    package?: string;
-    gift?: string;
-  };
+    front: { type: String, trim: true },
+    back: { type: String, trim: true },
+    label: { type: String, trim: true },
+    package: { type: String, trim: true },
+    gift: { type: String, trim: true }
+  },
+  
+  // 产地信息
   origin: {
-    country: string;
-    province: string;
-    city: string;
-  };
-  platform: string;
-  specification: string;
-  flavor: string;
-  manufacturer: string;
-  collectTime: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  searchText: string;
-  status: string;
-  isVisible: boolean;
-}
-
-const ProductSchema = new Schema<IProduct>({
-  productId: { type: String, required: true, unique: true, index: true },
-  recordId: { type: String, required: true },
-  name: { type: String, required: true, index: true },
-  sequence: { type: String, required: true },
-  
-  category: {
-    primary: { type: String, required: true, index: true },
-    secondary: { type: String, required: true }
+    country: { 
+      type: String, 
+      required: true,
+      default: '中国',
+      trim: true
+    },
+    province: { 
+      type: String, 
+      required: true,
+      index: true,
+      trim: true
+    },
+    city: { 
+      type: String,
+      index: true,
+      trim: true
+    }
   },
   
-  price: {
-    normal: { type: Number, required: true, index: true },
-    discount: { type: Number, default: 0 },
-    discountRate: { type: Number, default: 0 },
-    currency: { type: String, default: 'CNY' }
+  // 产品属性
+  platform: { 
+    type: String, 
+    required: true,
+    index: true,
+    trim: true
   },
   
-  images: {
-    front: String,
-    back: String,
-    label: String,
-    package: String,
-    gift: String
+  specification: { type: String, trim: true },
+  flavor: { type: String, trim: true },
+  manufacturer: { type: String, trim: true },
+  
+  // 其他信息
+  boxSpec: { type: String, trim: true },
+  notes: { type: String, trim: true },
+  gift: { type: String, trim: true },
+  giftMechanism: { type: String, trim: true },
+  client: { type: String, trim: true },
+  barcode: { type: String, trim: true },
+  link: { type: String, trim: true },
+  
+  // 时间信息
+  collectTime: { 
+    type: Date, 
+    required: true,
+    index: true
   },
   
-  origin: {
-    country: { type: String, default: '中国' },
-    province: { type: String, index: true },
-    city: String
+  syncTime: { 
+    type: Date, 
+    default: Date.now,
+    index: true
   },
   
-  platform: { type: String, required: true, index: true },
-  specification: String,
-  flavor: String,
-  manufacturer: String,
-  
-  collectTime: { type: Date, required: true, index: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  
-  searchText: { type: String, index: 'text' },
-  status: { type: String, default: 'active', index: true },
-  isVisible: { type: Boolean, default: true, index: true }
+  // 元数据
+  version: { type: Number, default: 1 },
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'deleted'],
+    default: 'active',
+    index: true
+  },
+  isVisible: {
+    type: Boolean,
+    default: true,
+    index: true
+  }
 }, {
-  timestamps: true
+  timestamps: true,
+  versionKey: false
 });
 
 // 复合索引
-ProductSchema.index({ status: 1, isVisible: 1, 'category.primary': 1, collectTime: -1 });
-ProductSchema.index({ platform: 1, 'origin.province': 1 });
-ProductSchema.index({ 'price.normal': 1, 'category.primary': 1 });
+ProductSchema.index({ 'category.primary': 1, 'category.secondary': 1 });
+ProductSchema.index({ platform: 1, status: 1 });
+ProductSchema.index({ collectTime: -1, syncTime: -1 });
+ProductSchema.index({ isVisible: 1, status: 1 });
 
-// 全文搜索索引
-ProductSchema.index({ 
-  name: 'text', 
-  searchText: 'text', 
-  manufacturer: 'text' 
-}, {
-  weights: { 
-    name: 10, 
-    searchText: 5, 
-    manufacturer: 1 
-  }
-});
-
-export const Product = mongoose.model<IProduct>('Product', ProductSchema);
+export const Product = mongoose.model('Product', ProductSchema);
+export default Product;
