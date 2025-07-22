@@ -338,7 +338,7 @@ export const queryUtils = {
       totalQueries: queries.length,
       activeQueries: queries.filter(q => q.isActive()).length,
       staleQueries: queries.filter(q => q.isStale()).length,
-      invalidQueries: queries.filter(q => q.isInvalidated()).length,
+      invalidQueries: queries.filter(q => q.state.isInvalidated).length,
       cacheSize: JSON.stringify(cache).length,
     };
   },

@@ -1,15 +1,18 @@
 // 简化的页面布局组件
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 
 // 页面布局组件
 export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
+  const { t } = useTranslation('navigation');
   
   const navItems = [
-    { path: '/', label: '产品列表' },
-    { path: '/sync-management', label: '数据同步' },
-    { path: '/api-demo', label: 'API演示' },
+    { path: '/', label: t('navigation.list') },
+    { path: '/sync-management', label: t('navigation.sync') },
+    { path: '/api-demo', label: t('navigation.demo') },
     { path: '/image-test', label: '图片测试' }
   ];
 
@@ -19,7 +22,7 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">产品展示系统</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{t('titles.home')}</h1>
             </div>
             <div className="flex items-center space-x-8">
               {navItems.map((item) => (
@@ -35,6 +38,7 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                   {item.label}
                 </Link>
               ))}
+              <LanguageSwitcher variant="compact" showLabel={false} />
             </div>
           </div>
         </div>

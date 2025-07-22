@@ -60,7 +60,7 @@ interface ProductState {
   removeFromCompare: (productId: string) => void;
   clearFilters: () => void;
   loadProducts: (params?: { page?: number; search?: string; filters?: Partial<FilterState> }) => Promise<void>;
-  searchProducts: (query: string) => Promise<void>;
+  searchProducts: (query: string, limit?: number) => Promise<void>;
   initializeData: () => Promise<void>;
   refreshData: () => Promise<void>;
 }
@@ -275,7 +275,7 @@ export const useProductStore = create<ProductState>()(
       },
 
       // 搜索产品
-      searchProducts: async (query) => {
+      searchProducts: async (query, limit?) => {
         set({ 
           loading: 'loading',
           apiOperation: 'search',
@@ -285,7 +285,7 @@ export const useProductStore = create<ProductState>()(
         });
 
         try {
-          const response = await apiService.searchProducts(query, get().itemsPerPage);
+          const response = await apiService.searchProducts(query, limit);
           const responseData = response.data;
           const products = Array.isArray(responseData) ? responseData : responseData.products || [];
           

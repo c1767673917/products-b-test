@@ -29,7 +29,7 @@ export const httpClient: AxiosInstance = axios.create({
 
 // 请求拦截器
 httpClient.interceptors.request.use(
-  (config: RequestConfig) => {
+  (config) => {
     // 添加请求ID用于追踪
     const requestId = generateRequestId();
     config.headers = config.headers || {};

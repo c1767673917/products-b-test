@@ -1,5 +1,12 @@
 // 产品相关类型定义
 
+// 多语言字段接口
+export interface MultilingualField {
+  english?: string;
+  chinese?: string;
+  display: string;
+}
+
 export interface Product {
   productId: string;
   recordId: string;
@@ -42,9 +49,21 @@ export interface Product {
 
   // 产地信息
   origin: {
-    country: string;
-    province: string;
-    city: string;
+    country: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    province: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    city?: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
   };
 
   // 其他信息
@@ -53,13 +72,21 @@ export interface Product {
     chinese?: string;
     display: string;
   };
-  specification: string;
+  specification?: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   flavor?: {
     english?: string;
     chinese?: string;
     display: string;
   };
-  manufacturer?: string;
+  manufacturer?: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   collectTime: number;
   link?: string;
   boxSpec?: string;

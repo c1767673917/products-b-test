@@ -111,7 +111,7 @@ interface SyncState {
     handleWebSocketMessage: (message: SyncWebSocketMessage) => void;
     
     // 设置
-    updateSettings: (settings: Partial<typeof state.settings>) => void;
+    updateSettings: (settings: Partial<SyncState['settings']>) => void;
     resetSettings: () => void;
     
     // 状态管理

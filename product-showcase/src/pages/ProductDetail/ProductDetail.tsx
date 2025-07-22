@@ -14,6 +14,7 @@ import ImageGallery from '../../components/product/ImageGallery';
 import ProductInfo from '../../components/product/ProductInfo';
 import RelatedProducts from '../../components/product/RelatedProducts';
 import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import { cn } from '../../utils/cn';
 import {
   PAGE_TRANSITION_VARIANTS,
@@ -28,6 +29,7 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const { showSuccess, showError, showInfo } = useToast();
   const { shouldEnableAnimation } = useAnimationPreferences();
+  const { getProductName, getProductSpecification, getProductManufacturer, getProductOrigin } = useProductI18n();
   
   const { 
     favorites, 
@@ -85,8 +87,13 @@ const ProductDetail: React.FC = () => {
 
   // 图片预加载函数
   const preloadImages = (product: Product) => {
-    const imageUrls = Object.values(product.images).filter(Boolean);
+    const imageUrls = product.images ? Object.values(product.images).filter(Boolean) : [];
     let loadedCount = 0;
+
+    if (imageUrls.length === 0) {
+      setImagesPreloaded(true);
+      return;
+    }
 
     imageUrls.forEach(url => {
       const img = new Image();
@@ -151,8 +158,8 @@ const ProductDetail: React.FC = () => {
     if (currentProduct) {
       try {
         await navigator.share({
-          title: currentProduct.name,
-          text: `查看这个产品：${currentProduct.name}`,
+          title: getProductName(currentProduct),
+          text: `查看这个产品：${getProductName(currentProduct)}`,
           url: window.location.href,
         });
       } catch (err) {
@@ -337,7 +344,7 @@ const ProductDetail: React.FC = () => {
           >
             <Card className="p-4 sm:p-6 shadow-sm">
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                {currentProduct.name}
+                {getProductName(currentProduct)}
               </h1>
               
               {/* 价格信息 */}
@@ -370,11 +377,11 @@ const ProductDetail: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">规格</span>
-                    <p className="text-sm text-gray-900 break-words">{currentProduct.specification || '暂无'}</p>
+                    <p className="text-sm text-gray-900 break-words">{getProductSpecification(currentProduct) || '暂无'}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">口味</span>
-                    <p className="text-sm text-gray-900 break-words">{currentProduct.flavor || '暂无'}</p>
+                    <span className="text-sm font-medium text-gray-500">生产商</span>
+                    <p className="text-sm text-gray-900 break-words">{getProductManufacturer(currentProduct) || '暂无'}</p>
                   </div>
                   <div className="space-y-1">
                     <span className="text-sm font-medium text-gray-500">包装规格</span>
@@ -410,7 +417,7 @@ const ProductDetail: React.FC = () => {
           style={PERFORMANCE_CSS}
           className={cn("mt-6 sm:mt-8 lg:mt-12 lg:col-span-3", GPU_ACCELERATED_CLASS)}
         >
-          <RelatedProducts currentProduct={currentProduct} relatedProducts={relatedProducts.data} />
+          <RelatedProducts currentProduct={currentProduct} />
         </motion.div>
       </div>
     </motion.div>

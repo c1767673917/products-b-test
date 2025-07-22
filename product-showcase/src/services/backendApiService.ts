@@ -292,13 +292,15 @@ export class ApiService {
     }
 
     // 处理每种类型的图片URL
-    Object.keys(processedProduct.images).forEach(key => {
-      const imagePath = processedProduct.images[key as keyof typeof processedProduct.images];
-      if (imagePath) {
-        processedProduct.images[key as keyof typeof processedProduct.images] =
-          imageUtils.getImageUrl(imagePath);
-      }
-    });
+    if (processedProduct.images) {
+      Object.keys(processedProduct.images).forEach(key => {
+        const imagePath = processedProduct.images![key as keyof typeof processedProduct.images];
+        if (imagePath) {
+          processedProduct.images![key as keyof typeof processedProduct.images] =
+            imageUtils.getImageUrl(imagePath);
+        }
+      });
+    }
 
     return processedProduct;
   }

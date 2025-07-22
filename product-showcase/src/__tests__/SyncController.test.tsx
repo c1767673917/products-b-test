@@ -3,22 +3,24 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SyncController } from '../components/sync/SyncController';
-import { useSyncOperations } from '../hooks/useSyncOperations';
+import { useSyncOperation } from '../hooks/useSyncOperations';
+
+import { vi } from 'vitest';
 
 // Mock the hooks
-jest.mock('../hooks/useSyncOperations');
-jest.mock('../stores/syncStore');
+vi.mock('../hooks/useSyncOperations');
+vi.mock('../stores/syncStore');
 
 // Mock WebSocket
-global.WebSocket = jest.fn(() => ({
-  send: jest.fn(),
-  close: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
+global.WebSocket = vi.fn(() => ({
+  send: vi.fn(),
+  close: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
   readyState: 1
 })) as any;
 
-const mockUseSyncOperations = useSyncOperations as jest.MockedFunction<typeof useSyncOperations>;
+const mockUseSyncOperation = useSyncOperation as vi.MockedFunction<typeof useSyncOperation>;
 
 const createTestQueryClient = () => new QueryClient({
   defaultOptions: {
@@ -37,9 +39,9 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 describe('SyncController Component', () => {
-  const mockTriggerSync = jest.fn();
-  const mockControlSync = jest.fn();
-  const mockValidateData = jest.fn();
+  const mockTriggerSync = vi.fn();
+  const mockControlSync = vi.fn();
+  const mockValidateData = vi.fn();
 
   const defaultMockReturn = {
     triggerSync: mockTriggerSync,
@@ -51,8 +53,8 @@ describe('SyncController Component', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockUseSyncOperations.mockReturnValue(defaultMockReturn);
+    vi.clearAllMocks();
+    mockUseSyncOperation.mockReturnValue(defaultMockReturn);
   });
 
   describe('Sync Mode Selection', () => {
@@ -254,7 +256,7 @@ describe('SyncController Component', () => {
     });
 
     it('should disable sync button when sync is in progress', () => {
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'sync'
@@ -273,7 +275,7 @@ describe('SyncController Component', () => {
 
   describe('Sync Control Operations', () => {
     it('should show control buttons during sync', () => {
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'sync'
@@ -292,7 +294,7 @@ describe('SyncController Component', () => {
     it('should pause sync operation', async () => {
       const user = userEvent.setup();
       
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'sync'
@@ -313,7 +315,7 @@ describe('SyncController Component', () => {
     it('should resume sync operation', async () => {
       const user = userEvent.setup();
       
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: false,
         currentOperation: 'paused'
@@ -334,7 +336,7 @@ describe('SyncController Component', () => {
     it('should cancel sync operation', async () => {
       const user = userEvent.setup();
       
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'sync'
@@ -419,7 +421,7 @@ describe('SyncController Component', () => {
   describe('Error Handling', () => {
     it('should display sync errors', () => {
       const errorMessage = '同步过程中发生错误';
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         error: errorMessage
       });
@@ -443,7 +445,7 @@ describe('SyncController Component', () => {
         </TestWrapper>
       );
 
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         error: '之前的错误'
       });
@@ -457,7 +459,7 @@ describe('SyncController Component', () => {
       expect(screen.getByText(/之前的错误/)).toBeInTheDocument();
 
       // Clear error and start new sync
-      mockUseSyncOperations.mockReturnValue(defaultMockReturn);
+      mockUseSyncOperation.mockReturnValue(defaultMockReturn);
 
       rerender(
         <TestWrapper>
@@ -508,7 +510,7 @@ describe('SyncController Component', () => {
     });
 
     it('should show validation in progress state', () => {
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'validate'
@@ -562,7 +564,7 @@ describe('SyncController Component', () => {
     it('should announce state changes to screen readers', async () => {
       const user = userEvent.setup();
       
-      mockUseSyncOperations.mockReturnValue({
+      mockUseSyncOperation.mockReturnValue({
         ...defaultMockReturn,
         isLoading: true,
         currentOperation: 'sync'

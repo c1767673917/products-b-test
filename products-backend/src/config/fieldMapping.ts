@@ -227,30 +227,93 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
   },
 
   // === 产地信息字段 ===
+  // 国家 - 英文
+  originCountryEnglish: {
+    feishuFieldId: 'fldkZNReiw', // Origin (Country)
+    feishuFieldName: 'Origin (Country)',
+    localFieldPath: 'origin.country.english',
+    type: FeishuFieldType.SINGLE_SELECT,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 国家 - 中文
+  originCountryChinese: {
+    feishuFieldId: 'fldkZNReiw', // Origin (Country)
+    feishuFieldName: 'Origin (Country)',
+    localFieldPath: 'origin.country.chinese',
+    type: FeishuFieldType.SINGLE_SELECT,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 主要显示的国家
   originCountry: {
     feishuFieldId: 'fldkZNReiw', // Origin (Country)
     feishuFieldName: 'Origin (Country)',
-    localFieldPath: 'origin.country',
+    localFieldPath: 'origin.country.display',
     type: FeishuFieldType.SINGLE_SELECT,
     required: true,
     transform: transformSelectField,
     defaultValue: '中国'
   },
 
+  // 省份 - 英文
+  originProvinceEnglish: {
+    feishuFieldId: 'fldpRMAAXr', // Origin (Province)
+    feishuFieldName: 'Origin (Province)',
+    localFieldPath: 'origin.province.english',
+    type: FeishuFieldType.MULTI_SELECT,
+    required: false,
+    transform: transformMultiSelectToFirst
+  },
+
+  // 省份 - 中文
+  originProvinceChinese: {
+    feishuFieldId: 'fldpRMAAXr', // Origin (Province)
+    feishuFieldName: 'Origin (Province)',
+    localFieldPath: 'origin.province.chinese',
+    type: FeishuFieldType.MULTI_SELECT,
+    required: false,
+    transform: transformMultiSelectToFirst
+  },
+
+  // 主要显示的省份
   originProvince: {
     feishuFieldId: 'fldpRMAAXr', // Origin (Province)
     feishuFieldName: 'Origin (Province)',
-    localFieldPath: 'origin.province',
+    localFieldPath: 'origin.province.display',
     type: FeishuFieldType.MULTI_SELECT,
-    required: false, // 降级为可选
+    required: false,
     transform: transformMultiSelectToFirst,
     defaultValue: ''
   },
 
+  // 城市 - 英文
+  originCityEnglish: {
+    feishuFieldId: 'fldisZBrD1', // Origin (City)
+    feishuFieldName: 'Origin (City)',
+    localFieldPath: 'origin.city.english',
+    type: FeishuFieldType.MULTI_SELECT,
+    required: false,
+    transform: transformMultiSelectToFirst
+  },
+
+  // 城市 - 中文
+  originCityChinese: {
+    feishuFieldId: 'fldisZBrD1', // Origin (City)
+    feishuFieldName: 'Origin (City)',
+    localFieldPath: 'origin.city.chinese',
+    type: FeishuFieldType.MULTI_SELECT,
+    required: false,
+    transform: transformMultiSelectToFirst
+  },
+
+  // 主要显示的城市
   originCity: {
     feishuFieldId: 'fldisZBrD1', // Origin (City)
     feishuFieldName: 'Origin (City)',
-    localFieldPath: 'origin.city',
+    localFieldPath: 'origin.city.display',
     type: FeishuFieldType.MULTI_SELECT,
     required: false,
     transform: transformMultiSelectToFirst,
@@ -289,10 +352,31 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     defaultValue: '未知平台'
   },
 
+  // 规格 - 英文
+  specificationEnglish: {
+    feishuFieldId: 'fldmUt5qWm', // Specs(规格)
+    feishuFieldName: 'Specs(规格)',
+    localFieldPath: 'specification.english',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 规格 - 中文
+  specificationChinese: {
+    feishuFieldId: 'fldmUt5qWm', // Specs(规格)
+    feishuFieldName: 'Specs(规格)',
+    localFieldPath: 'specification.chinese',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 主要显示的规格
   specification: {
     feishuFieldId: 'fldmUt5qWm', // Specs(规格)
     feishuFieldName: 'Specs(规格)',
-    localFieldPath: 'specification',
+    localFieldPath: 'specification.display',
     type: FeishuFieldType.TEXT,
     required: false,
     transform: transformStringField
@@ -328,10 +412,31 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     transform: transformStringField
   },
 
+  // 生产商 - 英文
+  manufacturerEnglish: {
+    feishuFieldId: 'fldEFufAf2', // Manufacturer(生产商)
+    feishuFieldName: 'Manufacturer(生产商)',
+    localFieldPath: 'manufacturer.english',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 生产商 - 中文
+  manufacturerChinese: {
+    feishuFieldId: 'fldEFufAf2', // Manufacturer(生产商)
+    feishuFieldName: 'Manufacturer(生产商)',
+    localFieldPath: 'manufacturer.chinese',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 主要显示的生产商
   manufacturer: {
     feishuFieldId: 'fldEFufAf2', // Manufacturer(生产商)
     feishuFieldName: 'Manufacturer(生产商)',
-    localFieldPath: 'manufacturer',
+    localFieldPath: 'manufacturer.display',
     type: FeishuFieldType.TEXT,
     required: false,
     transform: transformStringField
@@ -689,10 +794,10 @@ export const FIELD_MAPPING_GROUPS = {
   images: ['imageFront', 'imageBack', 'imageLabel', 'imagePackage', 'imageGift'],
   
   // 产地信息字段
-  origin: ['originCountry', 'originProvince', 'originCity'],
+  origin: ['originCountryEnglish', 'originCountryChinese', 'originCountry', 'originProvinceEnglish', 'originProvinceChinese', 'originProvince', 'originCityEnglish', 'originCityChinese', 'originCity'],
   
   // 产品属性字段
-  attributes: ['platform', 'specification', 'flavor', 'manufacturer'],
+  attributes: ['platform', 'specificationEnglish', 'specificationChinese', 'specification', 'flavor', 'manufacturerEnglish', 'manufacturerChinese', 'manufacturer'],
   
   // 其他字段
   others: ['collectTime', 'link', 'boxSpec', 'notes', 'gift', 'giftMechanism', 'client', 'barcode']

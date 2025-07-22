@@ -70,7 +70,7 @@ export class ApiService {
       
       // 兼容旧格式：只有产品数组
       return {
-        data: response.data.products || response.data,
+        data: (response.data as any).products || response.data,
         success: true,
         message: response.message,
         timestamp: Date.now()
@@ -261,8 +261,12 @@ export class ApiService {
       }
       
       // 基于分类获取相关产品
+      const categoryValue = typeof currentProduct.category.primary === 'string' 
+        ? currentProduct.category.primary 
+        : currentProduct.category.primary.display || currentProduct.category.primary.chinese || currentProduct.category.primary.english || '';
+      
       const response = await backendApiService.getProducts({
-        category: currentProduct.category.primary,
+        category: categoryValue,
         limit: (limit || 8) + 1 // 多获取一个，用于排除当前产品
       });
       

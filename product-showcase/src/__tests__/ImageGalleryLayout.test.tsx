@@ -9,11 +9,23 @@ const createTestProduct = (imageCount: number): Product => {
   const baseProduct: Product = {
     productId: 'test-product',
     recordId: 'test-record-001',
-    name: '测试产品',
+    name: {
+      english: 'Test Product',
+      chinese: '测试产品',
+      display: '测试产品'
+    },
     sequence: '001',
     category: {
-      primary: '测试分类',
-      secondary: '子分类'
+      primary: {
+        english: 'Test Category',
+        chinese: '测试分类',
+        display: '测试分类'
+      },
+      secondary: {
+        english: 'Sub Category',
+        chinese: '子分类',
+        display: '子分类'
+      }
     },
     price: {
       normal: 10.00,
@@ -22,14 +34,42 @@ const createTestProduct = (imageCount: number): Product => {
     },
     images: {},
     origin: {
-      country: '中国',
-      province: '测试省',
-      city: '测试市'
+      country: {
+        english: 'China',
+        chinese: '中国',
+        display: '中国'
+      },
+      province: {
+        english: 'Test Province',
+        chinese: '测试省',
+        display: '测试省'
+      },
+      city: {
+        english: 'Test City',
+        chinese: '测试市',
+        display: '测试市'
+      }
     },
-    platform: '测试平台',
-    specification: '测试规格',
-    flavor: '测试口味',
-    manufacturer: '测试厂商',
+    platform: {
+      english: 'Test Platform',
+      chinese: '测试平台',
+      display: '测试平台'
+    },
+    specification: {
+      english: 'Test Spec',
+      chinese: '测试规格',
+      display: '测试规格'
+    },
+    flavor: {
+      english: 'Test Flavor',
+      chinese: '测试口味',
+      display: '测试口味'
+    },
+    manufacturer: {
+      english: 'Test Manufacturer',
+      chinese: '测试厂商',
+      display: '测试厂商'
+    },
     collectTime: Date.now(),
     link: 'https://example.com',
     boxSpec: '24×500ml',
@@ -39,6 +79,9 @@ const createTestProduct = (imageCount: number): Product => {
   // 根据imageCount添加对应数量的图片
   const imageTypes = ['front', 'back', 'label', 'package', 'gift'] as const;
   for (let i = 0; i < Math.min(imageCount, imageTypes.length); i++) {
+    if (!baseProduct.images) {
+      baseProduct.images = {};
+    }
     baseProduct.images[imageTypes[i]] = `https://example.com/image-${i + 1}.jpg`;
   }
 

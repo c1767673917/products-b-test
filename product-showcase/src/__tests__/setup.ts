@@ -2,7 +2,11 @@ import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+global.IntersectionObserver = class IntersectionObserver implements IntersectionObserver {
+  root = null;
+  rootMargin = '';
+  thresholds = [];
+  
   constructor() {}
   observe() {
     return null;
@@ -13,10 +17,15 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {
     return null;
   }
-};
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+} as any;
 
 // Mock PerformanceObserver
-global.PerformanceObserver = class PerformanceObserver {
+global.PerformanceObserver = class PerformanceObserver implements PerformanceObserver {
+  static supportedEntryTypes: readonly string[] = [];
+  
   constructor() {}
   observe() {
     return null;
@@ -24,7 +33,10 @@ global.PerformanceObserver = class PerformanceObserver {
   disconnect() {
     return null;
   }
-};
+  takeRecords(): PerformanceEntryList {
+    return [];
+  }
+} as any;
 
 // Mock performance.now
 Object.defineProperty(global.performance, 'now', {

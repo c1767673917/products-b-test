@@ -13,6 +13,7 @@ import {
   useRefreshProducts
 } from '../../hooks/useProducts';
 import { useCacheManager, useOfflineCache, useCachePerformance } from '../../hooks/useCache';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
@@ -24,6 +25,7 @@ export const ApiDemo: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { showSuccess, showError } = useToast();
+  const { getProductName, getProductCategory, getProductSpecification, getProductOrigin, getProductPlatform } = useProductI18n();
 
   // API Hooks
   const productsQuery = useProducts();
@@ -40,14 +42,14 @@ export const ApiDemo: React.FC = () => {
   const cachePerformance = useCachePerformance();
 
   // 预加载和刷新
-  const prefetchProduct = usePrefetchProduct();
+  const prefetchProductMutation = usePrefetchProduct();
   const refreshMutation = useRefreshProducts();
 
   // 处理产品选择
   const handleProductSelect = (productId: string) => {
     setSelectedProductId(productId);
     // 预加载产品详情
-    prefetchProduct(productId);
+    prefetchProductMutation.mutate(productId);
   };
 
   // 处理搜索
@@ -234,9 +236,9 @@ export const ApiDemo: React.FC = () => {
                             className="p-2 border rounded cursor-pointer hover:bg-gray-50"
                             onClick={() => handleProductSelect(product.productId)}
                           >
-                            <p className="font-medium text-sm">{product.name}</p>
+                            <p className="font-medium text-sm">{getProductName(product)}</p>
                             <p className="text-xs text-gray-500">
-                              {product.category.primary} · ¥{product.price.discount || product.price.normal}
+                              {getProductCategory(product)} · ¥{product.price.discount || product.price.normal}
                             </p>
                           </div>
                         ))}
@@ -265,9 +267,9 @@ export const ApiDemo: React.FC = () => {
                         className="p-2 border rounded cursor-pointer hover:bg-gray-50"
                         onClick={() => handleProductSelect(product.productId)}
                       >
-                        <p className="font-medium text-sm">{product.name}</p>
+                        <p className="font-medium text-sm">{getProductName(product)}</p>
                         <p className="text-xs text-gray-500">
-                          {product.category.primary} · 
+                          {getProductCategory(product)} · 
                           {product.price.discount && (
                             <span className="text-red-600 ml-1">
                               ¥{product.price.discount} ({product.price.discountRate}%折扣)
@@ -298,8 +300,8 @@ export const ApiDemo: React.FC = () => {
                 ) : productQuery.data ? (
                   <div className="space-y-4">
                     <div>
-                      <h3 className="font-semibold">{productQuery.data.name}</h3>
-                      <p className="text-sm text-gray-600">{productQuery.data.category.primary}</p>
+                      <h3 className="font-semibold">{getProductName(productQuery.data)}</h3>
+                      <p className="text-sm text-gray-600">{getProductCategory(productQuery.data)}</p>
                     </div>
                     
                     <div>
@@ -318,25 +320,25 @@ export const ApiDemo: React.FC = () => {
 
                     <div>
                       <p className="text-sm text-gray-500">规格:</p>
-                      <p className="text-sm">{productQuery.data.specification}</p>
+                      <p className="text-sm">{getProductSpecification(productQuery.data)}</p>
                     </div>
 
                     <div>
                       <p className="text-sm text-gray-500">产地:</p>
-                      <p className="text-sm">{productQuery.data.origin.province} {productQuery.data.origin.city}</p>
+                      <p className="text-sm">{getProductOrigin(productQuery.data)}</p>
                     </div>
 
                     <div>
                       <p className="text-sm text-gray-500">平台:</p>
-                      <p className="text-sm">{productQuery.data.platform}</p>
+                      <p className="text-sm">{getProductPlatform(productQuery.data)}</p>
                     </div>
 
-                    {productQuery.data.images.front && (
+                    {productQuery.data.images?.front && (
                       <div>
                         <p className="text-sm text-gray-500 mb-2">产品图片:</p>
                         <img 
-                          src={productQuery.data.images.front}
-                          alt={productQuery.data.name}
+                          src={productQuery.data.images?.front}
+                          alt={getProductName(productQuery.data)}
                           className="w-full h-32 object-cover rounded"
                         />
                       </div>

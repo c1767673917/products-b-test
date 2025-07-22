@@ -1,0 +1,77 @@
+{
+  "fields": {
+    "name": "Product Name",
+    "price": "Price",
+    "category": "Category",
+    "primaryCategory": "Primary Category", 
+    "secondaryCategory": "Secondary Category",
+    "origin": "Origin",
+    "country": "Country",
+    "province": "Province", 
+    "city": "City",
+    "platform": "Platform",
+    "specification": "Specification",
+    "flavor": "Flavor",
+    "manufacturer": "Manufacturer",
+    "collectTime": "Collection Time",
+    "sequence": "Sequence",
+    "link": "Link",
+    "boxSpec": "Box Specification",
+    "notes": "Notes"
+  },
+  "labels": {
+    "normalPrice": "Normal Price",
+    "discountPrice": "Discount Price",
+    "discountRate": "Discount Rate",
+    "hasDiscount": "On Sale",
+    "noDiscount": "Regular Price",
+    "priceRange": "Price Range",
+    "fromPrice": "From",
+    "toPrice": "To"
+  },
+  "images": {
+    "front": "Front Image",
+    "back": "Back Image", 
+    "label": "Label Image",
+    "package": "Package Image",
+    "gift": "Gift Image",
+    "noImage": "No Image Available",
+    "loadingImage": "Loading Image...",
+    "imageError": "Failed to load image"
+  },
+  "filters": {
+    "allCategories": "All Categories",
+    "allPlatforms": "All Platforms",
+    "allLocations": "All Locations",
+    "showDiscountOnly": "Show Discount Only",
+    "priceRange": "Price Range",
+    "filterBy": "Filter By",
+    "sortBy": "Sort By",
+    "clearFilters": "Clear All Filters",
+    "applyFilters": "Apply Filters"
+  },
+  "sorting": {
+    "name": "Name",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low", 
+    "collectTime": "Collection Time",
+    "latest": "Latest First",
+    "oldest": "Oldest First"
+  },
+  "actions": {
+    "viewDetails": "View Details",
+    "quickView": "Quick View",
+    "favorite": "Add to Favorites",
+    "compare": "Compare",
+    "share": "Share",
+    "copyLink": "Copy Link"
+  },
+  "stats": {
+    "totalProducts": "Total Products",
+    "averagePrice": "Average Price",
+    "priceRange": "Price Range",
+    "categories": "Categories",
+    "platforms": "Platforms",
+    "locations": "Locations"
+  }
+}

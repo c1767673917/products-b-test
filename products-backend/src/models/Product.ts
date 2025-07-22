@@ -37,22 +37,42 @@ export interface IProduct extends mongoose.Document {
     gift?: string;
   };
   origin: {
-    country: string;
-    province: string;
-    city?: string;
+    country: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    province: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
+    city?: {
+      english?: string;
+      chinese?: string;
+      display: string;
+    };
   };
   platform: {
     english?: string;
     chinese?: string;
     display: string;
   };
-  specification?: string;
+  specification?: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   flavor: {
     english?: string;
     chinese?: string;
     display: string;
   };
-  manufacturer?: string;
+  manufacturer?: {
+    english?: string;
+    chinese?: string;
+    display: string;
+  };
   collectTime: Date;
   syncTime: Date;
   version: number;
@@ -191,24 +211,61 @@ const ProductSchema = new mongoose.Schema({
     gift: { type: String, trim: true }
   },
   
-  // 产地信息
+  // 产地信息 - 支持中英文
   origin: {
-    country: { 
-      type: String, 
-      required: true,
-      default: '中国',
-      trim: true
+    country: {
+      english: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      chinese: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      display: {
+        type: String,
+        required: true,
+        default: '中国',
+        trim: true,
+        index: true
+      }
     },
-    province: { 
-      type: String, 
-      required: true,
-      index: true,
-      trim: true
+    province: {
+      english: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      chinese: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      display: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+      }
     },
-    city: { 
-      type: String,
-      index: true,
-      trim: true
+    city: {
+      english: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      chinese: {
+        type: String,
+        trim: true,
+        index: true
+      },
+      display: {
+        type: String,
+        trim: true,
+        index: true
+      }
     }
   },
   
@@ -232,7 +289,20 @@ const ProductSchema = new mongoose.Schema({
     }
   },
 
-  specification: { type: String, trim: true },
+  specification: {
+    english: {
+      type: String,
+      trim: true
+    },
+    chinese: {
+      type: String,
+      trim: true
+    },
+    display: {
+      type: String,
+      trim: true
+    }
+  },
   flavor: {
     english: {
       type: String,
@@ -247,7 +317,20 @@ const ProductSchema = new mongoose.Schema({
       trim: true
     }
   },
-  manufacturer: { type: String, trim: true },
+  manufacturer: {
+    english: {
+      type: String,
+      trim: true
+    },
+    chinese: {
+      type: String,
+      trim: true
+    },
+    display: {
+      type: String,
+      trim: true
+    }
+  },
   
   // 其他信息
   boxSpec: { type: String, trim: true },

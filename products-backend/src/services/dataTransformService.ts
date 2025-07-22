@@ -346,6 +346,9 @@ export class DataTransformService {
       'specification',
       'flavor',
       'manufacturer',
+      'origin.country',
+      'origin.province',
+      'origin.city',
       'collectTime',
       'images.front',
       'images.back',
@@ -617,12 +620,55 @@ export class DataTransformService {
       transformedData.flavor.display = englishFlavor || chineseFlavor || '';
     }
 
+    // 设置规格显示值
+    if (transformedData.specification) {
+      const englishSpec = transformedData.specification.english;
+      const chineseSpec = transformedData.specification.chinese;
+      transformedData.specification.display = englishSpec || chineseSpec || '';
+    }
+
+    // 设置生产商显示值
+    if (transformedData.manufacturer) {
+      const englishManufacturer = transformedData.manufacturer.english;
+      const chineseManufacturer = transformedData.manufacturer.chinese;
+      transformedData.manufacturer.display = englishManufacturer || chineseManufacturer || '';
+    }
+
+    // 设置产地显示值
+    if (transformedData.origin) {
+      // 设置国家显示值
+      if (transformedData.origin.country) {
+        const englishCountry = transformedData.origin.country.english;
+        const chineseCountry = transformedData.origin.country.chinese;
+        transformedData.origin.country.display = englishCountry || chineseCountry || '中国';
+      }
+
+      // 设置省份显示值
+      if (transformedData.origin.province) {
+        const englishProvince = transformedData.origin.province.english;
+        const chineseProvince = transformedData.origin.province.chinese;
+        transformedData.origin.province.display = englishProvince || chineseProvince || '';
+      }
+
+      // 设置城市显示值
+      if (transformedData.origin.city) {
+        const englishCity = transformedData.origin.city.english;
+        const chineseCity = transformedData.origin.city.chinese;
+        transformedData.origin.city.display = englishCity || chineseCity || '';
+      }
+    }
+
     this.logger.debug('设置显示字段完成', {
       nameDisplay: transformedData.name?.display,
       categoryPrimaryDisplay: transformedData.category?.primary?.display,
       categorySecondaryDisplay: transformedData.category?.secondary?.display,
       platformDisplay: transformedData.platform?.display,
-      flavorDisplay: transformedData.flavor?.display
+      flavorDisplay: transformedData.flavor?.display,
+      specificationDisplay: transformedData.specification?.display,
+      manufacturerDisplay: transformedData.manufacturer?.display,
+      originCountryDisplay: transformedData.origin?.country?.display,
+      originProvinceDisplay: transformedData.origin?.province?.display,
+      originCityDisplay: transformedData.origin?.city?.display
     });
   }
 

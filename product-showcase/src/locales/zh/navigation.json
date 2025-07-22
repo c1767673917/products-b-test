@@ -1,0 +1,50 @@
+{
+  "titles": {
+    "home": "产品展示",
+    "products": "产品列表 - 产品展示",
+    "productDetail": "{{productName}} - 产品详情",
+    "categories": "分类浏览 - 产品展示",
+    "search": "搜索结果 - 产品展示",
+    "sync": "数据同步 - 产品展示",
+    "performance": "性能演示 - 产品展示",
+    "demo": "API 演示 - 产品展示"
+  },
+  "meta": {
+    "description": "全面的产品展示应用，具备高级筛选和搜索功能",
+    "keywords": "产品, 展示, 电商, 筛选, 搜索",
+    "author": "产品展示团队"
+  },
+  "breadcrumb": {
+    "home": "首页",
+    "products": "产品",
+    "categories": "分类",
+    "search": "搜索",
+    "productDetail": "产品详情"
+  },
+  "pagination": {
+    "page": "页",
+    "of": "共",
+    "total": "总计",
+    "items": "项",
+    "showing": "显示",
+    "to": "到",
+    "from": "从",
+    "first": "首页",
+    "last": "末页",
+    "previous": "上一页",
+    "next": "下一页",
+    "goTo": "跳转到第",
+    "itemsPerPage": "每页显示"
+  },
+  "search": {
+    "placeholder": "搜索产品...",
+    "noResults": "未找到相关产品",
+    "resultsCount": "找到 {{count}} 个产品",
+    "searchBy": "搜索范围",
+    "suggestions": "搜索建议",
+    "recent": "最近搜索",
+    "popular": "热门搜索",
+    "clear": "清空搜索",
+    "advanced": "高级搜索"
+  }
+}

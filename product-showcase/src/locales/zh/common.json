@@ -1,0 +1,68 @@
+{
+  "navigation": {
+    "products": "产品",
+    "categories": "分类",
+    "search": "搜索",
+    "filters": "筛选",
+    "home": "首页",
+    "list": "产品列表",
+    "detail": "产品详情",
+    "sync": "数据同步",
+    "performance": "性能测试",
+    "demo": "API 演示"
+  },
+  "actions": {
+    "add": "添加",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "reset": "重置",
+    "clear": "清空",
+    "apply": "应用",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一页",
+    "previous": "上一页",
+    "submit": "提交",
+    "refresh": "刷新",
+    "reload": "重新加载",
+    "export": "导出",
+    "import": "导入"
+  },
+  "status": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息",
+    "noData": "暂无数据",
+    "empty": "空",
+    "completed": "已完成",
+    "pending": "待处理",
+    "processing": "处理中...",
+    "failed": "失败"
+  },
+  "language": {
+    "switch": "语言切换",
+    "english": "English",
+    "chinese": "中文",
+    "current": "当前语言"
+  },
+  "common": {
+    "total": "总计",
+    "page": "页",
+    "of": "共",
+    "items": "项",
+    "showing": "显示",
+    "to": "到",
+    "from": "从",
+    "all": "全部",
+    "none": "无",
+    "other": "其他",
+    "unknown": "未知",
+    "more": "更多",
+    "less": "收起"
+  }
+}

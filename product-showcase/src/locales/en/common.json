@@ -1,0 +1,68 @@
+{
+  "navigation": {
+    "products": "Products",
+    "categories": "Categories",
+    "search": "Search",
+    "filters": "Filters",
+    "home": "Home",
+    "list": "Product List",
+    "detail": "Product Detail",
+    "sync": "Data Sync",
+    "performance": "Performance",
+    "demo": "API Demo"
+  },
+  "actions": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "reset": "Reset",
+    "clear": "Clear",
+    "apply": "Apply",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "refresh": "Refresh",
+    "reload": "Reload",
+    "export": "Export",
+    "import": "Import"
+  },
+  "status": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "noData": "No data available",
+    "empty": "Empty",
+    "completed": "Completed",
+    "pending": "Pending",
+    "processing": "Processing...",
+    "failed": "Failed"
+  },
+  "language": {
+    "switch": "Language",
+    "english": "English",
+    "chinese": "中文",
+    "current": "Current Language"
+  },
+  "common": {
+    "total": "Total",
+    "page": "Page",
+    "of": "of",
+    "items": "items",
+    "showing": "Showing",
+    "to": "to",
+    "from": "from",
+    "all": "All",
+    "none": "None",
+    "other": "Other",
+    "unknown": "Unknown",
+    "more": "More",
+    "less": "Less"
+  }
+}

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { HeartIcon, EyeIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import type { ProductCardProps, ImageType } from '../../types/product';
 import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
 import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import {
   PRODUCT_CARD_VARIANTS,
   ANIMATION_DURATION,
@@ -26,6 +28,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [currentImageType, setCurrentImageType] = useState<ImageType>('front');
   const { preferences, getAnimationConfig } = useAnimationPreferences();
   const navigate = useNavigate();
+  const { t } = useTranslation('product');
+  
+  // Use i18n hooks
+  const {
+    getProductName,
+    getProductCategory,
+    getProductPlatform,
+    getProductFlavor,
+    getProductOrigin,
+    getFormattedPrice
+  } = useProductI18n();
 
   // 获取当前显示的图片
   const getCurrentImage = () => {
@@ -114,7 +127,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
             <LazyImage
               src={getCurrentImage()}
-              alt={product.name.display}
+              alt={getProductName(product)}
               className="w-full h-full object-cover rounded-md"
             />
             {discountRate > 0 && (
@@ -133,15 +146,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1 line-clamp-2 leading-tight">
-                  {product.name.display}
+                  {getProductName(product)}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {product.category.primary.display}
+                    {getProductCategory(product, 'primary')}
                   </span>
                   {product.category.secondary && (
                     <span className="text-xs text-gray-500 hidden sm:inline">
-                      {product.category.secondary.display}
+                      {getProductCategory(product, 'secondary')}
                     </span>
                   )}
                 </div>
@@ -149,7 +162,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {product.flavor && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
-                      {product.flavor.display}
+                      {getProductFlavor(product)}
                     </span>
                   )}
                   {product.specification && (
@@ -162,20 +175,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   {product.price.discount ? (
                     <>
                       <span className="text-lg sm:text-xl font-bold text-red-600">
-                        ¥{product.price.discount.toFixed(2)}
+                        {getFormattedPrice(product).discountPrice}
                       </span>
                       <span className="text-sm text-gray-500 line-through">
-                        ¥{product.price.normal.toFixed(2)}
+                        {getFormattedPrice(product).normalPrice}
                       </span>
                     </>
                   ) : (
                     <span className="text-lg sm:text-xl font-bold text-gray-900">
-                      ¥{product.price.normal.toFixed(2)}
+                      {getFormattedPrice(product).normalPrice}
                     </span>
                   )}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {product.origin.province} · {product.platform.display}
+                  {getProductOrigin(product)} · {getProductPlatform(product)}
                 </div>
               </div>
 
@@ -186,7 +199,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   whileTap={{ scale: 0.9 }}
                   onClick={handleFavorite}
                   className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                  title="收藏"
+                  title={t('actions.favorite')}
                 >
                   {isFavorited ? (
                     <HeartSolidIcon className="w-4 h-4 text-red-500" />
@@ -199,7 +212,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   whileTap={{ scale: 0.9 }}
                   onClick={handleCompare}
                   className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                  title="对比"
+                  title={t('actions.compare')}
                 >
                   <ScaleIcon className="w-4 h-4 text-gray-400" />
                 </motion.button>
@@ -211,7 +224,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     handleViewDetail();
                   }}
                   className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                  title="查看详情"
+                  title={t('actions.viewDetails')}
                 >
                   <EyeIcon className="w-4 h-4 text-gray-400" />
                 </motion.button>
@@ -250,7 +263,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="relative aspect-square overflow-hidden">
         <LazyImage
           src={getCurrentImage()}
-          alt={product.name.display}
+          alt={getProductName(product)}
           className={cn(
             "w-full h-full object-cover transition-transform duration-200",
             preferences.reduceMotion ? "" : "group-hover:scale-105"
@@ -276,7 +289,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={handleFavorite}
             className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm will-change-transform"
-            title="收藏"
+            title={t('actions.favorite')}
           >
             {isFavorited ? (
               <HeartSolidIcon className="w-4 h-4 text-red-500" />
@@ -290,7 +303,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
             onClick={handleCompare}
             className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm will-change-transform"
-            title="对比"
+            title={t('actions.compare')}
           >
             <ScaleIcon className="w-4 h-4 text-gray-600" />
           </motion.button>
@@ -317,7 +330,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       {/* 信息区域 */}
       <div className="p-3 sm:p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm sm:text-base leading-tight flex-shrink-0">
-          {product.name.display}
+          {getProductName(product)}
         </h3>
 
         <div className="flex items-center justify-between mb-2 flex-shrink-0">
@@ -325,15 +338,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.price.discount ? (
               <>
                 <span className="text-base sm:text-lg font-bold text-red-600">
-                  ¥{product.price.discount.toFixed(2)}
+                  {getFormattedPrice(product).discountPrice}
                 </span>
                 <span className="text-xs sm:text-sm text-gray-500 line-through">
-                  ¥{product.price.normal.toFixed(2)}
+                  {getFormattedPrice(product).normalPrice}
                 </span>
               </>
             ) : (
               <span className="text-base sm:text-lg font-bold text-gray-900">
-                ¥{product.price.normal.toFixed(2)}
+                {getFormattedPrice(product).normalPrice}
               </span>
             )}
           </div>
@@ -341,10 +354,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="flex items-center justify-between mb-2 flex-shrink-0">
           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate max-w-full">
-            {product.category.primary.display}
+            {getProductCategory(product, 'primary')}
           </span>
           <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
-            {product.origin.province}
+            {getProductOrigin(product)}
           </span>
         </div>
 
@@ -352,7 +365,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className="flex flex-wrap items-center gap-2 mb-2 flex-shrink-0">
           {product.flavor && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 truncate">
-              {product.flavor.display}
+              {getProductFlavor(product)}
             </span>
           )}
           {product.specification && (

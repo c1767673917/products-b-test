@@ -1,0 +1,77 @@
+{
+  "fields": {
+    "name": "产品名称",
+    "price": "价格",
+    "category": "分类",
+    "primaryCategory": "一级分类",
+    "secondaryCategory": "二级分类",
+    "origin": "产地",
+    "country": "国家",
+    "province": "省份",
+    "city": "城市",
+    "platform": "平台",
+    "specification": "规格",
+    "flavor": "口味",
+    "manufacturer": "生产商",
+    "collectTime": "采集时间",
+    "sequence": "序号",
+    "link": "链接",
+    "boxSpec": "箱规",
+    "notes": "备注"
+  },
+  "labels": {
+    "normalPrice": "原价",
+    "discountPrice": "折扣价",
+    "discountRate": "折扣率",
+    "hasDiscount": "促销中",
+    "noDiscount": "正常价格",
+    "priceRange": "价格区间",
+    "fromPrice": "从",
+    "toPrice": "到"
+  },
+  "images": {
+    "front": "正面图片",
+    "back": "背面图片",
+    "label": "标签图片", 
+    "package": "外包装图片",
+    "gift": "赠品图片",
+    "noImage": "暂无图片",
+    "loadingImage": "图片加载中...",
+    "imageError": "图片加载失败"
+  },
+  "filters": {
+    "allCategories": "全部分类",
+    "allPlatforms": "全部平台",
+    "allLocations": "全部地区",
+    "showDiscountOnly": "仅显示折扣商品",
+    "priceRange": "价格区间",
+    "filterBy": "筛选条件",
+    "sortBy": "排序方式",
+    "clearFilters": "清空筛选",
+    "applyFilters": "应用筛选"
+  },
+  "sorting": {
+    "name": "名称",
+    "priceAsc": "价格：从低到高",
+    "priceDesc": "价格：从高到低",
+    "collectTime": "采集时间",
+    "latest": "最新优先",
+    "oldest": "最早优先"
+  },
+  "actions": {
+    "viewDetails": "查看详情",
+    "quickView": "快速查看",
+    "favorite": "收藏",
+    "compare": "对比",
+    "share": "分享",
+    "copyLink": "复制链接"
+  },
+  "stats": {
+    "totalProducts": "产品总数",
+    "averagePrice": "平均价格",
+    "priceRange": "价格区间",
+    "categories": "分类数",
+    "platforms": "平台数",
+    "locations": "地区数"
+  }
+}
