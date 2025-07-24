@@ -119,16 +119,16 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       title: '分类信息',
       icon: <CubeIcon className="h-5 w-5" />,
       items: [
-        { label: '一级品类', value: getProductCategory(product.category.primary) },
-        { label: '二级品类', value: product.category.secondary ? getProductCategory(product.category.secondary) : undefined },
+        { label: '一级品类', value: getProductCategory(product, 'primary') },
+        { label: '二级品类', value: product.category?.secondary ? getProductCategory(product, 'secondary') : undefined },
       ]
     },
     {
       title: '销售信息',
       icon: <BuildingStorefrontIcon className="h-5 w-5" />,
       items: [
-        { label: '采集平台', value: getProductPlatform(product.platform) },
-        { label: '生产商', value: product.manufacturer },
+        { label: '采集平台', value: getProductPlatform(product) },
+        { label: '生产商', value: getLocalizedValue(product.manufacturer) },
         { label: '商品链接', value: product.link, type: 'link' },
       ]
     },
@@ -136,9 +136,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       title: '产地信息',
       icon: <MapPinIcon className="h-5 w-5" />,
       items: [
-        { label: '国家', value: product.origin.country },
-        { label: '省份', value: product.origin.province },
-        { label: '城市', value: product.origin.city },
+        { label: '国家', value: getLocalizedValue(product.origin?.country) },
+        { label: '省份', value: getLocalizedValue(product.origin?.province) },
+        { label: '城市', value: getLocalizedValue(product.origin?.city) },
       ]
     }
   ];

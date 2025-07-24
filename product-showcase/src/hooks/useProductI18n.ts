@@ -31,11 +31,19 @@ export const useProductI18n = () => {
 
   // Get localized product name
   const getProductName = (product: Product): string => {
+    if (!product || !product.name) {
+      return t('fields.name');
+    }
     return getLocalizedValue(product.name, t('fields.name'));
   };
 
   // Get localized category
   const getProductCategory = (product: Product, level: 'primary' | 'secondary' = 'primary'): string => {
+    // 防御性编程：检查product和category是否存在
+    if (!product || !product.category) {
+      return level === 'primary' ? t('filters.allCategories') : t('common.unknown');
+    }
+
     const categoryField = level === 'primary' ? product.category.primary : product.category.secondary;
     const fallback = level === 'primary' ? t('filters.allCategories') : '';
     return getLocalizedValue(categoryField, fallback);
@@ -43,6 +51,9 @@ export const useProductI18n = () => {
 
   // Get localized platform
   const getProductPlatform = (product: Product): string => {
+    if (!product || !product.platform) {
+      return t('filters.allPlatforms');
+    }
     return getLocalizedValue(product.platform, t('filters.allPlatforms'));
   };
 
