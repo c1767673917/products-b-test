@@ -9,6 +9,7 @@ import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
 import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
 import { useProductI18n } from '../../hooks/useProductI18n';
+import { calculateDiscountRate, formatDiscountRate } from '../../utils/discountCalculation';
 import {
   PRODUCT_CARD_VARIANTS,
   ANIMATION_DURATION,
@@ -37,7 +38,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     getProductPlatform,
     getProductFlavor,
     getProductOrigin,
-    getFormattedPrice
+    getFormattedPrice,
+    getLocalizedValue
   } = useProductI18n();
 
   // 获取当前显示的图片
@@ -46,7 +48,38 @@ const ProductCard: React.FC<ProductCardProps> = ({
     if (!product.images || typeof product.images !== 'object') {
       return '/placeholder-image.svg';
     }
-    return product.images[currentImageType] || product.images.front || '/placeholder-image.svg';
+
+    // 获取当前图片类型的数据
+    const currentImageData = product.images[currentImageType];
+    const frontImageData = product.images.front;
+
+    // 提取URL的辅助函数
+    const extractUrl = (imageData: any): string => {
+      if (!imageData) return '';
+
+      // 新的对象结构
+      if (typeof imageData === 'object' && 'url' in imageData) {
+        return imageData.url || '';
+      }
+
+      // 旧的字符串结构
+      if (typeof imageData === 'string') {
+        return imageData;
+      }
+
+      return '';
+    };
+
+    // 尝试获取当前类型的图片URL
+    let imageUrl = extractUrl(currentImageData);
+
+    // 如果当前类型没有图片，尝试使用正面图片
+    if (!imageUrl) {
+      imageUrl = extractUrl(frontImageData);
+    }
+
+    // 如果仍然没有有效URL，使用占位符
+    return imageUrl || '/placeholder-image.svg';
   };
 
   // 获取可用的图片类型
@@ -56,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       return [];
     }
     return (Object.keys(product.images) as ImageType[]).filter(
-      key => product.images[key]
+      key => product.images?.[key]
     );
   };
 
@@ -89,18 +122,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  // 计算折扣率 - 优先使用数据中的discountRate，否则实时计算
-  const getDiscountRate = () => {
-    if (product.price.discountRate) {
-      return product.price.discountRate;
-    }
-    if (product.price.discount && product.price.normal) {
-      return Math.round((1 - product.price.discount / product.price.normal) * 100);
-    }
-    return 0;
-  };
-
-  const discountRate = getDiscountRate();
+  // 使用统一的折扣计算工具函数
+  const discountRate = calculateDiscountRate(product);
   const availableImages = getAvailableImages();
 
   if (layout === 'list') {
@@ -136,7 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 animate={{ scale: 1 }}
                 className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium"
               >
-                -{discountRate}%
+                -{formatDiscountRate(discountRate, true, 1)}
               </motion.div>
             )}
           </div>
@@ -167,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   )}
                   {product.specification && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
-                      {product.specification}
+                      {typeof product.specification === 'string' ? product.specification : product.specification.display}
                     </span>
                   )}
                 </div>
@@ -280,7 +303,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             animate={{ scale: 1, rotate: -12 }}
             className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm"
           >
-            -{discountRate}%
+            -{formatDiscountRate(discountRate, true, 1)}
           </motion.div>
         )}
 
@@ -370,7 +393,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
           {product.specification && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
-              {product.specification}
+              {getLocalizedValue(product.specification)}
             </span>
           )}
         </div>

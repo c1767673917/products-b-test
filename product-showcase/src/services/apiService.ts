@@ -299,6 +299,46 @@ export class ApiService {
     }
   }
 
+  // 获取产品图片信息
+  async getProductImage(productId: string, imageType: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await backendApiService.get(`/products/${productId}/images/${imageType}`);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 获取产品的所有图片
+  async getProductImages(productId: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await backendApiService.get(`/products/${productId}/images`);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 修复产品图片引用
+  async repairProductImages(productId: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await backendApiService.post(`/products/${productId}/images/repair`);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 验证图片一致性
+  async validateImageConsistency(productId: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await backendApiService.get(`/products/${productId}/images/validate`);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   // 包装API响应
   private wrapResponse<T>(data: T, message?: string): ApiResponse<T> {
     return {

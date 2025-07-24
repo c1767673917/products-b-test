@@ -548,10 +548,21 @@ export class DataTransformService {
     const productId = transformedData.productId;
 
     for (const mapping of imageFields) {
-      const fileTokens = this.getNestedValue(transformedData, mapping.localFieldPath);
-      if (Array.isArray(fileTokens) && fileTokens.length > 0) {
+      const fieldValue = this.getNestedValue(transformedData, mapping.localFieldPath);
+      let fileTokens: string[] = [];
+
+      // 处理不同格式的图片数据
+      if (Array.isArray(fieldValue) && fieldValue.length > 0) {
+        // 数组格式（原始飞书数据）
+        fileTokens = fieldValue.filter(token => token && typeof token === 'string');
+      } else if (typeof fieldValue === 'string' && fieldValue.trim()) {
+        // 字符串格式（转换后的数据）
+        fileTokens = [fieldValue.trim()];
+      }
+
+      if (fileTokens.length > 0) {
         const imageType = mapping.localFieldPath.split('.')[1]; // 从 'images.front' 中提取 'front'
-        
+
         imageAttachments.push({
           productId,
           imageType,

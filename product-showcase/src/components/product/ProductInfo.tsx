@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  ChevronDownIcon, 
+import {
+  ChevronDownIcon,
   TagIcon,
   MapPinIcon,
   BuildingStorefrontIcon,
@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Product } from '../../types/product';
 import { Card } from '../ui/Card';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface ProductInfoProps {
   product: Product;
@@ -29,6 +30,16 @@ interface InfoSection {
 const SECTION_STORAGE_KEY = 'product-info-sections-state';
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact = false }) => {
+  // 使用i18n hooks获取本地化值
+  const {
+    getProductCategory,
+    getProductPlatform,
+    getProductOrigin,
+    getProductSpecification,
+    getProductFlavor,
+    getLocalizedValue
+  } = useProductI18n();
+
   // 从 localStorage 加载状态，默认全部展开
   const loadSectionsState = (): Set<string> => {
     try {
@@ -108,15 +119,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       title: '分类信息',
       icon: <CubeIcon className="h-5 w-5" />,
       items: [
-        { label: '一级品类', value: product.category.primary.display },
-        { label: '二级品类', value: product.category.secondary?.display },
+        { label: '一级品类', value: getProductCategory(product.category.primary) },
+        { label: '二级品类', value: product.category.secondary ? getProductCategory(product.category.secondary) : undefined },
       ]
     },
     {
       title: '销售信息',
       icon: <BuildingStorefrontIcon className="h-5 w-5" />,
       items: [
-        { label: '采集平台', value: product.platform.display },
+        { label: '采集平台', value: getProductPlatform(product.platform) },
         { label: '生产商', value: product.manufacturer },
         { label: '商品链接', value: product.link, type: 'link' },
       ]

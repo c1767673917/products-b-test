@@ -64,7 +64,7 @@ export function getPlaceholderImage(imageType: string): string {
   return '/placeholder-image.svg';
 }
 
-// 处理产品图片路径
+// 处理产品图片路径 - 支持新的对象结构
 export function processProductImages(product: Product): Product {
   // 确保 images 对象存在，如果不存在则创建一个空对象
   const processedImages = product.images && typeof product.images === 'object'
@@ -72,36 +72,72 @@ export function processProductImages(product: Product): Product {
     : {};
 
   // 检查并修复图片路径
-  Object.entries(processedImages).forEach(([type, path]) => {
-    if (path) {
-      // 检查是否需要修复路径
-      if (FrontendImageUtils.needsPathFix(path)) {
-        // 修复废弃路径
-        if (path.startsWith('http')) {
-          const objectName = FrontendImageUtils.extractObjectName(path);
-          const fixedPath = FrontendImageUtils.fixImagePath(objectName);
-          processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(fixedPath);
-        } else {
-          processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(FrontendImageUtils.fixImagePath(path));
+  Object.entries(processedImages).forEach(([type, imageData]) => {
+    if (imageData) {
+      let finalUrl: string = '';
+
+      // 处理新的对象结构
+      if (typeof imageData === 'object' && 'url' in imageData) {
+        // 新的对象结构，直接使用URL
+        finalUrl = imageData.url;
+
+        // 验证URL是否有效
+        if (!finalUrl || !finalUrl.startsWith('http')) {
+          // 如果URL无效，尝试从objectName构建
+          if (imageData.objectName) {
+            finalUrl = FrontendImageUtils.buildImageUrl(imageData.objectName);
+          }
         }
-      } else if (!path.startsWith('http')) {
-        // 如果不是完整URL，构建完整URL
-        processedImages[type as keyof typeof processedImages] = FrontendImageUtils.buildImageUrl(path);
       }
+      // 处理旧的字符串结构
+      else if (typeof imageData === 'string') {
+        // 检查是否需要修复路径
+        if (FrontendImageUtils.needsPathFix(imageData)) {
+          // 修复废弃路径
+          if (imageData.startsWith('http')) {
+            const objectName = FrontendImageUtils.extractObjectName(imageData);
+            const fixedPath = FrontendImageUtils.fixImagePath(objectName);
+            finalUrl = FrontendImageUtils.buildImageUrl(fixedPath);
+          } else {
+            finalUrl = FrontendImageUtils.buildImageUrl(FrontendImageUtils.fixImagePath(imageData));
+          }
+        } else if (!imageData.startsWith('http')) {
+          // 如果不是完整URL，构建完整URL
+          finalUrl = FrontendImageUtils.buildImageUrl(imageData);
+        } else {
+          finalUrl = imageData;
+        }
+      }
+
+      // 如果仍然没有有效URL，尝试根据序号生成
+      if (!finalUrl && product.sequence) {
+        const minioPath = generateMinIOImagePath(product.sequence, type);
+        if (minioPath) {
+          finalUrl = minioPath;
+        }
+      }
+
+      // 如果仍然没有有效路径，使用占位符
+      if (!finalUrl || !validateImagePath(finalUrl)) {
+        finalUrl = getPlaceholderImage(type);
+      }
+
+      // 保持向后兼容，返回字符串URL
+      processedImages[type as keyof typeof processedImages] = finalUrl;
     } else if (product.sequence) {
-      // 如果没有图片路径，尝试根据序号生成MinIO路径
+      // 如果没有图片数据，尝试根据序号生成MinIO路径
       const minioPath = generateMinIOImagePath(product.sequence, type);
       if (minioPath) {
         processedImages[type as keyof typeof processedImages] = minioPath;
+      } else {
+        processedImages[type as keyof typeof processedImages] = getPlaceholderImage(type);
       }
-    }
-    
-    // 如果仍然没有有效路径，使用占位符
-    if (!processedImages[type as keyof typeof processedImages] || !validateImagePath(processedImages[type as keyof typeof processedImages] || '')) {
+    } else {
+      // 使用占位符
       processedImages[type as keyof typeof processedImages] = getPlaceholderImage(type);
     }
   });
-  
+
   return {
     ...product,
     images: processedImages,

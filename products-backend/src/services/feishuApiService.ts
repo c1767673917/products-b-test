@@ -370,47 +370,95 @@ export class FeishuApiService {
    */
   async downloadImage(fileToken: string): Promise<Buffer> {
     try {
-      this.logger.debug('下载飞书图片文件...', { fileToken });
+      this.logger.info('下载飞书图片文件...', { fileToken });
 
-      // 先获取下载链接
-      const downloadResponse = await this.axiosInstance.get<FeishuDownloadTokenResponse>(
+      // 获取访问令牌
+      const accessToken = await this.getAccessToken();
+      this.logger.info('使用访问令牌:', { hasToken: !!accessToken, tokenLength: accessToken?.length });
+
+      // 直接下载图片 - 飞书API直接返回图片数据而不是下载链接
+      this.logger.info('发送飞书下载请求...', {
+        url: `/open-apis/drive/v1/medias/${fileToken}/download`,
+        fileToken
+      });
+
+      const imageResponse = await this.axiosInstance.get(
         `/open-apis/drive/v1/medias/${fileToken}/download`,
         {
+          responseType: 'arraybuffer',
+          timeout: 60000, // 图片下载超时时间更长
           headers: {
-            Authorization: `Bearer ${await this.getAccessToken()}`
+            Authorization: `Bearer ${accessToken}`
           }
         }
       );
 
-      if (downloadResponse.data.code !== 0) {
-        throw new Error(`获取下载链接失败: ${downloadResponse.data.msg}`);
+      // 检查响应状态
+      if (imageResponse.status !== 200) {
+        throw new Error(`HTTP错误: ${imageResponse.status}`);
       }
-
-      const downloadUrl = downloadResponse.data.data?.download_url;
-      if (!downloadUrl) {
-        throw new Error('飞书API返回的下载链接为空');
-      }
-
-      // 下载图片内容
-      const imageResponse = await axios.get(downloadUrl, {
-        responseType: 'arraybuffer',
-        timeout: 60000, // 图片下载超时时间更长
-        headers: {
-          Authorization: `Bearer ${await this.getAccessToken()}`
-        }
-      });
 
       const imageBuffer = Buffer.from(imageResponse.data);
-      this.logger.debug('图片下载成功', { 
-        fileToken, 
-        size: imageBuffer.length 
+
+      // 验证是否是有效的图片数据
+      if (imageBuffer.length === 0) {
+        throw new Error('下载的图片数据为空');
+      }
+
+      // 简单验证图片格式
+      const isValidImage = this.validateImageBuffer(imageBuffer);
+      if (!isValidImage) {
+        this.logger.warn('下载的数据可能不是有效的图片格式', {
+          fileToken,
+          size: imageBuffer.length,
+          firstBytes: imageBuffer.slice(0, 16).toString('hex')
+        });
+      }
+
+      this.logger.info('图片下载成功', {
+        fileToken,
+        size: imageBuffer.length,
+        contentType: imageResponse.headers['content-type']
       });
 
       return imageBuffer;
-    } catch (error) {
-      this.logger.error('下载图片失败:', error, { fileToken });
+    } catch (error: any) {
+      this.logger.error('下载图片失败:', {
+        fileToken,
+        error: error instanceof Error ? error.message : '未知错误',
+        stack: error instanceof Error ? error.stack : undefined,
+        response: error?.response?.data,
+        status: error?.response?.status
+      });
       throw new Error(`下载图片失败: ${error instanceof Error ? error.message : '未知错误'}`);
     }
+  }
+
+  /**
+   * 验证图片缓冲区是否为有效的图片格式
+   */
+  private validateImageBuffer(buffer: Buffer): boolean {
+    if (buffer.length < 8) return false;
+
+    // 检查常见图片格式的魔数
+    const header = buffer.slice(0, 8);
+
+    // JPEG: FF D8
+    if (header[0] === 0xFF && header[1] === 0xD8) return true;
+
+    // PNG: 89 50 4E 47 0D 0A 1A 0A
+    if (header.equals(Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]))) return true;
+
+    // WebP: RIFF....WEBP
+    if (buffer.length >= 12 &&
+        header.slice(0, 4).equals(Buffer.from('RIFF')) &&
+        buffer.slice(8, 12).equals(Buffer.from('WEBP'))) return true;
+
+    // GIF: GIF87a 或 GIF89a
+    if (header.slice(0, 6).equals(Buffer.from('GIF87a')) ||
+        header.slice(0, 6).equals(Buffer.from('GIF89a'))) return true;
+
+    return false;
   }
 
   /**

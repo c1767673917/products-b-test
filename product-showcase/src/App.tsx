@@ -23,7 +23,6 @@ const ApiDemo = React.lazy(() =>
   }))
 );
 const SyncManagement = React.lazy(() => import('./pages/SyncManagement'));
-const ImageTestComponent = React.lazy(() => import('./components/ImageTestComponent'));
 
 
 
@@ -90,18 +89,7 @@ const AnimatedRoutes: React.FC = () => {
             </ErrorBoundary>
           }
         />
-        <Route
-          path="/image-test"
-          element={
-            <ErrorBoundary>
-              <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="fade">
-                  <ImageTestComponent />
-                </PageTransitionWrapper>
-              </Suspense>
-            </ErrorBoundary>
-          }
-        />
+
 
       </Routes>
     </AnimatePresence>

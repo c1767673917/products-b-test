@@ -20,6 +20,7 @@ import ResizableHandle from '../ui/ResizableHandle';
 import { useToast } from '../ui/ToastNotification';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface ProductDetailPanelProps {
   product: Product | null;
@@ -46,13 +47,19 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const { preferences, setPanelWidth } = usePanelPreferences();
   const [currentWidth, setCurrentWidth] = useState(preferences.width);
-  
-  const { 
-    favorites, 
+
+  // 使用i18n hooks获取本地化值
+  const {
+    getProductName,
+    getLocalizedValue
+  } = useProductI18n();
+
+  const {
+    favorites,
     compareList,
-    toggleFavorite, 
-    addToCompare, 
-    removeFromCompare 
+    toggleFavorite,
+    addToCompare,
+    removeFromCompare
   } = useProductStore();
 
   // 处理面板宽度调整
@@ -291,7 +298,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                 className="transform-gpu"
               >
                 <h1 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
-                  {product.name.display}
+                  {getProductName(product)}
                 </h1>
                 
                 <div className="mb-4">
@@ -377,7 +384,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                     </div>
                     <div>
                       <span className="font-medium text-gray-500">口味</span>
-                      <p className="text-gray-900 break-words">{product.flavor?.display || '暂无'}</p>
+                      <p className="text-gray-900 break-words">{getLocalizedValue(product.flavor, '暂无')}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-500">包装规格</span>

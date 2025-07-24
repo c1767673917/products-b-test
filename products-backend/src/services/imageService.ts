@@ -8,9 +8,9 @@ import { getFeishuApiService } from './feishuApiService';
 import winston from 'winston';
 
 export class ImageService {
-  private minioClient: MinioClient;
-  private bucketName: string;
-  private logger: winston.Logger;
+  protected minioClient: MinioClient;
+  protected bucketName: string;
+  protected logger: winston.Logger;
 
   constructor() {
     this.minioClient = new MinioClient({
@@ -712,7 +712,7 @@ export class ImageService {
   /**
    * 生成飞书图片文件名
    */
-  private generateFeishuImageName(productId: string, imageType: string, fileToken: string): string {
+  protected generateFeishuImageName(productId: string, imageType: string, fileToken: string): string {
     // 使用产品ID、图片类型和文件令牌的前8位来生成唯一文件名
     const tokenPrefix = fileToken.substring(0, 8);
     return `${productId}_${imageType}_${tokenPrefix}.jpg`;

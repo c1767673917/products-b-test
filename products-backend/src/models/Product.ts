@@ -30,11 +30,56 @@ export interface IProduct extends mongoose.Document {
     currency: string;
   };
   images: {
-    front?: string;
-    back?: string;
-    label?: string;
-    package?: string;
-    gift?: string;
+    front?: string | {
+      imageId: string;
+      url: string;
+      objectName: string;
+      lastUpdated: Date;
+      fileSize?: number;
+      mimeType?: string;
+      width?: number;
+      height?: number;
+    };
+    back?: string | {
+      imageId: string;
+      url: string;
+      objectName: string;
+      lastUpdated: Date;
+      fileSize?: number;
+      mimeType?: string;
+      width?: number;
+      height?: number;
+    };
+    label?: string | {
+      imageId: string;
+      url: string;
+      objectName: string;
+      lastUpdated: Date;
+      fileSize?: number;
+      mimeType?: string;
+      width?: number;
+      height?: number;
+    };
+    package?: string | {
+      imageId: string;
+      url: string;
+      objectName: string;
+      lastUpdated: Date;
+      fileSize?: number;
+      mimeType?: string;
+      width?: number;
+      height?: number;
+    };
+    gift?: string | {
+      imageId: string;
+      url: string;
+      objectName: string;
+      lastUpdated: Date;
+      fileSize?: number;
+      mimeType?: string;
+      width?: number;
+      height?: number;
+    };
   };
   origin: {
     country: {
@@ -202,13 +247,68 @@ const ProductSchema = new mongoose.Schema({
     }
   },
   
-  // 图片信息
+  // 图片信息 - 支持字符串URL或详细对象结构
   images: {
-    front: { type: String, trim: true },
-    back: { type: String, trim: true },
-    label: { type: String, trim: true },
-    package: { type: String, trim: true },
-    gift: { type: String, trim: true }
+    front: {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function(value: any) {
+          if (!value) return true;
+          if (typeof value === 'string') return true;
+          if (typeof value === 'object' && value.imageId && value.url && value.objectName) return true;
+          return false;
+        },
+        message: 'images.front must be a string URL or an object with imageId, url, and objectName'
+      }
+    },
+    back: {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function(value: any) {
+          if (!value) return true;
+          if (typeof value === 'string') return true;
+          if (typeof value === 'object' && value.imageId && value.url && value.objectName) return true;
+          return false;
+        },
+        message: 'images.back must be a string URL or an object with imageId, url, and objectName'
+      }
+    },
+    label: {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function(value: any) {
+          if (!value) return true;
+          if (typeof value === 'string') return true;
+          if (typeof value === 'object' && value.imageId && value.url && value.objectName) return true;
+          return false;
+        },
+        message: 'images.label must be a string URL or an object with imageId, url, and objectName'
+      }
+    },
+    package: {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function(value: any) {
+          if (!value) return true;
+          if (typeof value === 'string') return true;
+          if (typeof value === 'object' && value.imageId && value.url && value.objectName) return true;
+          return false;
+        },
+        message: 'images.package must be a string URL or an object with imageId, url, and objectName'
+      }
+    },
+    gift: {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function(value: any) {
+          if (!value) return true;
+          if (typeof value === 'string') return true;
+          if (typeof value === 'object' && value.imageId && value.url && value.objectName) return true;
+          return false;
+        },
+        message: 'images.gift must be a string URL or an object with imageId, url, and objectName'
+      }
+    }
   },
   
   // 产地信息 - 支持中英文
@@ -381,6 +481,63 @@ ProductSchema.index({ 'name.display': 1, status: 1 });
 ProductSchema.index({ 'name.english': 1, 'name.chinese': 1 });
 ProductSchema.index({ 'category.primary.english': 1, 'category.primary.chinese': 1 });
 ProductSchema.index({ 'platform.english': 1, 'platform.chinese': 1 });
+
+// 添加图片关联索引
+ProductSchema.index({ 'images.front.imageId': 1 }, { sparse: true });
+ProductSchema.index({ 'images.back.imageId': 1 }, { sparse: true });
+ProductSchema.index({ 'images.label.imageId': 1 }, { sparse: true });
+ProductSchema.index({ 'images.package.imageId': 1 }, { sparse: true });
+ProductSchema.index({ 'images.gift.imageId': 1 }, { sparse: true });
+
+// 添加关联验证中间件
+ProductSchema.pre('save', async function(next) {
+  try {
+    // 验证图片引用的完整性
+    const imageTypes = ['front', 'back', 'label', 'package', 'gift'];
+
+    for (const imageType of imageTypes) {
+      const imageData = this.images?.[imageType as keyof typeof this.images];
+
+      if (imageData && typeof imageData === 'object' && 'imageId' in imageData) {
+        // 验证引用的Image记录是否存在
+        const Image = mongoose.model('Image');
+        const imageExists = await Image.exists({ imageId: imageData.imageId });
+
+        if (!imageExists) {
+          console.warn(`警告: 产品 ${this.productId} 引用的 ${imageType} 图片 ${imageData.imageId} 不存在`);
+          // 可以选择抛出错误或者清理无效引用
+          // throw new Error(`引用的图片不存在: ${imageData.imageId}`);
+        }
+      }
+    }
+
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
+
+// 删除前清理关联的图片
+ProductSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+  try {
+    const Image = mongoose.model('Image');
+
+    // 标记关联的图片为孤立状态
+    await Image.updateMany(
+      { productId: this.productId },
+      {
+        $set: {
+          productExists: false,
+          isActive: false
+        }
+      }
+    );
+
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
 
 export const Product = mongoose.model('Product', ProductSchema);
 export default Product;

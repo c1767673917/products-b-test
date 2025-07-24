@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { Product } from '../models';
+import { ProductImageController } from '../controllers/productImageController';
 
 // 请求参数类型定义
 interface ProductListQuery {
@@ -249,4 +250,44 @@ export async function productRoutes(fastify: FastifyInstance) {
       });
     }
   });
+
+  // 产品图片相关路由
+
+  /**
+   * 测试路由
+   * GET /api/v1/products/:productId/test
+   */
+  fastify.get('/:productId/test', async (request, reply) => {
+    return { success: true, message: 'Test route works', productId: (request.params as any).productId };
+  });
+
+  /**
+   * 验证产品图片一致性
+   * GET /api/v1/products/:productId/images/validate
+   */
+  fastify.get('/:productId/images/validate', ProductImageController.validateImageConsistency);
+
+  /**
+   * 获取产品的所有图片
+   * GET /api/v1/products/:productId/images
+   */
+  fastify.get('/:productId/images', ProductImageController.getProductImages);
+
+  /**
+   * 获取产品的单个图片信息
+   * GET /api/v1/products/:productId/images/:imageType
+   */
+  fastify.get('/:productId/images/:imageType', ProductImageController.getProductImage);
+
+  /**
+   * 修复产品图片引用
+   * POST /api/v1/products/:productId/images/repair
+   */
+  fastify.post('/:productId/images/repair', ProductImageController.repairProductImages);
+
+  /**
+   * 重新同步产品图片
+   * POST /api/v1/products/:productId/images/sync
+   */
+  fastify.post('/:productId/images/sync', ProductImageController.syncProductImages);
 }

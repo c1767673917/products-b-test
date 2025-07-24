@@ -6,6 +6,7 @@ import { useProductStore } from '../../stores/productStore';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import ProductCard from './ProductCard';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface RelatedProductsProps {
   currentProduct: Product;
@@ -27,6 +28,9 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
   const { products } = useProductStore();
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 4;
+
+  // 使用i18n hooks获取本地化值
+  const { getProductPlatform } = useProductI18n();
 
   // 推荐策略
   const strategies: RecommendationStrategy[] = [
@@ -58,7 +62,9 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       name: '同平台推荐',
       description: '来自相同平台的产品',
       getScore: (product, current) => {
-        return product.platform.display === current.platform.display ? 20 : 0;
+        const productPlatform = getProductPlatform({ platform: product.platform } as Product);
+        const currentPlatform = getProductPlatform({ platform: current.platform } as Product);
+        return productPlatform === currentPlatform ? 20 : 0;
       }
     },
     {
