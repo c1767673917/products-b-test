@@ -10,6 +10,7 @@ import {
 import { ImageType, Product } from '../../types/product';
 import { Button } from '../ui/Button';
 import LazyImage from './LazyImage';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface OptimizedImageGalleryProps {
   product: Product;
@@ -34,6 +35,7 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [imageColumns, setImageColumns] = useState(2);
+  const { getProductName } = useProductI18n();
 
   // 获取所有可用的图片
   const getAvailableImages = (): ImageInfo[] => {
@@ -185,7 +187,7 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
           >
             <LazyImage
               src={image.url}
-              alt={`${product.name} - ${image.label}`}
+              alt={`${getProductName(product)} - ${image.label}`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
@@ -271,7 +273,7 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
             >
               <motion.img
                 src={availableImages[selectedImageIndex].url}
-                alt={`${product.name} - ${availableImages[selectedImageIndex].label}`}
+                alt={`${getProductName(product)} - ${availableImages[selectedImageIndex].label}`}
                 className="max-w-full max-h-full object-contain"
                 style={{ transform: `scale(${zoomLevel})` }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -308,7 +310,7 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
 
             {/* 全屏图片信息 */}
             <div className="absolute bottom-4 left-4 text-white">
-              <p className="text-lg font-medium">{product.name}</p>
+              <p className="text-lg font-medium">{getProductName(product)}</p>
               <p className="text-sm opacity-80">{availableImages[selectedImageIndex].label}</p>
               <p className="text-sm opacity-60">
                 {selectedImageIndex + 1} / {availableImages.length}
@@ -336,7 +338,7 @@ const OptimizedImageGallery: React.FC<OptimizedImageGalleryProps> = ({
                   >
                     <img
                       src={image.url}
-                      alt={`${product.name} - ${image.label}`}
+                      alt={`${getProductName(product)} - ${image.label}`}
                       className="w-full h-full object-cover"
                     />
                   </motion.button>

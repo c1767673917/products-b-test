@@ -10,6 +10,7 @@ import {
 import { ImageType, Product } from '../../types/product';
 import { Button } from '../ui/Button';
 import LazyImage from './LazyImage';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface ImageGalleryProps {
   product: Product;
@@ -28,6 +29,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { getProductName } = useProductI18n();
 
   // 获取所有可用的图片
   const getAvailableImages = (): ImageInfo[] => {
@@ -139,7 +141,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
       <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] xl:aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden group shadow-sm">
         <LazyImage
           src={currentImage.url}
-          alt={`${product.name} - ${currentImage.label}`}
+          alt={`${getProductName(product)} - ${currentImage.label}`}
           className="w-full h-full object-cover cursor-zoom-in transition-transform duration-200 group-hover:scale-105 will-change-transform"
           onClick={handleFullscreen}
         />
@@ -201,7 +203,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
             >
               <LazyImage
                 src={image.url}
-                alt={`${product.name} - ${image.label}`}
+                alt={`${getProductName(product)} - ${image.label}`}
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs px-1 py-1 text-center truncate">
@@ -279,7 +281,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
             >
               <motion.img
                 src={currentImage.url}
-                alt={`${product.name} - ${currentImage.label}`}
+                alt={`${getProductName(product)} - ${currentImage.label}`}
                 className="max-w-full max-h-full object-contain"
                 style={{ 
                   transform: `scale(${zoomLevel})`,
@@ -319,7 +321,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ product, className, compact
 
             {/* 全屏图片信息 */}
             <div className="absolute bottom-4 left-4 text-white">
-              <p className="text-lg font-medium">{product.name}</p>
+              <p className="text-lg font-medium">{getProductName(product)}</p>
               <p className="text-sm opacity-80">{currentImage.label}</p>
               {availableImages.length > 1 && (
                 <p className="text-sm opacity-60">
