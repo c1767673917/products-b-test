@@ -51,10 +51,10 @@
     "applyFilters": "Apply Filters"
   },
   "sorting": {
-    "name": "Name",
+    "name": "Sort by name",
     "priceAsc": "Price: Low to High",
     "priceDesc": "Price: High to Low",
-    "collectTime": "Collection Time",
+    "collectTime": "By collection time",
     "latest": "Latest First",
     "oldest": "Oldest First"
   },

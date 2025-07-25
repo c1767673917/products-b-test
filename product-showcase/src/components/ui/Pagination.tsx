@@ -7,6 +7,7 @@ import {
   ChevronDoubleRightIcon,
   EllipsisHorizontalIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 import { cn } from '../../utils/cn';
 
@@ -39,6 +40,8 @@ const Pagination: React.FC<PaginationProps> = ({
   className,
   disabled = false
 }) => {
+  const { t } = useTranslation('navigation');
+
   // 计算显示范围
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -133,8 +136,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {/* 左侧：显示范围信息 */}
       {showPageInfo && (
         <div className="text-sm text-gray-600 order-2 sm:order-1">
-          显示第 <span className="font-medium">{startItem}</span> - <span className="font-medium">{endItem}</span> 项，
-          共 <span className="font-medium">{totalItems}</span> 项
+          {t('pagination.showing')} <span className="font-medium">{startItem}</span> {t('pagination.to')} <span className="font-medium">{endItem}</span> {t('pagination.of')} <span className="font-medium">{totalItems}</span> {t('pagination.items')}
         </div>
       )}
 
@@ -150,7 +152,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className="hidden sm:inline-flex"
             leftIcon={<ChevronDoubleLeftIcon className="w-4 h-4" />}
           >
-            首页
+            {t('pagination.first')}
           </Button>
 
           {/* 上一页按钮 */}
@@ -161,7 +163,7 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => handlePageClick(currentPage - 1)}
             leftIcon={<ChevronLeftIcon className="w-4 h-4" />}
           >
-            <span className="hidden sm:inline">上一页</span>
+            <span className="hidden sm:inline">{t('pagination.previous')}</span>
           </Button>
 
           {/* 页码按钮 */}
@@ -203,7 +205,7 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => handlePageClick(currentPage + 1)}
             rightIcon={<ChevronRightIcon className="w-4 h-4" />}
           >
-            <span className="hidden sm:inline">下一页</span>
+            <span className="hidden sm:inline">{t('pagination.next')}</span>
           </Button>
 
           {/* 末页按钮 */}
@@ -215,7 +217,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className="hidden sm:inline-flex"
             rightIcon={<ChevronDoubleRightIcon className="w-4 h-4" />}
           >
-            末页
+            {t('pagination.last')}
           </Button>
         </div>
       )}
@@ -223,8 +225,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {/* 右侧：每页显示数量选择器 */}
       {showItemsPerPageSelector && (
         <div className="flex items-center space-x-2 text-sm text-gray-600 order-3">
-          <span className="hidden sm:inline">每页显示</span>
-          <span className="sm:hidden">每页</span>
+          <span>{t('pagination.itemsPerPage')}</span>
           <select
             value={itemsPerPage}
             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
@@ -233,11 +234,10 @@ const Pagination: React.FC<PaginationProps> = ({
           >
             {itemsPerPageOptions.map((option) => (
               <option key={option} value={option}>
-                {option === 1000 ? '全部' : option}
+                {option === 1000 ? t('common.all') : option}
               </option>
             ))}
           </select>
-          <span>条</span>
         </div>
       )}
     </div>

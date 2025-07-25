@@ -13,7 +13,7 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }
     { path: '/', label: t('navigation.list') },
     { path: '/sync-management', label: t('navigation.sync') },
     { path: '/api-demo', label: t('navigation.demo') },
-    { path: '/image-test', label: '图片测试' }
+    { path: '/image-test', label: t('navigation.imageTest') }
   ];
 
   return (

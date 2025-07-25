@@ -29,7 +29,9 @@
     "refresh": "刷新",
     "reload": "重新加载",
     "export": "导出",
-    "import": "导入"
+    "import": "导入",
+    "share": "分享",
+    "filter": "筛选"
   },
   "status": {
     "loading": "加载中...",

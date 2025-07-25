@@ -29,7 +29,9 @@
     "refresh": "Refresh",
     "reload": "Reload",
     "export": "Export",
-    "import": "Import"
+    "import": "Import",
+    "share": "Share",
+    "filter": "Filter"
   },
   "status": {
     "loading": "Loading...",

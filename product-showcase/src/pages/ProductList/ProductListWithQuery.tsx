@@ -11,6 +11,7 @@ import {
   ArrowPathIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import type { Product, FilterState } from '../../types/product';
 import ProductCard from '../../components/product/ProductCard';
 import ProductDetailPanel from '../../components/product/ProductDetailPanel';
@@ -43,6 +44,9 @@ const initialFilters: FilterState = {
 };
 
 export const ProductListWithQuery: React.FC = () => {
+  // 翻译
+  const { t } = useTranslation(['navigation', 'product', 'common']);
+
   // 路由状态
   const location = useLocation();
 
@@ -259,13 +263,15 @@ export const ProductListWithQuery: React.FC = () => {
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
     switch (action) {
       case 'favorite':
-        setFavorites(prev => 
-          prev.includes(product.productId) 
+        setFavorites(prev =>
+          prev.includes(product.productId)
             ? prev.filter(id => id !== product.productId)
             : [...prev, product.productId]
         );
         showSuccess(
-          favorites.includes(product.productId) ? '已取消收藏' : '已添加到收藏'
+          favorites.includes(product.productId)
+            ? t('product:detail.toast.favoriteRemoved')
+            : t('product:detail.toast.favoriteAdded')
         );
         break;
       case 'detail':
@@ -274,15 +280,15 @@ export const ProductListWithQuery: React.FC = () => {
         break;
       case 'compare':
         if (compareList.length >= 4) {
-          showError('最多只能对比4个产品');
+          showError(t('product:detail.toast.compareLimit'));
           return;
         }
         if (compareList.includes(product.productId)) {
-          showInfo('该产品已在对比列表中');
+          showInfo(t('product:detail.toast.compareAdded'));
           return;
         }
         setCompareList(prev => [...prev, product.productId]);
-        showSuccess('已添加到对比列表');
+        showSuccess(t('product:detail.toast.compareAdded'));
         break;
     }
   };
@@ -315,17 +321,17 @@ export const ProductListWithQuery: React.FC = () => {
     setSearchQuery('');
     setLocalSearchQuery('');
     setCurrentPage(1);
-    showInfo('筛选条件已清空');
+    showInfo(t('navigation:search.clearFilters'));
   };
 
   // 刷新数据
   const handleRefresh = () => {
     refreshMutation.mutate(apiParams, {
       onSuccess: () => {
-        showSuccess('数据刷新成功');
+        showSuccess(t('common:status.success'));
       },
       onError: (error) => {
-        showError(`刷新失败: ${error.message}`);
+        showError(`${t('common:actions.refresh')} ${t('common:status.failed')}: ${error.message}`);
       }
     });
   };
@@ -334,7 +340,7 @@ export const ProductListWithQuery: React.FC = () => {
   const handleShare = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-      showSuccess('链接已复制到剪贴板');
+      showSuccess(t('product:actions.copyLink'));
     }).catch(() => {
       showError('复制失败');
     });
@@ -376,7 +382,7 @@ export const ProductListWithQuery: React.FC = () => {
                 disabled={isLoading}
               >
                 <ArrowPathIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">刷新</span>}
+                {!isMobile && <span className="ml-1">{t('common:actions.refresh')}</span>}
               </Button>
 
               <Button
@@ -385,7 +391,7 @@ export const ProductListWithQuery: React.FC = () => {
                 onClick={handleShare}
               >
                 <ShareIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">分享</span>}
+                {!isMobile && <span className="ml-1">{t('common:actions.share')}</span>}
               </Button>
 
               <Button
@@ -394,7 +400,7 @@ export const ProductListWithQuery: React.FC = () => {
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FunnelIcon className="h-4 w-4" />
-                {!isMobile && <span className="ml-1">筛选</span>}
+                {!isMobile && <span className="ml-1">{t('common:actions.filter')}</span>}
               </Button>
 
               {/* 视图切换 */}
@@ -495,7 +501,7 @@ export const ProductListWithQuery: React.FC = () => {
                     <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-2xl">
                       <div className="flex items-center space-x-2">
                         <FunnelIcon className="w-5 h-5 text-gray-600" />
-                        <h2 className="text-lg font-semibold text-gray-900">筛选条件</h2>
+                        <h2 className="text-lg font-semibold text-gray-900">{t('common:actions.filter')}</h2>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Button
@@ -541,7 +547,7 @@ export const ProductListWithQuery: React.FC = () => {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
                       <Input
-                        placeholder="搜索产品名称、品类、口味..."
+                        placeholder={t('navigation:search.detailedPlaceholder')}
                         value={localSearchQuery}
                         onChange={(e) => setLocalSearchQuery(e.target.value)}
                         leftIcon={<MagnifyingGlassIcon className="h-4 w-4" />}
@@ -552,24 +558,22 @@ export const ProductListWithQuery: React.FC = () => {
                       onChange={(e) => setSortOption(e.target.value as 'name' | 'price-asc' | 'price-desc' | 'collect-time')}
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      <option value="name">按名称排序</option>
-                      <option value="price-asc">价格从低到高</option>
-                      <option value="price-desc">价格从高到低</option>
-                      <option value="collect-time">按采集时间</option>
+                      <option value="name">{t('product:sorting.name')}</option>
+                      <option value="price-asc">{t('product:sorting.priceAsc')}</option>
+                      <option value="price-desc">{t('product:sorting.priceDesc')}</option>
+                      <option value="collect-time">{t('product:sorting.collectTime')}</option>
                     </select>
                   </div>
 
                   {/* 结果统计 */}
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>
-                      共找到 {actualPagination.total} 个产品
-                      {searchQuery && ` (搜索: "${searchQuery}")`}
-                      {actualPagination.total > 0 && (
-                        <span className="ml-2 text-gray-500">
-                          (第 {(actualPagination.page - 1) * actualPagination.limit + 1} -
-                          {Math.min(actualPagination.page * actualPagination.limit, actualPagination.total)} 项)
-                        </span>
-                      )}
+                      {t('navigation:search.resultsCountWithRange', {
+                        count: actualPagination.total,
+                        start: (actualPagination.page - 1) * actualPagination.limit + 1,
+                        end: Math.min(actualPagination.page * actualPagination.limit, actualPagination.total)
+                      })}
+                      {searchQuery && ` (${t('navigation:search.searchBy')}: "${searchQuery}")`}
                     </span>
                     {isLoading && <Spinner size="sm" />}
                   </div>
@@ -584,13 +588,13 @@ export const ProductListWithQuery: React.FC = () => {
                 </div>
               ) : paginatedProducts.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-500">没有找到符合条件的产品</p>
+                  <p className="text-gray-500">{t('navigation:search.noProductsFound')}</p>
                   <Button
                     variant="outline"
                     onClick={handleClearFilters}
                     className="mt-4"
                   >
-                    清空筛选条件
+                    {t('navigation:search.clearFilters')}
                   </Button>
                 </div>
               ) : (

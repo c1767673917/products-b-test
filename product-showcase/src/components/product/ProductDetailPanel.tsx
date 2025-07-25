@@ -127,7 +127,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
       toggleFavorite(product.productId);
       const isFavorited = favorites.includes(product.productId);
       showSuccess(
-        isFavorited ? '已取消收藏' : '已添加到收藏'
+        isFavorited ? t('detail.toast.favoriteRemoved') : t('detail.toast.favoriteAdded')
       );
     }
   };
@@ -137,14 +137,14 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
       const isInCompare = compareList.includes(product.productId);
       if (isInCompare) {
         removeFromCompare(product.productId);
-        showInfo('已从对比列表移除');
+        showInfo(t('detail.toast.compareRemoved'));
       } else {
         if (compareList.length >= 4) {
-          showError('对比列表最多只能添加4个产品');
+          showError(t('detail.toast.compareLimit'));
           return;
         }
         addToCompare(product.productId);
-        showSuccess('已添加到对比列表');
+        showSuccess(t('detail.toast.compareAdded'));
       }
     }
   };
@@ -154,12 +154,12 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
       try {
         await navigator.share({
           title: product.name,
-          text: `查看这个产品：${product.name}`,
+          text: t('detail.share.text', { productName: product.name }),
           url: window.location.href,
         });
       } catch {
         navigator.clipboard.writeText(window.location.href);
-        showSuccess('链接已复制到剪贴板');
+        showSuccess(t('detail.share.linkCopied'));
       }
     }
   };

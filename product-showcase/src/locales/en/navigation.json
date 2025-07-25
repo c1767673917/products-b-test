@@ -34,22 +34,28 @@
     "previous": "Previous", 
     "next": "Next",
     "goTo": "Go to page",
-    "itemsPerPage": "Items per page"
+    "itemsPerPage": "items per page"
   },
   "search": {
     "placeholder": "Search products...",
+    "detailedPlaceholder": "Search by product name, category, flavor",
     "noResults": "No products found",
-    "resultsCount": "{{count}} products found",
+    "resultsCount": "Found {{count}} products",
+    "resultsCountWithRange": "Found {{count}} products (items {{start}}-{{end}})",
     "searchBy": "Search by",
     "suggestions": "Search Suggestions",
     "recent": "Recent Searches",
     "popular": "Popular Searches",
     "clear": "Clear search",
-    "advanced": "Advanced Search"
+    "advanced": "Advanced Search",
+    "clearFilters": "Clear filters",
+    "noProductsFound": "No products match the criteria"
   },
   "navigation": {
     "list": "Product List",
     "sync": "Data Sync",
-    "demo": "API Demo"
+    "demo": "API Demo",
+    "imageTest": "Image Test",
+    "performanceDemo": "Performance Demo"
   }
 }

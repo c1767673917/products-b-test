@@ -9,6 +9,7 @@ import {
   Bars3Icon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
 
@@ -17,24 +18,6 @@ interface NavigationItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 }
-
-const navigationItems: NavigationItem[] = [
-  {
-    path: '/',
-    label: '产品列表',
-    icon: HomeIcon
-  },
-  {
-    path: '/api-demo',
-    label: 'API演示',
-    icon: CpuChipIcon
-  },
-  {
-    path: '/performance-demo',
-    label: '性能演示',
-    icon: ChartBarIcon
-  }
-];
 
 interface PageNavigationProps {
   title: string;
@@ -47,8 +30,27 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
   subtitle,
   className
 }) => {
+  const { t } = useTranslation('navigation');
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navigationItems: NavigationItem[] = [
+    {
+      path: '/',
+      label: t('navigation.list'),
+      icon: HomeIcon
+    },
+    {
+      path: '/api-demo',
+      label: t('navigation.demo'),
+      icon: CpuChipIcon
+    },
+    {
+      path: '/performance-demo',
+      label: t('navigation.performanceDemo'),
+      icon: ChartBarIcon
+    }
+  ];
 
   // 监听路由变化，关闭移动端菜单
   useEffect(() => {

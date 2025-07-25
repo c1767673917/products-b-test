@@ -34,22 +34,28 @@
     "previous": "上一页",
     "next": "下一页",
     "goTo": "跳转到第",
-    "itemsPerPage": "每页显示"
+    "itemsPerPage": "每页显示 条"
   },
   "search": {
     "placeholder": "搜索产品...",
+    "detailedPlaceholder": "搜索产品名称、品类、口味",
     "noResults": "未找到相关产品",
-    "resultsCount": "找到 {{count}} 个产品",
+    "resultsCount": "共找到 {{count}} 个产品",
+    "resultsCountWithRange": "共找到 {{count}} 个产品 (第 {{start}}-{{end}} 项)",
     "searchBy": "搜索范围",
     "suggestions": "搜索建议",
     "recent": "最近搜索",
     "popular": "热门搜索",
     "clear": "清空搜索",
-    "advanced": "高级搜索"
+    "advanced": "高级搜索",
+    "clearFilters": "清空筛选条件",
+    "noProductsFound": "没有找到符合条件的产品"
   },
   "navigation": {
     "list": "产品列表",
     "sync": "数据同步",
-    "demo": "API 演示"
+    "demo": "API 演示",
+    "imageTest": "图片测试",
+    "performanceDemo": "性能演示"
   }
 }
