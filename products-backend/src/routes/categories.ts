@@ -102,21 +102,24 @@ export async function statsRoutes(fastify: FastifyInstance) {
         // 分类分布
         Product.aggregate([
           { $match: { status: 'active', isVisible: true } },
-          { $group: { _id: '$category.primary', count: { $sum: 1 } } },
+          { $group: { _id: '$category.primary.display', count: { $sum: 1 } } },
+          { $match: { _id: { $nin: [null, '', '未分类'] } } },
           { $sort: { count: -1 } }
         ]),
-        
+
         // 平台分布
         Product.aggregate([
           { $match: { status: 'active', isVisible: true } },
-          { $group: { _id: '$platform', count: { $sum: 1 } } },
+          { $group: { _id: '$platform.display', count: { $sum: 1 } } },
+          { $match: { _id: { $nin: [null, '', '未知平台'] } } },
           { $sort: { count: -1 } }
         ]),
-        
+
         // 地区分布
         Product.aggregate([
-          { $match: { status: 'active', isVisible: true, 'origin.province': { $exists: true, $ne: '' } } },
-          { $group: { _id: '$origin.province', count: { $sum: 1 } } },
+          { $match: { status: 'active', isVisible: true, 'origin.province.display': { $exists: true, $ne: '' } } },
+          { $group: { _id: '$origin.province.display', count: { $sum: 1 } } },
+          { $match: { _id: { $nin: [null, ''] } } },
           { $sort: { count: -1 } },
           { $limit: 10 }
         ]),

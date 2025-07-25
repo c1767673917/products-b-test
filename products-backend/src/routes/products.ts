@@ -48,9 +48,18 @@ export async function productRoutes(fastify: FastifyInstance) {
       // 构建查询条件
       const query: any = { status, isVisible: true };
       
-      if (category) query['category.primary'] = category;
-      if (platform) query.platform = platform;
-      if (province) query['origin.province'] = province;
+      if (category) {
+        const categories = category.split(',').map((c: string) => c.trim()).filter(Boolean);
+        query['category.primary.display'] = categories.length === 1 ? categories[0] : { $in: categories };
+      }
+      if (platform) {
+        const platforms = platform.split(',').map((p: string) => p.trim()).filter(Boolean);
+        query['platform.display'] = platforms.length === 1 ? platforms[0] : { $in: platforms };
+      }
+      if (province) {
+        const provinces = province.split(',').map((p: string) => p.trim()).filter(Boolean);
+        query['origin.province.display'] = provinces.length === 1 ? provinces[0] : { $in: provinces };
+      }
       if (search) {
         query.$text = { $search: search };
       }

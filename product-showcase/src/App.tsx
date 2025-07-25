@@ -23,6 +23,21 @@ const ApiDemo = React.lazy(() =>
   }))
 );
 const SyncManagement = React.lazy(() => import('./pages/SyncManagement'));
+const FilterTest = React.lazy(() =>
+  import('./pages/FilterTest').then(module => ({
+    default: module.FilterTest
+  }))
+);
+const ApiTest = React.lazy(() =>
+  import('./pages/ApiTest').then(module => ({
+    default: module.ApiTest
+  }))
+);
+const SimpleFilterTest = React.lazy(() =>
+  import('./pages/SimpleFilterTest').then(module => ({
+    default: module.SimpleFilterTest
+  }))
+);
 
 
 
@@ -89,7 +104,42 @@ const AnimatedRoutes: React.FC = () => {
             </ErrorBoundary>
           }
         />
-
+        <Route
+          path="/filter-test"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <FilterTest />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/api-test"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <ApiTest />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/simple-filter-test"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <SimpleFilterTest />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
 
       </Routes>
     </AnimatePresence>

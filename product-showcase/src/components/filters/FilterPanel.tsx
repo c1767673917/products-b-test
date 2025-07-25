@@ -45,7 +45,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const products = useProductStore(state => state.products);
   
   // 获取筛选选项数据
-  const { data: filterOptions, isLoading: isFilterOptionsLoading } = useFilterOptions();
+  const { data: filterOptions, isLoading: isFilterOptionsLoading, error: filterOptionsError } = useFilterOptions();
+
+  // 添加调试信息
+  React.useEffect(() => {
+    console.log('FilterPanel: filterOptions:', filterOptions);
+    console.log('FilterPanel: isLoading:', isFilterOptionsLoading);
+    console.log('FilterPanel: error:', filterOptionsError);
+
+    if (filterOptions) {
+      console.log('FilterPanel: categories count:', filterOptions.categories?.length);
+      console.log('FilterPanel: platforms count:', filterOptions.platforms?.length);
+      console.log('FilterPanel: locations count:', filterOptions.locations?.length);
+    }
+  }, [filterOptions, isFilterOptionsLoading, filterOptionsError]);
 
   const filters = propFilters || storeFilters;
   const setFilters = propOnFiltersChange || storeSetFilters;
@@ -186,7 +199,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <CategoryFilter
                 value={filters.categories}
                 onChange={handleCategoryChange}
-                defaultCollapsed={true}
+                defaultCollapsed={false}
                 options={filterOptions?.categories}
                 loading={isFilterOptionsLoading}
               />
@@ -202,7 +215,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <LocationFilter
                 value={filters.locations}
                 onChange={handleLocationChange}
-                defaultCollapsed={true}
+                defaultCollapsed={false}
                 options={filterOptions?.locations}
                 loading={isFilterOptionsLoading}
               />
@@ -218,7 +231,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <PlatformFilter
                 value={filters.platforms}
                 onChange={handlePlatformChange}
-                defaultCollapsed={true}
+                defaultCollapsed={false}
                 options={filterOptions?.platforms}
                 loading={isFilterOptionsLoading}
               />

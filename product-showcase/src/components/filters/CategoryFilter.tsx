@@ -28,11 +28,13 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   // 添加调试信息
   React.useEffect(() => {
+    console.log('CategoryFilter: options:', options);
+    console.log('CategoryFilter: loading:', loading);
     console.log('CategoryFilter: products 数组长度:', products.length);
     if (products.length > 0) {
       console.log('CategoryFilter: 第一个产品:', products[0]);
     }
-  }, [products.length]);
+  }, [options, loading, products.length]);
   
   // 计算品类分布和层级结构
   const categoryData = useMemo(() => {

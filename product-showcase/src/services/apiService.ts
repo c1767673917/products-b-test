@@ -203,11 +203,11 @@ export class ApiService {
         params.platform = filters.platforms.join(',');
       }
       if (filters.locations.length > 0) {
-        params.location = filters.locations.join(',');
+        params.province = filters.locations.join(',');
       }
       if (filters.priceRange) {
-        params.minPrice = filters.priceRange[0];
-        params.maxPrice = filters.priceRange[1];
+        params.priceMin = filters.priceRange[0];
+        params.priceMax = filters.priceRange[1];
       }
       if (searchQuery) {
         params.search = searchQuery;

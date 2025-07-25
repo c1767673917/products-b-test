@@ -48,8 +48,8 @@ export async function searchRoutes(fastify: FastifyInstance) {
         isVisible: true
       };
       
-      if (category) query['category.primary'] = category;
-      if (platform) query.platform = platform;
+      if (category) query['category.primary.display'] = category;
+      if (platform) query['platform.display'] = platform;
       
       const skip = (page - 1) * limit;
       const maxLimit = 100;
