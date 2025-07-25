@@ -1,0 +1,45 @@
+[
+  {
+    "productId": "20250708-001",
+    "name": "测试产品1",
+    "primaryCategory": "酒类",
+    "secondaryCategory": "白酒",
+    "price": 100,
+    "platform": "天猫",
+    "province": "北京",
+    "city": "北京市",
+    "specification": "500ml",
+    "flavor": "浓香型",
+    "origin": "四川",
+    "description": "这是一个测试产品",
+    "images": {
+      "front": [],
+      "back": [],
+      "label": [],
+      "package": [],
+      "gift": []
+    }
+  },
+  {
+    "productId": "20250708-002",
+    "name": "测试产品2",
+    "primaryCategory": "酒类",
+    "secondaryCategory": "红酒",
+    "price": 200,
+    "discountPrice": 180,
+    "platform": "京东",
+    "province": "上海",
+    "city": "上海市",
+    "specification": "750ml",
+    "flavor": "干型",
+    "origin": "法国",
+    "description": "这是另一个测试产品",
+    "images": {
+      "front": [],
+      "back": [],
+      "label": [],
+      "package": [],
+      "gift": []
+    }
+  }
+]

@@ -38,6 +38,11 @@ const SimpleFilterTest = React.lazy(() =>
     default: module.SimpleFilterTest
   }))
 );
+const TestFilterCount = React.lazy(() =>
+  import('./pages/TestFilterCount').then(module => ({
+    default: module.TestFilterCount
+  }))
+);
 
 
 
@@ -135,6 +140,18 @@ const AnimatedRoutes: React.FC = () => {
               <Suspense fallback={<PageLoader />}>
                 <PageTransitionWrapper type="fade">
                   <SimpleFilterTest />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/test-filter-count"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <TestFilterCount />
                 </PageTransitionWrapper>
               </Suspense>
             </ErrorBoundary>

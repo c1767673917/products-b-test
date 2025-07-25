@@ -21,7 +21,7 @@ import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Loading';
 import { Pagination } from '../../components/ui';
 import { FilterPanel } from '../../components/filters';
-import { useProducts, useFilterProducts, useRefreshProducts } from '../../hooks/useProducts';
+import { useProducts, useFilterProducts, useRefreshProducts, useStats } from '../../hooks/useProducts';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
@@ -127,6 +127,7 @@ export const ProductListWithQuery: React.FC = () => {
 
   const productsQuery = useProducts(apiParams);
   const refreshMutation = useRefreshProducts();
+  const statsQuery = useStats();
 
   // ProductStore hooks
   const setProducts = useProductStore(state => state.setProducts);
@@ -145,15 +146,30 @@ export const ProductListWithQuery: React.FC = () => {
       console.log('ProductListWithQuery: React Query 状态变化');
       console.log('  - isLoading:', productsQuery.isLoading);
       console.log('  - isError:', productsQuery.isError);
-      console.log('  - data length:', productsQuery.data?.length || 0);
+      console.log('  - data:', productsQuery.data);
       console.log('  - error:', productsQuery.error);
     }
 
-    if (productsQuery.data && productsQuery.data.length > 0) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('同步产品数据到 ProductStore:', productsQuery.data.length, '个产品');
+    if (productsQuery.data) {
+      // 处理新的分页API格式
+      let productsToSync = [];
+      let paginationToSync = undefined;
+      
+      if (typeof productsQuery.data === 'object' && 'products' in productsQuery.data) {
+        // 新格式：{ products: [], pagination: {...} }
+        productsToSync = productsQuery.data.products || [];
+        paginationToSync = productsQuery.data.pagination;
+      } else if (Array.isArray(productsQuery.data)) {
+        // 旧格式：直接是产品数组
+        productsToSync = productsQuery.data;
       }
-      setProducts(productsQuery.data);
+      
+      if (productsToSync.length > 0) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('同步产品数据到 ProductStore:', productsToSync.length, '个产品');
+        }
+        setProducts(productsToSync, paginationToSync);
+      }
     }
   }, [productsQuery.data, productsQuery.isLoading, productsQuery.isError, productsQuery.error, setProducts]);
 
@@ -179,8 +195,15 @@ export const ProductListWithQuery: React.FC = () => {
 
   // 获取要显示的产品数据 - 直接使用后端返回的数据，无需前端排序
   const displayProducts = useMemo(() => {
-    // 后端已经处理了排序和筛选，直接使用返回的产品列表
-    return productsQuery.data || [];
+    if (!productsQuery.data) return [];
+    
+    // 处理新的分页API格式
+    if (typeof productsQuery.data === 'object' && 'products' in productsQuery.data) {
+      return productsQuery.data.products || [];
+    }
+    
+    // 兼容旧格式：直接返回产品数组
+    return Array.isArray(productsQuery.data) ? productsQuery.data : [];
   }, [productsQuery.data]);
 
   // 获取后端返回的分页信息
@@ -461,6 +484,8 @@ export const ProductListWithQuery: React.FC = () => {
                     filters={filters}
                     onFiltersChange={handleFiltersChange}
                     onClearFilters={handleClearFilters}
+                    totalCount={statsQuery.data?.totalProducts}
+                    filteredCount={actualPagination.total}
                   />
                 </motion.div>
               )}
@@ -532,6 +557,8 @@ export const ProductListWithQuery: React.FC = () => {
                         onFiltersChange={handleFiltersChange}
                         onClearFilters={handleClearFilters}
                         isMobile={true}
+                        totalCount={statsQuery.data?.totalProducts}
+                        filteredCount={actualPagination.total}
                       />
                     </div>
                   </motion.div>

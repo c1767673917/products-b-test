@@ -26,6 +26,8 @@ export interface FilterPanelProps {
   collapsible?: boolean;
   defaultCollapsed?: boolean;
   isMobile?: boolean;
+  totalCount?: number;
+  filteredCount?: number;
 }
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -35,7 +37,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   className,
   collapsible = true,
   defaultCollapsed = false,
-  isMobile = false
+  isMobile = false,
+  totalCount: propTotalCount,
+  filteredCount: propFilteredCount
 }) => {
   // 优先使用props，如果没有则使用store
   const storeFilters = useProductStore(state => state.filters);
@@ -52,13 +56,17 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     console.log('FilterPanel: filterOptions:', filterOptions);
     console.log('FilterPanel: isLoading:', isFilterOptionsLoading);
     console.log('FilterPanel: error:', filterOptionsError);
+    console.log('FilterPanel: products.length:', products.length);
+    console.log('FilterPanel: filteredProducts.length:', filteredProducts.length);
+    console.log('FilterPanel: propFilteredCount:', propFilteredCount);
+    console.log('FilterPanel: propTotalCount:', propTotalCount);
 
     if (filterOptions) {
       console.log('FilterPanel: categories count:', filterOptions.categories?.length);
       console.log('FilterPanel: platforms count:', filterOptions.platforms?.length);
       console.log('FilterPanel: locations count:', filterOptions.locations?.length);
     }
-  }, [filterOptions, isFilterOptionsLoading, filterOptionsError]);
+  }, [filterOptions, isFilterOptionsLoading, filterOptionsError, products.length, filteredProducts.length, propFilteredCount, propTotalCount]);
 
   const filters = propFilters || storeFilters;
   const setFilters = propOnFiltersChange || storeSetFilters;
@@ -151,7 +159,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
           {/* 筛选结果摘要 */}
           <div className="text-sm text-gray-600">
-            显示 {filteredProducts.length} / {products.length} 个产品
+            显示 {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} / {propTotalCount !== undefined ? propTotalCount : products.length} 个产品
             {hasActiveFilters && (
               <span className="ml-2 text-blue-600">
                 (已应用 {activeFiltersCount} 个筛选条件)
@@ -186,6 +194,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 value={filters.priceRange}
                 onChange={handlePriceChange}
                 defaultCollapsed={true}
+                priceStats={filterOptions ? {
+                  min: filterOptions.priceRange[0],
+                  max: filterOptions.priceRange[1]
+                } : undefined}
               />
             </motion.div>
 
@@ -247,7 +259,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               >
                 <div className="text-sm text-gray-600">
                   {hasActiveFilters ? (
-                    <span>筛选结果: {filteredProducts.length} 个产品</span>
+                    <span>筛选结果: {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} 个产品</span>
                   ) : (
                     <span>未应用任何筛选条件</span>
                   )}
@@ -279,9 +291,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 <div className="flex items-center justify-between mb-3">
                   <div className="text-sm text-gray-600">
                     {hasActiveFilters ? (
-                      <span>筛选结果: {filteredProducts.length} 个产品</span>
+                      <span>筛选结果: {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} 个产品</span>
                     ) : (
-                      <span>共 {products.length} 个产品</span>
+                      <span>共 {propTotalCount !== undefined ? propTotalCount : products.length} 个产品</span>
                     )}
                   </div>
                   {hasActiveFilters && (
@@ -336,7 +348,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
-                  已应用 {activeFiltersCount} 个筛选条件，显示 {filteredProducts.length} 个产品
+                  已应用 {activeFiltersCount} 个筛选条件，显示 {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} 个产品
                 </div>
                 <Button
                   variant="ghost"

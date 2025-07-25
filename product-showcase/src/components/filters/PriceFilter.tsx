@@ -11,19 +11,31 @@ export interface PriceFilterProps {
   onChange: (range: [number, number]) => void;
   className?: string;
   defaultCollapsed?: boolean;
+  priceStats?: {
+    min: number;
+    max: number;
+    distribution?: number[];
+  };
 }
 
 export const PriceFilter: React.FC<PriceFilterProps> = ({
   value,
   onChange,
   className,
-  defaultCollapsed = true
+  defaultCollapsed = true,
+  priceStats: propPriceStats
 }) => {
   const products = useProductStore(state => state.products);
   const filters = useProductStore(state => state.filters);
   
   // 计算价格范围和分布
   const priceStats = useMemo(() => {
+    // 优先使用传入的价格统计数据
+    if (propPriceStats) {
+      return propPriceStats;
+    }
+    
+    // 否则从本地产品计算（作为后备方案）
     if (products.length === 0) return { min: 1.5, max: 450, distribution: [] };
 
     const prices = products.map(p => p.price.discount || p.price.normal);
@@ -41,21 +53,13 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
     });
 
     return { min, max, distribution };
-  }, [products]);
+  }, [products, propPriceStats]);
 
   const currentRange = value || [priceStats.min, priceStats.max];
   const [showDistribution, setShowDistribution] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
   const formatPrice = (price: number) => `¥${price.toFixed(price < 10 ? 1 : 0)}`;
-
-  // 计算当前筛选范围内的产品数量
-  const filteredCount = useMemo(() => {
-    return products.filter(product => {
-      const price = product.price.discount || product.price.normal;
-      return price >= currentRange[0] && price <= currentRange[1];
-    }).length;
-  }, [products, currentRange]);
 
   return (
     <Card className={cn('w-full', className)}>
@@ -80,7 +84,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <div className="text-sm text-gray-600">
-              {filteredCount} 个产品
+              {formatPrice(currentRange[0])} - {formatPrice(currentRange[1])}
             </div>
             {isCollapsed ? (
               <ChevronRightIcon className="w-4 h-4 text-gray-500" />
@@ -111,8 +115,8 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                 >
                   <div className="text-sm font-medium text-gray-700 mb-2">价格分布</div>
                   <div className="flex items-end justify-between h-16 bg-gray-50 rounded p-2">
-                    {priceStats.distribution.map((count, index) => {
-                      const height = priceStats.distribution.length > 0 
+                    {priceStats.distribution?.map((count, index) => {
+                      const height = priceStats.distribution && priceStats.distribution.length > 0 
                         ? (count / Math.max(...priceStats.distribution)) * 100 
                         : 0;
                       
