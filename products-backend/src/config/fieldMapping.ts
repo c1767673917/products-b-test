@@ -96,6 +96,54 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     defaultValue: ''
   },
 
+  // 产品品名(公式字段)
+  nameComputed: {
+    feishuFieldId: 'fldEPFf9lm', // 产品品名
+    feishuFieldName: '产品品名',
+    localFieldPath: 'name.computed',
+    type: FeishuFieldType.FORMULA,
+    required: false,
+    transform: transformStringField
+  },
+
+  // 产品类型 Single/Mixed
+  productType: {
+    feishuFieldId: 'fldr1j3u4f', // Single/Mixed
+    feishuFieldName: 'Single/Mixed',
+    localFieldPath: 'productType',
+    type: FeishuFieldType.SINGLE_SELECT,
+    required: false,
+    transform: transformSelectField
+  },
+
+  // 序号字段
+  sequenceLevel1: {
+    feishuFieldId: 'fldwQnkzrl', // 序号1
+    feishuFieldName: '序号1',
+    localFieldPath: 'sequence.level1',
+    type: FeishuFieldType.FORMULA,
+    required: false,
+    transform: transformStringField
+  },
+
+  sequenceLevel2: {
+    feishuFieldId: 'fld2vxWg3B', // 序号2
+    feishuFieldName: '序号2',
+    localFieldPath: 'sequence.level2',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
+  sequenceLevel3: {
+    feishuFieldId: 'fldNTalSuy', // 序号3
+    feishuFieldName: '序号3',
+    localFieldPath: 'sequence.level3',
+    type: FeishuFieldType.TEXT,
+    required: false,
+    transform: transformStringField
+  },
+
   // === 分类信息字段 ===
   // 一级分类 - 英文
   categoryPrimaryEnglish: {
@@ -178,6 +226,25 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
     required: false,
     transform: transformNumberFieldTolerant,
     defaultValue: 0
+  },
+
+  // 美元价格字段
+  priceUsdNormal: {
+    feishuFieldId: 'fld19OLKKG', // Price（USD）
+    feishuFieldName: 'Price（USD）',
+    localFieldPath: 'price.usd.normal',
+    type: FeishuFieldType.FORMULA,
+    required: false,
+    transform: transformNumberFieldTolerant
+  },
+
+  priceUsdDiscount: {
+    feishuFieldId: 'fldfP2hZIB', // Special Price（USD）
+    feishuFieldName: 'Special Price（USD）',
+    localFieldPath: 'price.usd.discount',
+    type: FeishuFieldType.FORMULA,
+    required: false,
+    transform: transformNumberFieldTolerant
   },
 
   // === 图片字段 ===
@@ -521,12 +588,42 @@ export const FEISHU_FIELD_MAPPING: { [key: string]: FieldMapping } = {
 // === 字段转换函数 ===
 
 /**
- * 转换字符串字段
+ * 转换字符串字段 - 增强版，处理复杂对象
  */
 function transformStringField(value: any): string {
   if (value === null || value === undefined) return '';
   if (typeof value === 'string') return value.trim();
-  if (typeof value === 'object' && value.text) return value.text.trim();
+
+  // 处理飞书的复杂对象结构
+  if (typeof value === 'object') {
+    // 如果有text属性，优先使用
+    if (value.text) return String(value.text).trim();
+
+    // 如果是数组，取第一个元素
+    if (Array.isArray(value) && value.length > 0) {
+      const firstItem = value[0];
+      if (typeof firstItem === 'string') return firstItem.trim();
+      if (typeof firstItem === 'object' && firstItem.text) return String(firstItem.text).trim();
+      return String(firstItem).trim();
+    }
+
+    // 如果有其他可能的文本属性
+    if (value.value) return String(value.value).trim();
+    if (value.name) return String(value.name).trim();
+
+    // 最后尝试JSON序列化，但避免[object Object]
+    try {
+      const jsonStr = JSON.stringify(value);
+      if (jsonStr && jsonStr !== '{}' && jsonStr !== '[]') {
+        return jsonStr;
+      }
+    } catch (e) {
+      // JSON序列化失败，返回空字符串
+    }
+
+    return ''; // 无法处理的对象返回空字符串
+  }
+
   return String(value).trim();
 }
 
@@ -565,18 +662,36 @@ function transformNumberFieldTolerant(value: any): number {
 }
 
 /**
- * 容错序号字段转换
+ * 容错序号字段转换 - 增强版，处理复杂对象
  */
 function transformSequenceField(value: any): string {
   try {
     if (value === null || value === undefined) return '';
     if (typeof value === 'string') return value.trim();
-    if (Array.isArray(value) && value.length > 0) {
-      const firstItem = value[0];
-      if (typeof firstItem === 'string') return firstItem.trim();
-      if (typeof firstItem === 'object' && firstItem.text) return firstItem.text.trim();
+
+    // 处理飞书的复杂对象结构
+    if (typeof value === 'object') {
+      // 如果有text属性，优先使用
+      if (value.text) return String(value.text).trim();
+
+      // 如果是数组，取第一个元素
+      if (Array.isArray(value) && value.length > 0) {
+        const firstItem = value[0];
+        if (typeof firstItem === 'string') return firstItem.trim();
+        if (typeof firstItem === 'object' && firstItem.text) return String(firstItem.text).trim();
+        if (typeof firstItem === 'object' && firstItem.value) return String(firstItem.value).trim();
+        return String(firstItem).trim();
+      }
+
+      // 如果有其他可能的值属性
+      if (value.value) return String(value.value).trim();
+      if (value.name) return String(value.name).trim();
+      if (value.id) return String(value.id).trim();
+
+      // 避免返回[object Object]，返回空字符串
+      return '';
     }
-    if (typeof value === 'object' && value.text) return value.text.trim();
+
     return String(value).trim();
   } catch (error) {
     return ''; // 任何错误都返回空字符串
@@ -584,21 +699,31 @@ function transformSequenceField(value: any): string {
 }
 
 /**
- * 转换选择字段
+ * 转换选择字段 - 增强版，处理复杂对象
  */
 function transformSelectField(value: any): string {
   if (value === null || value === undefined) return '';
-  if (typeof value === 'string') return value;
-  
+  if (typeof value === 'string') return value.trim();
+
   // 处理飞书选择字段的结构
   if (Array.isArray(value) && value.length > 0) {
     const firstItem = value[0];
-    if (typeof firstItem === 'string') return firstItem;
-    if (typeof firstItem === 'object' && firstItem.text) return firstItem.text;
+    if (typeof firstItem === 'string') return firstItem.trim();
+    if (typeof firstItem === 'object' && firstItem.text) return String(firstItem.text).trim();
+    if (typeof firstItem === 'object' && firstItem.value) return String(firstItem.value).trim();
+    if (typeof firstItem === 'object' && firstItem.name) return String(firstItem.name).trim();
+    return String(firstItem).trim();
   }
-  
-  if (typeof value === 'object' && value.text) return value.text;
-  return String(value);
+
+  if (typeof value === 'object') {
+    if (value.text) return String(value.text).trim();
+    if (value.value) return String(value.value).trim();
+    if (value.name) return String(value.name).trim();
+    // 避免返回[object Object]
+    return '';
+  }
+
+  return String(value).trim();
 }
 
 /**
@@ -782,13 +907,13 @@ export function setNestedValue(obj: any, path: string, value: any): void {
 
 export const FIELD_MAPPING_GROUPS = {
   // 基础信息字段
-  basic: ['name', 'productId', 'internalId', 'sequence'],
-  
+  basic: ['name', 'nameComputed', 'productId', 'internalId', 'sequence', 'sequenceLevel1', 'sequenceLevel2', 'sequenceLevel3', 'productType'],
+
   // 分类信息字段
   category: ['categoryPrimary', 'categorySecondary'],
-  
+
   // 价格信息字段
-  price: ['priceNormal', 'priceDiscount'],
+  price: ['priceNormal', 'priceDiscount', 'priceUsdNormal', 'priceUsdDiscount'],
   
   // 图片字段
   images: ['imageFront', 'imageBack', 'imageLabel', 'imagePackage', 'imageGift'],

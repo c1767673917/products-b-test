@@ -1,0 +1,659 @@
+[
+  {
+    "_id": "687ef2cb90b46ffb41826a79",
+    "logId": "sync_1753150155468_j2imiu",
+    "syncType": "full",
+    "startTime": "2025-07-22T02:09:15.468Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1209,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": true,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 50,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T02:09:15.479Z",
+    "updatedAt": "2025-07-22T02:09:29.900Z",
+    "endTime": "2025-07-22T02:09:29.880Z"
+  },
+  {
+    "_id": "687ef8c8722434c99de3b953",
+    "logId": "sync_1753151688527_trfiar",
+    "syncType": "full",
+    "startTime": "2025-07-22T02:34:48.527Z",
+    "status": "failed",
+    "stats": {
+      "totalRecords": 0,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": true,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 50,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T02:34:48.536Z",
+    "updatedAt": "2025-07-22T02:39:35.867Z",
+    "endTime": "2025-07-22T02:39:35.866Z"
+  },
+  {
+    "_id": "687efc3b194a958b3b759bd1",
+    "logId": "sync_1753152571657_5tpa70",
+    "syncType": "full",
+    "startTime": "2025-07-22T02:49:31.657Z",
+    "status": "running",
+    "stats": {
+      "totalRecords": 0,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": false,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 10,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T02:49:31.666Z",
+    "updatedAt": "2025-07-22T02:49:31.666Z"
+  },
+  {
+    "_id": "687efce027980ef153934b88",
+    "logId": "sync_1753152736831_h79i7r",
+    "syncType": "full",
+    "startTime": "2025-07-22T02:52:16.832Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1209,
+      "createdRecords": 0,
+      "updatedRecords": 1209,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": false,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 20,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T02:52:16.841Z",
+    "updatedAt": "2025-07-22T02:57:08.693Z",
+    "endTime": "2025-07-22T02:57:08.692Z"
+  },
+  {
+    "_id": "687f05ad2bfa380cca74522b",
+    "logId": "sync_1753154989995_adp2lz",
+    "syncType": "full",
+    "startTime": "2025-07-22T03:29:49.995Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1209,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": false,
+          "validateData": true,
+          "dryRun": true,
+          "batchSize": 50,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T03:29:50.003Z",
+    "updatedAt": "2025-07-22T03:30:00.944Z",
+    "endTime": "2025-07-22T03:30:00.942Z"
+  },
+  {
+    "_id": "687f06682bfa380cca74522e",
+    "logId": "sync_1753155176690_y9c9x1",
+    "syncType": "full",
+    "startTime": "2025-07-22T03:32:56.690Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1209,
+      "createdRecords": 0,
+      "updatedRecords": 1209,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": true,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 50,
+          "concurrentImages": 3
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T03:32:56.692Z",
+    "updatedAt": "2025-07-22T03:37:28.544Z",
+    "endTime": "2025-07-22T03:37:28.543Z"
+  },
+  {
+    "_id": "687f156c22cf60d7bffa4f26",
+    "logId": "sync_1753159020994_j6dywe",
+    "syncType": "full",
+    "startTime": "2025-07-22T04:37:00.994Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1209,
+      "createdRecords": 0,
+      "updatedRecords": 1209,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "full",
+        "options": {
+          "downloadImages": true,
+          "validateData": true,
+          "dryRun": false,
+          "batchSize": 50,
+          "concurrentImages": 5
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T04:37:01.003Z",
+    "updatedAt": "2025-07-22T04:41:32.684Z",
+    "endTime": "2025-07-22T04:41:32.683Z"
+  },
+  {
+    "_id": "687fa5f477f6cef926a5a81f",
+    "logId": "sync_1753196020746_x313px",
+    "syncType": "incremental",
+    "startTime": "2025-07-22T14:53:40.746Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 0,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "incremental",
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": true
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T14:53:40.750Z",
+    "updatedAt": "2025-07-22T14:53:47.748Z",
+    "endTime": "2025-07-22T14:53:47.748Z"
+  },
+  {
+    "_id": "687fa64377f6cef926a5a823",
+    "logId": "sync_1753196099002_g33gcq",
+    "syncType": "selective",
+    "startTime": "2025-07-22T14:54:59.002Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 1,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": true
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T14:54:59.003Z",
+    "updatedAt": "2025-07-22T14:55:04.991Z",
+    "endTime": "2025-07-22T14:55:04.991Z"
+  },
+  {
+    "_id": "687fa70877f6cef926a5a830",
+    "logId": "sync_1753196296300_ci6bdv",
+    "syncType": "selective",
+    "startTime": "2025-07-22T14:58:16.300Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T14:58:16.301Z",
+    "updatedAt": "2025-07-22T14:58:22.797Z",
+    "endTime": "2025-07-22T14:58:22.797Z"
+  },
+  {
+    "_id": "687fa781cf1344b8c3cdf065",
+    "logId": "sync_1753196417361_jtxz1f",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:00:17.361Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 2
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:00:17.368Z",
+    "updatedAt": "2025-07-22T15:00:25.109Z",
+    "endTime": "2025-07-22T15:00:25.108Z"
+  },
+  {
+    "_id": "687fa804b801fa1fe5d33a65",
+    "logId": "sync_1753196548724_r4gknr",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:02:28.724Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 2
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:02:28.729Z",
+    "updatedAt": "2025-07-22T15:02:36.258Z",
+    "endTime": "2025-07-22T15:02:36.257Z"
+  },
+  {
+    "_id": "687fa84ff503581a8e03b1ec",
+    "logId": "sync_1753196623865_9bf2v9",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:03:43.865Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 2
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:03:43.870Z",
+    "updatedAt": "2025-07-22T15:03:50.785Z",
+    "endTime": "2025-07-22T15:03:50.783Z"
+  },
+  {
+    "_id": "687fa8deff7adef14cebff60",
+    "logId": "sync_1753196766666_78hr8q",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:06:06.666Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 2
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:06:06.671Z",
+    "updatedAt": "2025-07-22T15:06:14.836Z",
+    "endTime": "2025-07-22T15:06:14.835Z"
+  },
+  {
+    "_id": "687fa925d64fcb6700c2e48a",
+    "logId": "sync_1753196837247_9gmhx4",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:07:17.247Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 1,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 2
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": false,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:07:17.253Z",
+    "updatedAt": "2025-07-22T15:07:24.990Z",
+    "endTime": "2025-07-22T15:07:24.990Z"
+  },
+  {
+    "_id": "687fab3ee0c97256171edb75",
+    "logId": "sync_1753197374908_sz2lri",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:16:14.908Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 3,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recyvMPGSQ",
+          "recicVN6DP",
+          "recn7j9p5p"
+        ],
+        "options": {
+          "dryRun": true,
+          "downloadImages": true,
+          "validateData": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:16:14.913Z",
+    "updatedAt": "2025-07-22T15:16:22.838Z",
+    "endTime": "2025-07-22T15:16:22.837Z"
+  },
+  {
+    "_id": "687fab9fe0c97256171edb78",
+    "logId": "sync_1753197471173_rrjn3q",
+    "syncType": "selective",
+    "startTime": "2025-07-22T15:17:51.173Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 3,
+      "createdRecords": 0,
+      "updatedRecords": 2,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "selective",
+        "productIds": [
+          "recyvMPGSQ",
+          "recicVN6DP",
+          "recn7j9p5p"
+        ],
+        "options": {
+          "downloadImages": true,
+          "validateData": false,
+          "dryRun": false,
+          "batchSize": 10,
+          "concurrentImages": 3
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-22T15:17:51.174Z",
+    "updatedAt": "2025-07-22T15:17:58.281Z",
+    "endTime": "2025-07-22T15:17:58.280Z"
+  },
+  {
+    "_id": "68819fe7bf60f43c87027ddd",
+    "logId": "sync_1753325543486_zx29fk",
+    "syncType": "incremental",
+    "startTime": "2025-07-24T02:52:23.486Z",
+    "status": "completed",
+    "stats": {
+      "totalRecords": 0,
+      "createdRecords": 0,
+      "updatedRecords": 0,
+      "deletedRecords": 0,
+      "processedImages": 0,
+      "failedImages": 0
+    },
+    "config": {
+      "feishuAppToken": "Lf6Ob6BRIaFaQEseCy4ckAPVnFf",
+      "feishuTableId": "tblUT2lRAWTKgygO",
+      "syncOptions": {
+        "mode": "incremental",
+        "options": {
+          "downloadImages": true,
+          "dryRun": false
+        }
+      }
+    },
+    "progress": {
+      "percentage": 0
+    },
+    "errorLogs": [],
+    "createdAt": "2025-07-24T02:52:23.509Z",
+    "updatedAt": "2025-07-24T02:52:32.875Z",
+    "endTime": "2025-07-24T02:52:32.874Z"
+  }
+]

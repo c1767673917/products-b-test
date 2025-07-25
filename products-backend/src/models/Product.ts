@@ -9,8 +9,14 @@ export interface IProduct extends mongoose.Document {
     english?: string;
     chinese?: string;
     display: string; // 优先显示英文，如果没有则显示中文
+    computed?: string; // 产品品名(公式字段)
   };
-  sequence: string;
+  sequence: string | {
+    level1?: string; // 序号1
+    level2?: string; // 序号2
+    level3?: string; // 序号3
+  };
+  productType?: 'Single' | 'Mixed'; // Single/Mixed 字段
   category: {
     primary: {
       english?: string;
@@ -28,6 +34,10 @@ export interface IProduct extends mongoose.Document {
     discount: number;
     discountRate: number;
     currency: string;
+    usd?: {
+      normal?: number; // Price（USD）
+      discount?: number; // Special Price（USD）
+    };
   };
   images: {
     front?: string | {
@@ -171,13 +181,25 @@ const ProductSchema = new mongoose.Schema({
       index: true,
       maxLength: 200,
       trim: true
+    },
+    computed: {
+      type: String,
+      maxLength: 200,
+      trim: true
     }
   },
   
-  sequence: { 
-    type: String, 
-    required: true,
-    trim: true
+  sequence: {
+    type: mongoose.Schema.Types.Mixed, // 支持字符串或对象
+    required: false, // 改为可选
+    default: '未知序号' // 设置默认值
+  },
+
+  // 产品类型 - Single/Mixed
+  productType: {
+    type: String,
+    enum: ['Single', 'Mixed'],
+    index: true
   },
   
   // 分类信息 - 支持中英文
@@ -213,23 +235,24 @@ const ProductSchema = new mongoose.Schema({
       },
       display: {
         type: String,
-        required: true,
+        required: false, // 改为可选
         index: true,
-        trim: true
+        trim: true,
+        default: '其他分类' // 设置默认值
       }
     }
   },
   
   // 价格信息
   price: {
-    normal: { 
-      type: Number, 
+    normal: {
+      type: Number,
       required: true,
       min: 0,
       max: 999999.99
     },
-    discount: { 
-      type: Number, 
+    discount: {
+      type: Number,
       default: 0,
       min: 0,
       max: 999999.99
@@ -244,6 +267,18 @@ const ProductSchema = new mongoose.Schema({
       type: String,
       default: 'CNY',
       enum: ['CNY', 'USD', 'EUR']
+    },
+    usd: {
+      normal: {
+        type: Number,
+        min: 0,
+        max: 999999.99
+      },
+      discount: {
+        type: Number,
+        min: 0,
+        max: 999999.99
+      }
     }
   },
   
@@ -345,9 +380,10 @@ const ProductSchema = new mongoose.Schema({
       },
       display: {
         type: String,
-        required: true,
+        required: false, // 改为可选
         trim: true,
-        index: true
+        index: true,
+        default: '未知地区' // 设置默认值
       }
     },
     city: {
