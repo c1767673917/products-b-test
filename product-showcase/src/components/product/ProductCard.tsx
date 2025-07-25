@@ -190,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   )}
                   {product.specification && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 truncate">
-                      {typeof product.specification === 'string' ? product.specification : product.specification.display}
+                      {getLocalizedValue(product.specification)}
                     </span>
                   )}
                 </div>

@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Product } from '../../types/product';
+import { useProductI18n } from '../../hooks/useProductI18n';
 
 interface TransitionContextType {
   selectedProduct: Product | null;
@@ -54,7 +55,11 @@ export const ProductTransitionLayer: React.FC<ProductTransitionLayerProps> = ({
   isActive,
   onComplete,
 }) => {
+  const { getProductName } = useProductI18n();
+
   if (!isActive) return null;
+
+  const productName = getProductName(product);
 
   return (
     <motion.div
@@ -75,15 +80,15 @@ export const ProductTransitionLayer: React.FC<ProductTransitionLayerProps> = ({
         className="bg-white rounded-lg shadow-2xl p-6 max-w-sm mx-4"
       >
         <div className="aspect-square w-full bg-gray-100 rounded-lg mb-4 overflow-hidden">
-          {product.images.front && (
+          {product.images?.front && (
             <img
               src={product.images.front}
-              alt={product.name}
+              alt={productName}
               className="w-full h-full object-cover"
             />
           )}
         </div>
-        <h3 className="font-semibold text-gray-900 text-center">{product.name}</h3>
+        <h3 className="font-semibold text-gray-900 text-center">{productName}</h3>
         <p className="text-center text-gray-500 text-sm mt-2">正在加载详情...</p>
       </motion.div>
     </motion.div>

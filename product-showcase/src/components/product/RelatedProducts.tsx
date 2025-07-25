@@ -28,6 +28,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
 }) => {
   const { t } = useTranslation('product');
   const { products } = useProductStore();
+  const { getLocalizedValue } = useProductI18n();
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 4;
 
@@ -74,8 +75,13 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       description: t('related.algorithm.strategies.originDesc'),
       getScore: (product, current) => {
         let score = 0;
-        if (product.origin.province === current.origin.province) score += 15;
-        if (product.origin.city === current.origin.city) score += 10;
+        const productProvince = getLocalizedValue(product.origin?.province, '');
+        const currentProvince = getLocalizedValue(current.origin?.province, '');
+        const productCity = getLocalizedValue(product.origin?.city, '');
+        const currentCity = getLocalizedValue(current.origin?.city, '');
+
+        if (productProvince && currentProvince && productProvince === currentProvince) score += 15;
+        if (productCity && currentCity && productCity === currentCity) score += 10;
         return score;
       }
     },

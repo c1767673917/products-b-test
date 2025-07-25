@@ -151,10 +151,11 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
   const handleShare = async () => {
     if (product) {
+      const productName = getProductName(product);
       try {
         await navigator.share({
-          title: product.name,
-          text: t('detail.share.text', { productName: product.name }),
+          title: productName,
+          text: t('detail.share.text', { productName }),
           url: window.location.href,
         });
       } catch {
@@ -382,7 +383,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <span className="font-medium text-gray-500">{t('fields.specification')}</span>
-                      <p className="text-gray-900 break-words">{product.specification || t('detail.defaultValues.noData')}</p>
+                      <p className="text-gray-900 break-words">{getLocalizedValue(product.specification, t('detail.defaultValues.noData'))}</p>
                     </div>
                     <div>
                       <span className="font-medium text-gray-500">{t('fields.flavor')}</span>

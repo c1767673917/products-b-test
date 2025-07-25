@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface CategoryFilterProps {
@@ -23,6 +24,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   loading = false
 }) => {
   const products = useProductStore(state => state.products);
+  const { getProductCategory } = useProductI18n();
 
   // 添加调试信息
   React.useEffect(() => {
@@ -48,8 +50,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     const categoryMap = new Map<string, { count: number; subcategories: Map<string, number> }>();
 
     products.forEach(product => {
-      const primary = product.category.primary.display;
-      const secondary = product.category.secondary?.display;
+      const primary = getProductCategory(product, 'primary');
+      const secondary = product.category?.secondary ? getProductCategory(product, 'secondary') : undefined;
 
       if (!categoryMap.has(primary)) {
         categoryMap.set(primary, { count: 0, subcategories: new Map() });

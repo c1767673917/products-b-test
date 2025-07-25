@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { Input } from '../ui/Input';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface LocationFilterProps {
@@ -24,6 +25,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
   loading = false
 }) => {
   const products = useProductStore(state => state.products);
+  const { getLocalizedValue } = useProductI18n();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
@@ -41,22 +43,24 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
 
     // 回退到本地数据计算
     const locationMap = new Map<string, { count: number; cities: Set<string> }>();
-    
+
     products.forEach(product => {
-      const province = product.origin.province;
-      const city = product.origin.city;
-      
+      const province = getLocalizedValue(product.origin?.province, '');
+      const city = getLocalizedValue(product.origin?.city, '');
+
+      if (!province) return;
+
       // 处理复合产地（如"浙江/四川"）
       const provinces = province.split('/').map(p => p.trim()).filter(p => p);
-      
+
       provinces.forEach(prov => {
         if (!locationMap.has(prov)) {
           locationMap.set(prov, { count: 0, cities: new Set() });
         }
-        
+
         const locationInfo = locationMap.get(prov)!;
         locationInfo.count++;
-        
+
         if (city) {
           locationInfo.cities.add(city);
         }
