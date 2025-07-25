@@ -119,6 +119,8 @@ export class DataTransformService {
                 transformedValue = mapping.transform(fieldValue);
               }
 
+              // 注意：图片字段在这里只存储文件令牌，实际的URL转换在后续处理中进行
+
               // 设置到目标对象
               setNestedValue(transformedData, mapping.localFieldPath, transformedValue);
 
@@ -573,6 +575,8 @@ export class DataTransformService {
 
     return imageAttachments;
   }
+
+
 
   /**
    * 从飞书字段中提取值（简化版本，直接提取对应字段的值）

@@ -778,6 +778,8 @@ function transformDateField(value: any): Date {
 
 /**
  * 转换附件字段（返回第一个文件令牌作为字符串）
+ * 注意：这个函数只提取文件令牌，不进行URL转换
+ * 实际的图片URL转换应该在图片处理服务中进行
  */
 function transformAttachmentField(value: any): string {
   if (value === null || value === undefined) return '';
@@ -796,6 +798,25 @@ function transformAttachmentField(value: any): string {
   }
 
   return '';
+}
+
+/**
+ * 转换附件字段为图片对象（包含文件令牌和处理状态）
+ * 用于需要后续处理的图片字段
+ */
+function transformAttachmentToImageObject(value: any): any {
+  const fileToken = transformAttachmentField(value);
+
+  if (!fileToken) {
+    return null;
+  }
+
+  // 返回包含文件令牌的对象，标记需要后续处理
+  return {
+    fileToken: fileToken,
+    needsProcessing: true,
+    status: 'pending'
+  };
 }
 
 /**
