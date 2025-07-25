@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Product } from '../../types/product';
@@ -25,6 +26,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
   className,
   compact = false
 }) => {
+  const { t } = useTranslation('product');
   const { products } = useProductStore();
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 4;
@@ -35,8 +37,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
   // 推荐策略
   const strategies: RecommendationStrategy[] = [
     {
-      name: '同品类推荐',
-      description: '相同品类的产品',
+      name: t('related.algorithm.strategies.category'),
+      description: t('related.algorithm.strategies.categoryDesc'),
       getScore: (product, current) => {
         let score = 0;
         if (product.category.primary === current.category.primary) score += 50;
@@ -45,8 +47,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       }
     },
     {
-      name: '价格相近',
-      description: '价格区间相似的产品',
+      name: t('related.algorithm.strategies.price'),
+      description: t('related.algorithm.strategies.priceDesc'),
       getScore: (product, current) => {
         const currentPrice = current.price.discount || current.price.normal;
         const productPrice = product.price.discount || product.price.normal;
@@ -59,8 +61,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       }
     },
     {
-      name: '同平台推荐',
-      description: '来自相同平台的产品',
+      name: t('related.algorithm.strategies.platform'),
+      description: t('related.algorithm.strategies.platformDesc'),
       getScore: (product, current) => {
         const productPlatform = getProductPlatform({ platform: product.platform } as Product);
         const currentPlatform = getProductPlatform({ platform: current.platform } as Product);
@@ -68,8 +70,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       }
     },
     {
-      name: '同产地推荐',
-      description: '来自相同产地的产品',
+      name: t('related.algorithm.strategies.origin'),
+      description: t('related.algorithm.strategies.originDesc'),
       getScore: (product, current) => {
         let score = 0;
         if (product.origin.province === current.origin.province) score += 15;
@@ -78,8 +80,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       }
     },
     {
-      name: '优惠产品',
-      description: '有优惠的产品',
+      name: t('related.algorithm.strategies.discount'),
+      description: t('related.algorithm.strategies.discountDesc'),
       getScore: (product, current) => {
         return product.price.discount ? 10 : 0;
       }
@@ -134,32 +136,32 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
 
   const getRecommendationReason = (scoreDetails: Record<string, number>): string => {
     const reasons: string[] = [];
-    
-    if (scoreDetails['同品类推荐'] >= 50) {
-      reasons.push('同品类');
-    } else if (scoreDetails['同品类推荐'] >= 30) {
-      reasons.push('相似品类');
-    }
-    
-    if (scoreDetails['价格相近'] >= 40) {
-      reasons.push('价格相近');
-    } else if (scoreDetails['价格相近'] >= 20) {
-      reasons.push('价格相似');
-    }
-    
-    if (scoreDetails['同平台推荐'] > 0) {
-      reasons.push('同平台');
-    }
-    
-    if (scoreDetails['同产地推荐'] > 0) {
-      reasons.push('同产地');
-    }
-    
-    if (scoreDetails['优惠产品'] > 0) {
-      reasons.push('有优惠');
+
+    if (scoreDetails[t('related.algorithm.strategies.category')] >= 50) {
+      reasons.push(t('related.reasons.sameCategory'));
+    } else if (scoreDetails[t('related.algorithm.strategies.category')] >= 30) {
+      reasons.push(t('related.reasons.similarCategory'));
     }
 
-    return reasons.length > 0 ? reasons.join(' · ') : '相关推荐';
+    if (scoreDetails[t('related.algorithm.strategies.price')] >= 40) {
+      reasons.push(t('related.reasons.similarPrice'));
+    } else if (scoreDetails[t('related.algorithm.strategies.price')] >= 20) {
+      reasons.push(t('related.reasons.nearPrice'));
+    }
+
+    if (scoreDetails[t('related.algorithm.strategies.platform')] > 0) {
+      reasons.push(t('related.reasons.samePlatform'));
+    }
+
+    if (scoreDetails[t('related.algorithm.strategies.origin')] > 0) {
+      reasons.push(t('related.reasons.sameOrigin'));
+    }
+
+    if (scoreDetails[t('related.algorithm.strategies.discount')] > 0) {
+      reasons.push(t('related.reasons.hasDiscount'));
+    }
+
+    return reasons.length > 0 ? reasons.join(' · ') : t('related.reasons.related');
   };
 
   if (relatedProducts.length === 0) {
@@ -167,8 +169,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       <Card className={`p-8 text-center ${className}`}>
         <div className="text-gray-500">
           <div className="text-4xl mb-4">🔍</div>
-          <h3 className="text-lg font-medium mb-2">暂无相关产品</h3>
-          <p className="text-sm">没有找到与当前产品相关的推荐商品</p>
+          <h3 className="text-lg font-medium mb-2">{t('related.noProducts.title')}</h3>
+          <p className="text-sm">{t('related.noProducts.message')}</p>
         </div>
       </Card>
     );
@@ -178,9 +180,9 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
     <Card className={`p-6 ${className}`}>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">相关产品推荐</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('related.title')}</h3>
           <p className="text-sm text-gray-600 mt-1">
-            基于品类、价格、平台等因素为您推荐 {relatedProducts.length} 个相关产品
+            {t('related.subtitle', { count: relatedProducts.length })}
           </p>
         </div>
         
@@ -238,7 +240,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
       <div className="mt-6 pt-4 border-t border-gray-200">
         <details className="group">
           <summary className="cursor-pointer text-sm text-gray-600 hover:text-gray-800 flex items-center">
-            <span>推荐算法说明</span>
+            <span>{t('related.algorithm.title')}</span>
             <ChevronRightIcon className="h-4 w-4 ml-1 transform group-open:rotate-90 transition-transform" />
           </summary>
           <div className="mt-3 text-xs text-gray-500 space-y-1">

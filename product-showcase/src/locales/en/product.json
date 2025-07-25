@@ -3,11 +3,11 @@
     "name": "Product Name",
     "price": "Price",
     "category": "Category",
-    "primaryCategory": "Primary Category", 
+    "primaryCategory": "Primary Category",
     "secondaryCategory": "Secondary Category",
     "origin": "Origin",
     "country": "Country",
-    "province": "Province", 
+    "province": "Province",
     "city": "City",
     "platform": "Platform",
     "specification": "Specification",
@@ -31,7 +31,7 @@
   },
   "images": {
     "front": "Front Image",
-    "back": "Back Image", 
+    "back": "Back Image",
     "label": "Label Image",
     "package": "Package Image",
     "gift": "Gift Image",
@@ -53,7 +53,7 @@
   "sorting": {
     "name": "Name",
     "priceAsc": "Price: Low to High",
-    "priceDesc": "Price: High to Low", 
+    "priceDesc": "Price: High to Low",
     "collectTime": "Collection Time",
     "latest": "Latest First",
     "oldest": "Oldest First"
@@ -62,9 +62,13 @@
     "viewDetails": "View Details",
     "quickView": "Quick View",
     "favorite": "Add to Favorites",
+    "favorited": "Favorited",
     "compare": "Compare",
+    "compared": "In Comparison",
     "share": "Share",
-    "copyLink": "Copy Link"
+    "copyLink": "Copy Link",
+    "back": "Back",
+    "backToList": "Back to Product List"
   },
   "stats": {
     "totalProducts": "Total Products",
@@ -73,5 +77,96 @@
     "categories": "Categories",
     "platforms": "Platforms",
     "locations": "Locations"
+  },
+  "detail": {
+    "title": "Product Detail",
+    "pageTitle": "Product Showcase System",
+    "breadcrumb": {
+      "list": "Product List",
+      "detail": "Product Detail"
+    },
+    "loading": "Loading product information...",
+    "notFound": {
+      "title": "Product Not Found",
+      "message": "Sorry, the product you are looking for does not exist or has been deleted",
+      "backButton": "Back to Product List"
+    },
+    "errors": {
+      "loadFailed": "Failed to load product",
+      "invalidId": "Invalid product ID"
+    },
+    "share": {
+      "text": "Check out this product: {{productName}}",
+      "linkCopied": "Link copied to clipboard"
+    },
+    "basicInfo": {
+      "title": "Basic Information"
+    },
+    "toast": {
+      "favoriteAdded": "Added to favorites",
+      "favoriteRemoved": "Removed from favorites",
+      "compareAdded": "Added to comparison list",
+      "compareRemoved": "Removed from comparison list",
+      "compareLimit": "Comparison list can only contain up to 4 products"
+    },
+    "defaultValues": {
+      "noData": "N/A"
+    }
+  },
+  "info": {
+    "sections": {
+      "price": "Price Information",
+      "category": "Category Information",
+      "sales": "Sales Information",
+      "origin": "Origin Information"
+    },
+    "labels": {
+      "normalPrice": "Regular Price",
+      "discountPrice": "Discount Price",
+      "discountRate": "Discount Rate",
+      "savings": "Savings",
+      "primaryCategory": "Primary Category",
+      "secondaryCategory": "Secondary Category",
+      "platform": "Platform",
+      "manufacturer": "Manufacturer",
+      "productLink": "Product Link",
+      "country": "Country",
+      "province": "Province",
+      "city": "City",
+      "viewLink": "View Link"
+    }
+  },
+  "related": {
+    "title": "Related Products",
+    "subtitle": "Based on category, price, platform and other factors, we recommend {{count}} related products for you",
+    "noProducts": {
+      "title": "No Related Products",
+      "message": "No related products found for the current item"
+    },
+    "reasons": {
+      "sameCategory": "Same Category",
+      "similarCategory": "Similar Category",
+      "similarPrice": "Similar Price",
+      "nearPrice": "Near Price",
+      "samePlatform": "Same Platform",
+      "sameOrigin": "Same Origin",
+      "hasDiscount": "On Sale",
+      "related": "Related"
+    },
+    "algorithm": {
+      "title": "Recommendation Algorithm",
+      "strategies": {
+        "category": "Same Category Recommendation",
+        "categoryDesc": "Products from the same category",
+        "price": "Similar Price",
+        "priceDesc": "Products with similar price range",
+        "platform": "Same Platform Recommendation",
+        "platformDesc": "Products from the same platform",
+        "origin": "Same Origin Recommendation",
+        "originDesc": "Products from the same origin",
+        "discount": "Discount Products",
+        "discountDesc": "Products with discounts"
+      }
+    }
   }
 }

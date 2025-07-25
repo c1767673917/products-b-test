@@ -82,6 +82,18 @@ export const useProductI18n = () => {
     return parts.length > 0 ? parts.join(' · ') : t('common.unknown');
   };
 
+  // Format currency based on current language
+  const formatCurrency = (amount: number): string => {
+    // Use simple formatting to ensure consistent output across environments
+    const formattedNumber = new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : 'zh-CN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(Math.abs(amount));
+
+    const sign = amount < 0 ? '-' : '';
+    return `${sign}¥${formattedNumber}`;
+  };
+
   // Get formatted price with localization
   const getFormattedPrice = (product: Product): {
     normalPrice: string;
@@ -91,25 +103,6 @@ export const useProductI18n = () => {
     formattedDiscount?: string;
   } => {
     const hasDiscount = product.price.discount !== undefined && product.price.discount < product.price.normal;
-    
-    // Format numbers based on current language
-    const formatCurrency = (amount: number): string => {
-      if (currentLanguage === 'en') {
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'CNY',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(amount);
-      } else {
-        return new Intl.NumberFormat('zh-CN', {
-          style: 'currency',
-          currency: 'CNY',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(amount);
-      }
-    };
 
     return {
       normalPrice: `¥${product.price.normal.toFixed(2)}`,
@@ -189,6 +182,7 @@ export const useProductI18n = () => {
     getProductManufacturer,
     getProductOrigin,
     getFormattedPrice,
+    formatCurrency,
     formatNumber,
     formatDate,
     formatRelativeTime,

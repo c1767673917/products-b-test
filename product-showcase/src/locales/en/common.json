@@ -63,6 +63,7 @@
     "other": "Other",
     "unknown": "Unknown",
     "more": "More",
-    "less": "Less"
+    "less": "Less",
+    "noData": "N/A"
   }
 }

@@ -63,6 +63,7 @@
     "other": "其他",
     "unknown": "未知",
     "more": "更多",
-    "less": "收起"
+    "less": "收起",
+    "noData": "暂无"
   }
 }

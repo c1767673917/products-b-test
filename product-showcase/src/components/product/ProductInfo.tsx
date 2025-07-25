@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ChevronDownIcon,
@@ -30,6 +31,7 @@ interface InfoSection {
 const SECTION_STORAGE_KEY = 'product-info-sections-state';
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact = false }) => {
+  const { t } = useTranslation('product');
   // 使用i18n hooks获取本地化值
   const {
     getProductCategory,
@@ -78,7 +80,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
 
   const formatValue = (value: string | number | undefined, type: string = 'text'): string => {
     if (value === undefined || value === null || value === '') {
-      return '暂无';
+      return t('detail.defaultValues.noData');
     }
 
     switch (type) {
@@ -95,19 +97,19 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
 
   const sections: InfoSection[] = [
     {
-      title: '价格信息',
+      title: t('info.sections.price'),
       icon: <TagIcon className="h-5 w-5" />,
       items: [
-        { label: '正常售价', value: product.price.normal, type: 'price' },
-        { label: '优惠价格', value: product.price.discount, type: 'price' },
+        { label: t('info.labels.normalPrice'), value: product.price.normal, type: 'price' },
+        { label: t('info.labels.discountPrice'), value: product.price.discount, type: 'price' },
         {
-          label: '折扣率',
+          label: t('info.labels.discountRate'),
           value: product.price.discountRate
             ? `${product.price.discountRate.toFixed(1)}%`
             : undefined
         },
         {
-          label: '节省金额',
+          label: t('info.labels.savings'),
           value: product.price.discount
             ? product.price.normal - product.price.discount
             : undefined,
@@ -116,29 +118,29 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       ]
     },
     {
-      title: '分类信息',
+      title: t('info.sections.category'),
       icon: <CubeIcon className="h-5 w-5" />,
       items: [
-        { label: '一级品类', value: getProductCategory(product, 'primary') },
-        { label: '二级品类', value: product.category?.secondary ? getProductCategory(product, 'secondary') : undefined },
+        { label: t('info.labels.primaryCategory'), value: getProductCategory(product, 'primary') },
+        { label: t('info.labels.secondaryCategory'), value: product.category?.secondary ? getProductCategory(product, 'secondary') : undefined },
       ]
     },
     {
-      title: '销售信息',
+      title: t('info.sections.sales'),
       icon: <BuildingStorefrontIcon className="h-5 w-5" />,
       items: [
-        { label: '采集平台', value: getProductPlatform(product) },
-        { label: '生产商', value: getLocalizedValue(product.manufacturer) },
-        { label: '商品链接', value: product.link, type: 'link' },
+        { label: t('info.labels.platform'), value: getProductPlatform(product) },
+        { label: t('info.labels.manufacturer'), value: getLocalizedValue(product.manufacturer) },
+        { label: t('info.labels.productLink'), value: product.link, type: 'link' },
       ]
     },
     {
-      title: '产地信息',
+      title: t('info.sections.origin'),
       icon: <MapPinIcon className="h-5 w-5" />,
       items: [
-        { label: '国家', value: getLocalizedValue(product.origin?.country) },
-        { label: '省份', value: getLocalizedValue(product.origin?.province) },
-        { label: '城市', value: getLocalizedValue(product.origin?.city) },
+        { label: t('info.labels.country'), value: getLocalizedValue(product.origin?.country) },
+        { label: t('info.labels.province'), value: getLocalizedValue(product.origin?.province) },
+        { label: t('info.labels.city'), value: getLocalizedValue(product.origin?.city) },
       ]
     }
   ];
@@ -154,7 +156,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
           rel="noopener noreferrer"
           className="text-blue-600 hover:text-blue-800 underline break-all"
         >
-          查看链接
+          {t('info.labels.viewLink')}
         </a>
       );
     }
@@ -168,7 +170,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
     }
 
     return (
-      <span className={value === '暂无' ? 'text-gray-400' : 'text-gray-900'}>
+      <span className={value === t('detail.defaultValues.noData') ? 'text-gray-400' : 'text-gray-900'}>
         {value}
       </span>
     );
@@ -180,10 +182,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
         {sections.map((section, index) => {
           // 使用固定的 key 映射来确保状态记忆正确
           const sectionKeyMap: { [key: string]: string } = {
-            '价格信息': 'price',
-            '产地信息': 'origin',
-            '分类信息': 'category',
-            '销售信息': 'sales'
+            [t('info.sections.price')]: 'price',
+            [t('info.sections.origin')]: 'origin',
+            [t('info.sections.category')]: 'category',
+            [t('info.sections.sales')]: 'sales'
           };
           const sectionKey = sectionKeyMap[section.title];
           const isExpanded = expandedSections.has(sectionKey);

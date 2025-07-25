@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  XMarkIcon, 
-  HeartIcon, 
-  ScaleIcon, 
+import {
+  XMarkIcon,
+  HeartIcon,
+  ScaleIcon,
   ShareIcon,
   ChevronLeftIcon,
   ChevronRightIcon
@@ -42,6 +43,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   canNavigate,
   onWidthChange
 }) => {
+  const { t } = useTranslation('product');
   const { showSuccess, showError, showInfo } = useToast();
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
@@ -232,7 +234,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                 </div>
               )}
               <h2 className="text-lg font-semibold text-gray-900 truncate max-w-xs">
-                产品详情
+                {t('detail.title')}
               </h2>
             </div>
 
@@ -376,19 +378,19 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                 className="transform-gpu"
               >
                 <Card className="p-4">
-                  <h3 className="text-base font-semibold mb-3">基本信息</h3>
+                  <h3 className="text-base font-semibold mb-3">{t('detail.basicInfo.title')}</h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <span className="font-medium text-gray-500">规格</span>
-                      <p className="text-gray-900 break-words">{product.specification || '暂无'}</p>
+                      <span className="font-medium text-gray-500">{t('fields.specification')}</span>
+                      <p className="text-gray-900 break-words">{product.specification || t('detail.defaultValues.noData')}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-500">口味</span>
-                      <p className="text-gray-900 break-words">{getLocalizedValue(product.flavor, '暂无')}</p>
+                      <span className="font-medium text-gray-500">{t('fields.flavor')}</span>
+                      <p className="text-gray-900 break-words">{getLocalizedValue(product.flavor, t('detail.defaultValues.noData'))}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-500">包装规格</span>
-                      <p className="text-gray-900 break-words">{product.boxSpec || '暂无'}</p>
+                      <span className="font-medium text-gray-500">{t('fields.boxSpec')}</span>
+                      <p className="text-gray-900 break-words">{product.boxSpec || t('detail.defaultValues.noData')}</p>
                     </div>
                   </div>
                 </Card>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ArrowLeftIcon, HeartIcon, ScaleIcon, ShareIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
@@ -27,6 +28,7 @@ import {
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation(['product', 'common']);
   const { showSuccess, showError, showInfo } = useToast();
   const { shouldEnableAnimation } = useAnimationPreferences();
   const { getProductName, getProductSpecification, getProductManufacturer, getProductOrigin } = useProductI18n();
@@ -59,31 +61,31 @@ const ProductDetail: React.FC = () => {
   // 处理产品数据加载
   useEffect(() => {
     if (isError && error) {
-      showError(`加载产品失败: ${error.message}`);
+      showError(`${t('product:detail.errors.loadFailed')}: ${error.message}`);
       navigate('/products');
       return;
     }
 
     if (!id) {
-      showError('产品ID无效');
+      showError(t('product:detail.errors.invalidId'));
       navigate('/products');
       return;
     }
 
     // 如果React Query返回了产品数据，使用它
     if (product.data) {
-      document.title = `${getProductName(product.data)} - 产品详情`;
+      document.title = `${getProductName(product.data)} - ${t('product:detail.title')}`;
       preloadImages(product.data);
     }
     // 否则尝试从本地store查找（向后兼容）
     else if (storeProducts.length > 0) {
       const foundProduct = storeProducts.find(p => p.productId === id);
       if (foundProduct) {
-        document.title = `${getProductName(foundProduct)} - 产品详情`;
+        document.title = `${getProductName(foundProduct)} - ${t('product:detail.title')}`;
         preloadImages(foundProduct);
       }
     }
-  }, [id, product.data, storeProducts, isError, error, navigate, showError, getProductName]);
+  }, [id, product.data, storeProducts, isError, error, navigate, showError, getProductName, t]);
 
   // 图片预加载函数
   const preloadImages = (product: Product) => {
@@ -116,9 +118,9 @@ const ProductDetail: React.FC = () => {
   // 清理页面标题
   useEffect(() => {
     return () => {
-      document.title = '产品展示系统';
+      document.title = t('product:detail.pageTitle');
     };
-  }, []);
+  }, [t]);
 
   const handleBack = () => {
     navigate(-1);
@@ -130,7 +132,7 @@ const ProductDetail: React.FC = () => {
       toggleFavorite(currentProduct.productId);
       const isFavorited = favorites.includes(currentProduct.productId);
       showSuccess(
-        isFavorited ? '已取消收藏' : '已添加到收藏'
+        isFavorited ? t('product:detail.toast.favoriteRemoved') : t('product:detail.toast.favoriteAdded')
       );
     }
   };
@@ -141,14 +143,14 @@ const ProductDetail: React.FC = () => {
       const isInCompare = compareList.includes(currentProduct.productId);
       if (isInCompare) {
         removeFromCompare(currentProduct.productId);
-        showInfo('已从对比列表移除');
+        showInfo(t('product:detail.toast.compareRemoved'));
       } else {
         if (compareList.length >= 4) {
-          showError('对比列表最多只能添加4个产品');
+          showError(t('product:detail.toast.compareLimit'));
           return;
         }
         addToCompare(currentProduct.productId);
-        showSuccess('已添加到对比列表');
+        showSuccess(t('product:detail.toast.compareAdded'));
       }
     }
   };
@@ -159,13 +161,13 @@ const ProductDetail: React.FC = () => {
       try {
         await navigator.share({
           title: getProductName(currentProduct),
-          text: `查看这个产品：${getProductName(currentProduct)}`,
+          text: t('product:detail.share.text', { productName: getProductName(currentProduct) }),
           url: window.location.href,
         });
       } catch (err) {
         // 如果不支持原生分享，复制链接到剪贴板
         navigator.clipboard.writeText(window.location.href);
-        showSuccess('链接已复制到剪贴板');
+        showSuccess(t('product:detail.share.linkCopied'));
       }
     }
   };
@@ -178,7 +180,7 @@ const ProductDetail: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">正在加载产品信息...</p>
+          <p className="mt-4 text-gray-600">{t('product:detail.loading')}</p>
         </div>
       </div>
     );
@@ -189,10 +191,10 @@ const ProductDetail: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">产品未找到</h2>
-          <p className="text-gray-600 mb-6">抱歉，您访问的产品不存在或已被删除</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('product:detail.notFound.title')}</h2>
+          <p className="text-gray-600 mb-6">{t('product:detail.notFound.message')}</p>
           <Button onClick={() => navigate('/products')}>
-            返回产品列表
+            {t('product:detail.notFound.backButton')}
           </Button>
         </div>
       </div>
@@ -236,14 +238,14 @@ const ProductDetail: React.FC = () => {
                 className="flex items-center space-x-1 sm:space-x-2"
               >
                 <ArrowLeftIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">返回</span>
+                <span className="hidden sm:inline">{t('product:actions.back')}</span>
               </Button>
               <div className="text-sm text-gray-500 hidden md:block">
                 <Link to="/products" className="hover:text-gray-700">
-                  产品列表
+                  {t('product:detail.breadcrumb.list')}
                 </Link>
                 <span className="mx-2">/</span>
-                <span className="text-gray-900 font-medium">产品详情</span>
+                <span className="text-gray-900 font-medium">{t('product:detail.breadcrumb.detail')}</span>
               </div>
             </div>
 
@@ -259,7 +261,7 @@ const ProductDetail: React.FC = () => {
                 ) : (
                   <HeartIcon className="h-4 w-4" />
                 )}
-                <span className="hidden sm:inline">{isFavorited ? '已收藏' : '收藏'}</span>
+                <span className="hidden sm:inline">{isFavorited ? t('product:actions.favorited') : t('product:actions.favorite')}</span>
               </Button>
 
               <Button
@@ -269,7 +271,7 @@ const ProductDetail: React.FC = () => {
                 className="flex items-center space-x-1 sm:space-x-2"
               >
                 <ScaleIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">{isInCompare ? '已对比' : '对比'}</span>
+                <span className="hidden sm:inline">{isInCompare ? t('product:actions.compared') : t('product:actions.compare')}</span>
               </Button>
 
               <Button
@@ -279,7 +281,7 @@ const ProductDetail: React.FC = () => {
                 className="flex items-center space-x-1 sm:space-x-2"
               >
                 <ShareIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">分享</span>
+                <span className="hidden sm:inline">{t('product:actions.share')}</span>
               </Button>
             </div>
           </div>
@@ -313,7 +315,7 @@ const ProductDetail: React.FC = () => {
                 <div className="aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] xl:aspect-[3/2] bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                   <div className="text-center">
                     <Spinner size="md" />
-                    <p className="text-sm text-gray-500 mt-2">图片加载中...</p>
+                    <p className="text-sm text-gray-500 mt-2">{t('product:images.loadingImage')}</p>
                   </div>
                 </div>
               )}
@@ -376,16 +378,16 @@ const ProductDetail: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">规格</span>
-                    <p className="text-sm text-gray-900 break-words">{getProductSpecification(currentProduct) || '暂无'}</p>
+                    <span className="text-sm font-medium text-gray-500">{t('product:fields.specification')}</span>
+                    <p className="text-sm text-gray-900 break-words">{getProductSpecification(currentProduct) || t('product:detail.defaultValues.noData')}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">生产商</span>
-                    <p className="text-sm text-gray-900 break-words">{getProductManufacturer(currentProduct) || '暂无'}</p>
+                    <span className="text-sm font-medium text-gray-500">{t('product:fields.manufacturer')}</span>
+                    <p className="text-sm text-gray-900 break-words">{getProductManufacturer(currentProduct) || t('product:detail.defaultValues.noData')}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-sm font-medium text-gray-500">包装规格</span>
-                    <p className="text-sm text-gray-900 break-words">{currentProduct.boxSpec || '暂无'}</p>
+                    <span className="text-sm font-medium text-gray-500">{t('product:fields.boxSpec')}</span>
+                    <p className="text-sm text-gray-900 break-words">{currentProduct.boxSpec || t('product:detail.defaultValues.noData')}</p>
                   </div>
                 </div>
               </div>
