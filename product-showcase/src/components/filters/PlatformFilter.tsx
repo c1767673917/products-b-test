@@ -36,19 +36,34 @@ const getPlatformIcon = (platform: string): React.ComponentType<React.SVGProps<S
   return iconMap[platform] || BuildingStorefrontIcon;
 };
 
-// 平台颜色映射
+// 平台颜色映射 - 返回实际的颜色值而不是Tailwind类名
 const getPlatformColor = (platform: string) => {
   const colorMap: Record<string, string> = {
-    '大润发': 'blue',
-    '山姆APP': 'green',
-    '盒马APP': 'orange',
-    '猫超': 'red',
-    '胖东来': 'purple',
-    '天猫旗舰店': 'pink',
-    '零食很忙': 'indigo',
+    '大润发': '#3B82F6', // blue-500
+    '山姆APP': '#10B981', // green-500
+    '盒马APP': '#F97316', // orange-500
+    '猫超': '#EF4444', // red-500
+    '胖东来': '#A855F7', // purple-500
+    '天猫旗舰店': '#EC4899', // pink-500
+    '零食很忙': '#6366F1', // indigo-500
   };
   
-  return colorMap[platform] || 'gray';
+  return colorMap[platform] || '#6B7280'; // gray-500
+};
+
+// 获取平台标签样式
+const getPlatformTagStyles = (platform: string) => {
+  const colorMap: Record<string, { bg: string; text: string; hover: string }> = {
+    '大润发': { bg: '#DBEAFE', text: '#1E40AF', hover: '#1D4ED8' }, // blue
+    '山姆APP': { bg: '#D1FAE5', text: '#065F46', hover: '#047857' }, // green
+    '盒马APP': { bg: '#FED7AA', text: '#9A3412', hover: '#C2410C' }, // orange
+    '猫超': { bg: '#FEE2E2', text: '#991B1B', hover: '#B91C1C' }, // red
+    '胖东来': { bg: '#F3E8FF', text: '#6B21A8', hover: '#7C3AED' }, // purple
+    '天猫旗舰店': { bg: '#FCE7F3', text: '#9F1239', hover: '#BE185D' }, // pink
+    '零食很忙': { bg: '#E0E7FF', text: '#3730A3', hover: '#4338CA' }, // indigo
+  };
+  
+  return colorMap[platform] || { bg: '#F3F4F6', text: '#374151', hover: '#4B5563' }; // gray
 };
 
 export const PlatformFilter: React.FC<PlatformFilterProps> = ({
@@ -223,7 +238,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                         <div className="ml-3 flex-1">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                              <IconComponent className={`w-5 h-5 text-${color}-500 mr-2`} />
+                              <IconComponent className="w-5 h-5 mr-2" style={{ color }} />
                               <span className="text-sm font-medium text-gray-900">
                                 {platform.name}
                               </span>
@@ -242,7 +257,8 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                           <div className="mt-2">
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <motion.div
-                                className={`h-2 rounded-full bg-${color}-500`}
+                                className="h-2 rounded-full"
+                                style={{ backgroundColor: color }}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${platform.percentage}%` }}
                                 transition={{ duration: 0.5, delay: 0.1 }}
@@ -265,6 +281,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                       const platformInfo = platformData.find(p => p.name === platformName);
                       const IconComponent = getPlatformIcon(platformName);
                       const color = getPlatformColor(platformName);
+                      const tagStyles = getPlatformTagStyles(platformName);
                       
                       return (
                         <motion.div
@@ -272,16 +289,18 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.8 }}
-                          className={`flex items-center bg-${color}-100 text-${color}-800 px-2 py-1 rounded-full text-xs`}
+                          className="flex items-center px-2 py-1 rounded-full text-xs"
+                          style={{ backgroundColor: tagStyles.bg, color: tagStyles.text }}
                         >
                           <IconComponent className="w-3 h-3 mr-1" />
                           <span>{platformName}</span>
                           {platformInfo && (
-                            <span className={`ml-1 text-${color}-600`}>({platformInfo.count})</span>
+                            <span className="ml-1">({platformInfo.count})</span>
                           )}
                           <button
                             onClick={() => handlePlatformChange(platformName, false)}
-                            className={`ml-1 text-${color}-600 hover:text-${color}-800`}
+                            className="ml-1 hover:opacity-80"
+                            style={{ color: tagStyles.text }}
                           >
                             ×
                           </button>

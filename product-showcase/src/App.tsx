@@ -44,8 +44,17 @@ const TestFilterCount = React.lazy(() =>
   }))
 );
 
+const PlatformDebug = React.lazy(() =>
+  import('./pages/PlatformDebug').then(module => ({
+    default: module.PlatformDebugPage
+  }))
+);
 
-
+const PlatformFilterTest = React.lazy(() =>
+  import('./pages/PlatformFilterTest').then(module => ({
+    default: module.PlatformFilterTestPage
+  }))
+);
 
 // 加载组件
 const PageLoader: React.FC = () => (
@@ -152,6 +161,30 @@ const AnimatedRoutes: React.FC = () => {
               <Suspense fallback={<PageLoader />}>
                 <PageTransitionWrapper type="fade">
                   <TestFilterCount />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/platform-debug"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <PlatformDebug />
+                </PageTransitionWrapper>
+              </Suspense>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/platform-filter-test"
+          element={
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <PageTransitionWrapper type="fade">
+                  <PlatformFilterTest />
                 </PageTransitionWrapper>
               </Suspense>
             </ErrorBoundary>
