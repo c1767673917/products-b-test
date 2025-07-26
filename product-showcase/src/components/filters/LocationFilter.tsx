@@ -34,21 +34,29 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
   const locationData = useMemo(() => {
     // 优先使用传入的options数据
     if (options && options.length > 0) {
-      return options.map(option => ({
-        name: option.label,
-        count: option.count,
-        cities: [] // 后端API暂不支持城市详情，后续可扩展
-      }));
+      const totalProductsWithLocation = options.reduce((sum, option) => sum + option.count, 0);
+      return {
+        locations: options.map(option => ({
+          name: option.label,
+          count: option.count,
+          cities: [] // 后端API暂不支持城市详情，后续可扩展
+        })),
+        totalProductsWithLocation
+      };
     }
 
     // 回退到本地数据计算
     const locationMap = new Map<string, { count: number; cities: Set<string> }>();
+    const processedProducts = new Set<string>(); // 跟踪已处理的商品，避免重复计算总数
 
     products.forEach(product => {
       const province = getLocalizedValue(product.origin?.province, '');
       const city = getLocalizedValue(product.origin?.city, '');
 
       if (!province) return;
+      
+      // 记录有产地信息的商品
+      processedProducts.add(product.id);
 
       // 处理复合产地（如"浙江/四川"）
       const provinces = province.split('/').map(p => p.trim()).filter(p => p);
@@ -68,21 +76,26 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
     });
     
     // 转换为数组并排序
-    return Array.from(locationMap.entries())
+    const result = Array.from(locationMap.entries())
       .map(([name, info]) => ({
         name,
         count: info.count,
         cities: Array.from(info.cities).sort()
       }))
       .sort((a, b) => b.count - a.count);
+      
+    return {
+      locations: result,
+      totalProductsWithLocation: processedProducts.size
+    };
   }, [options, products]);
 
   // 筛选产地数据
   const filteredLocations = useMemo(() => {
-    if (!searchQuery.trim()) return locationData;
+    if (!searchQuery.trim()) return locationData.locations || [];
     
     const query = searchQuery.toLowerCase();
-    return locationData.filter(location => 
+    return (locationData.locations || []).filter(location => 
       location.name.toLowerCase().includes(query) ||
       location.cities.some(city => city.toLowerCase().includes(query))
     );
@@ -99,11 +112,12 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
   const isSelected = (locationName: string) => value.includes(locationName);
 
   const getPercentage = (count: number) => {
-    return products.length > 0 ? (count / products.length * 100).toFixed(1) : '0';
+    const totalProducts = locationData.totalProductsWithLocation || products.length;
+    return totalProducts > 0 ? (count / totalProducts * 100).toFixed(1) : '0';
   };
 
   // 获取热门产地（前5个）
-  const topLocations = locationData.slice(0, 5);
+  const topLocations = (locationData.locations || []).slice(0, 5);
 
   return (
     <Card className={cn('w-full', className)}>
@@ -118,7 +132,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
               <div className="text-sm text-gray-500">加载中...</div>
             ) : (
               <div className="text-sm text-gray-600">
-                {value.length > 0 ? `已选择 ${value.length} 个产地` : `共 ${locationData.length} 个产地`}
+                {value.length > 0 ? `已选择 ${value.length} 个产地` : `共 ${(locationData.locations || []).length} 个产地`}
               </div>
             )}
             {isCollapsed ? (
@@ -283,7 +297,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                   <div className="text-sm font-medium text-gray-700 mb-2">已选择的产地</div>
                   <div className="flex flex-wrap gap-2">
                     {value.map((locationName) => {
-                      const locationInfo = locationData.find(loc => loc.name === locationName);
+                      const locationInfo = (locationData.locations || []).find(loc => loc.name === locationName);
                       return (
                         <motion.div
                           key={locationName}

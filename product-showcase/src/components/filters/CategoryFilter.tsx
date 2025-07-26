@@ -40,16 +40,21 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const categoryData = useMemo(() => {
     // 优先使用传入的options数据
     if (options && options.length > 0) {
-      return options.map(option => ({
-        name: option.label,
-        count: option.count,
-        subcategories: [] // 后端API暂不支持子分类，后续可扩展
-      }));
+      const totalProductsWithCategory = options.reduce((sum, option) => sum + option.count, 0);
+      return {
+        categories: options.map(option => ({
+          name: option.label,
+          count: option.count,
+          subcategories: [] // 后端API暂不支持子分类，后续可扩展
+        })),
+        totalProductsWithCategory
+      };
     }
 
     // 回退到本地数据计算
     console.log('CategoryFilter: 使用本地数据计算品类，products.length =', products.length);
     const categoryMap = new Map<string, { count: number; subcategories: Map<string, number> }>();
+    const processedProducts = new Set<string>(); // 跟踪已处理的商品，避免重复计算总数
 
     products.forEach(product => {
       const primary = getProductCategory(product, 'primary');
@@ -61,6 +66,11 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
       const categoryInfo = categoryMap.get(primary)!;
       categoryInfo.count++;
+      
+      // 记录有品类信息的商品
+      if (primary) {
+        processedProducts.add(product.id);
+      }
 
       if (secondary) {
         const currentCount = categoryInfo.subcategories.get(secondary) || 0;
@@ -80,7 +90,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       .sort((a, b) => b.count - a.count);
 
     console.log('CategoryFilter: 计算得到的品类数据:', result);
-    return result;
+    console.log('CategoryFilter: 有品类信息的商品总数:', processedProducts.size);
+    
+    return {
+      categories: result,
+      totalProductsWithCategory: processedProducts.size
+    };
   }, [options, products]);
 
   const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set());
@@ -107,7 +122,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const isSelected = (categoryName: string) => value.includes(categoryName);
 
   const getPercentage = (count: number) => {
-    return products.length > 0 ? (count / products.length * 100).toFixed(1) : '0';
+    const totalProducts = categoryData.totalProductsWithCategory || products.length;
+    return totalProducts > 0 ? (count / totalProducts * 100).toFixed(1) : '0';
   };
 
   return (
@@ -123,7 +139,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               <div className="text-sm text-gray-500">加载中...</div>
             ) : (
               <div className="text-sm text-gray-600">
-                {value.length > 0 ? `已选择 ${value.length} 个品类` : `共 ${categoryData.length} 个品类`}
+                {value.length > 0 ? `已选择 ${value.length} 个品类` : `共 ${categoryData.categories?.length || 0} 个品类`}
               </div>
             )}
             {isCollapsed ? (
@@ -151,7 +167,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 </div>
               ) : (
                 <div className="space-y-2 max-h-80 overflow-y-auto">
-                  {categoryData.map((category) => {
+                  {(categoryData.categories || []).map((category) => {
                   const isExpanded = expandedCategories.has(category.name);
                   const hasSubcategories = category.subcategories.length > 0;
                   
@@ -240,7 +256,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   <div className="text-sm font-medium text-gray-700 mb-2">已选择的品类</div>
                   <div className="flex flex-wrap gap-2">
                     {value.map((categoryName) => {
-                      const categoryInfo = categoryData.find(cat => cat.name === categoryName);
+                      const categoryInfo = (categoryData.categories || []).find(cat => cat.name === categoryName);
                       return (
                         <motion.div
                           key={categoryName}
