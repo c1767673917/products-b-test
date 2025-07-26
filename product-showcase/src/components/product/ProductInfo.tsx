@@ -10,7 +10,10 @@ import {
 } from '@heroicons/react/24/outline';
 import { Product } from '../../types/product';
 import { Card } from '../ui/Card';
-import { useProductI18n } from '../../hooks/useProductI18n';
+import { 
+  useProductI18n, 
+  useFilterI18n 
+} from '../../hooks/useProductI18n';
 
 interface ProductInfoProps {
   product: Product;
@@ -39,7 +42,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
     getProductOrigin,
     getProductSpecification,
     getProductFlavor,
-    getLocalizedValue
+    getLocalizedValue,
+    getFormattedPrice,
+    currentLanguage
   } = useProductI18n();
 
   // 从 localStorage 加载状态，默认全部展开
@@ -85,7 +90,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
 
     switch (type) {
       case 'price':
-        return `¥${Number(value).toFixed(2)}`;
+        // 使用统一的价格格式化逻辑
+        const useUSD = currentLanguage === 'en';
+        const symbol = useUSD ? '$' : '¥';
+        return `${symbol}${Number(value).toFixed(2)}`;
       case 'date':
         return new Date(Number(value)).toLocaleDateString('zh-CN');
       case 'link':
@@ -100,8 +108,20 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
       title: t('info.sections.price'),
       icon: <TagIcon className="h-5 w-5" />,
       items: [
-        { label: t('info.labels.normalPrice'), value: product.price.normal, type: 'price' },
-        { label: t('info.labels.discountPrice'), value: product.price.discount, type: 'price' },
+        { 
+          label: t('info.labels.normalPrice'), 
+          value: currentLanguage === 'en' && product.price.usd?.normal 
+            ? product.price.usd.normal 
+            : product.price.normal, 
+          type: 'price' 
+        },
+        { 
+          label: t('info.labels.discountPrice'), 
+          value: currentLanguage === 'en' && product.price.usd?.discount !== undefined
+            ? product.price.usd.discount
+            : product.price.discount, 
+          type: 'price' 
+        },
         {
           label: t('info.labels.discountRate'),
           value: product.price.discountRate
@@ -110,9 +130,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, className, compact =
         },
         {
           label: t('info.labels.savings'),
-          value: product.price.discount
-            ? product.price.normal - product.price.discount
-            : undefined,
+          value: (() => {
+            const normalPrice = currentLanguage === 'en' && product.price.usd?.normal 
+              ? product.price.usd.normal 
+              : product.price.normal;
+            const discountPrice = currentLanguage === 'en' && product.price.usd?.discount !== undefined
+              ? product.price.usd.discount
+              : product.price.discount;
+            return discountPrice !== undefined ? normalPrice - discountPrice : undefined;
+          })(),
           type: 'price'
         },
       ]

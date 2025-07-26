@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
+import { useProductI18n } from '../../hooks/useProductI18n';
+import { useTranslation } from 'react-i18next';
 
 export interface SliderProps {
   min: number;
@@ -160,8 +162,19 @@ export const PriceRangeQuickSelect: React.FC<PriceRangeQuickSelectProps> = ({
   currentRange,
   className
 }) => {
-  const quickRanges = [
-    { label: '全部', range: [1.5, 450] as [number, number] },
+  const { t } = useTranslation('product');
+  const { currentLanguage } = useProductI18n();
+  
+  // 根据语言选择不同的快速选择范围
+  const quickRanges = currentLanguage === 'en' ? [
+    { label: t('filters.allPrices', 'All'), range: [0, 100] as [number, number] },
+    { label: '$0-5', range: [0, 5] as [number, number] },
+    { label: '$5-10', range: [5, 10] as [number, number] },
+    { label: '$10-20', range: [10, 20] as [number, number] },
+    { label: '$20-50', range: [20, 50] as [number, number] },
+    { label: '$50+', range: [50, 100] as [number, number] },
+  ] : [
+    { label: t('filters.allPrices', '全部'), range: [1.5, 450] as [number, number] },
     { label: '¥0-10', range: [1.5, 10] as [number, number] },
     { label: '¥10-30', range: [10, 30] as [number, number] },
     { label: '¥30-50', range: [30, 50] as [number, number] },

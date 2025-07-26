@@ -309,10 +309,10 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                     {product.price.discount ? (
                       <>
                         <span className="text-2xl font-bold text-red-600">
-                          ¥{product.price.discount.toFixed(2)}
+                          {getFormattedPrice(product).discountPrice}
                         </span>
                         <span className="text-base text-gray-500 line-through">
-                          ¥{product.price.normal.toFixed(2)}
+                          {getFormattedPrice(product).normalPrice}
                         </span>
                         {product.price.discountRate && (
                           <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
@@ -322,7 +322,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                       </>
                     ) : (
                       <span className="text-2xl font-bold text-gray-900">
-                        ¥{product.price.normal.toFixed(2)}
+                        {getFormattedPrice(product).normalPrice}
                       </span>
                     )}
                   </div>

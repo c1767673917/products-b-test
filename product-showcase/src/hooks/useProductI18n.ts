@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLanguageActions, useCurrentLanguage, type MultilingualField } from '../stores/languageStore';
+import { useCurrentLanguage, type MultilingualField } from '../stores/languageStore';
 import type { Product } from '../types/product';
 
 // Hook for product internationalization
 export const useProductI18n = () => {
   const { t } = useTranslation('product');
   const currentLanguage = useCurrentLanguage();
-  const { getProductDisplayValue } = useLanguageActions();
 
   // Get localized product field value
   const getLocalizedValue = (field: MultilingualField | string | undefined, fallback?: string): string => {
@@ -83,15 +82,21 @@ export const useProductI18n = () => {
   };
 
   // Format currency based on current language
-  const formatCurrency = (amount: number): string => {
+  const formatCurrency = (amount: number, forceUSD?: boolean): string => {
     // Use simple formatting to ensure consistent output across environments
-    const formattedNumber = new Intl.NumberFormat(currentLanguage === 'en' ? 'en-US' : 'zh-CN', {
+    const useUSD = forceUSD ?? currentLanguage === 'en';
+    const locale = useUSD ? 'en-US' : 'zh-CN';
+    const currency = useUSD ? 'USD' : 'CNY';
+    
+    const formattedNumber = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(Math.abs(amount));
 
     const sign = amount < 0 ? '-' : '';
-    return `${sign}¥${formattedNumber}`;
+    return `${sign}${formattedNumber}`;
   };
 
   // Get formatted price with localization
@@ -102,14 +107,29 @@ export const useProductI18n = () => {
     formattedNormal: string;
     formattedDiscount?: string;
   } => {
-    const hasDiscount = product.price.discount !== undefined && product.price.discount < product.price.normal;
+    // Determine which price to use based on language
+    const useUSD = currentLanguage === 'en' && product.price.usd?.normal;
+    
+    // Get the appropriate prices
+    const normalPrice = useUSD && product.price.usd?.normal 
+      ? product.price.usd.normal 
+      : product.price.normal;
+    
+    const discountPrice = useUSD && product.price.usd?.discount !== undefined
+      ? product.price.usd.discount
+      : product.price.discount;
+    
+    const hasDiscount = discountPrice !== undefined && discountPrice < normalPrice;
 
+    // Format prices for display
+    const currencySymbol = useUSD ? '$' : '¥';
+    
     return {
-      normalPrice: `¥${product.price.normal.toFixed(2)}`,
-      discountPrice: hasDiscount ? `¥${product.price.discount!.toFixed(2)}` : undefined,
+      normalPrice: `${currencySymbol}${normalPrice.toFixed(2)}`,
+      discountPrice: hasDiscount ? `${currencySymbol}${discountPrice!.toFixed(2)}` : undefined,
       hasDiscount,
-      formattedNormal: formatCurrency(product.price.normal),
-      formattedDiscount: hasDiscount ? formatCurrency(product.price.discount!) : undefined
+      formattedNormal: formatCurrency(normalPrice, useUSD),
+      formattedDiscount: hasDiscount ? formatCurrency(discountPrice!, useUSD) : undefined
     };
   };
 

@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useProductI18n } from '../../hooks/useProductI18n';
+import { useTranslation } from 'react-i18next';
 
 export interface PriceFilterProps {
   value?: [number, number];
@@ -25,6 +27,8 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
   defaultCollapsed = true,
   priceStats: propPriceStats
 }) => {
+  const { t } = useTranslation('product');
+  const { currentLanguage } = useProductI18n();
   const products = useProductStore(state => state.products);
   const filters = useProductStore(state => state.filters);
   
@@ -38,7 +42,17 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
     // 否则从本地产品计算（作为后备方案）
     if (products.length === 0) return { min: 1.5, max: 450, distribution: [] };
 
-    const prices = products.map(p => p.price.discount || p.price.normal);
+    // 根据当前语言选择合适的价格
+    const prices = products.map(p => {
+      if (currentLanguage === 'en' && p.price.usd?.normal) {
+        // 英文界面使用USD价格
+        return p.price.usd.discount || p.price.usd.normal;
+      } else {
+        // 中文界面使用CNY价格
+        return p.price.discount || p.price.normal;
+      }
+    });
+    
     const min = Math.min(...prices);
     const max = Math.max(...prices);
     
@@ -53,13 +67,17 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
     });
 
     return { min, max, distribution };
-  }, [products, propPriceStats]);
+  }, [products, propPriceStats, currentLanguage]);
 
   const currentRange = value || [priceStats.min, priceStats.max];
   const [showDistribution, setShowDistribution] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
-  const formatPrice = (price: number) => `¥${price.toFixed(price < 10 ? 1 : 0)}`;
+  const formatPrice = (price: number) => {
+    const useUSD = currentLanguage === 'en';
+    const symbol = useUSD ? '$' : '¥';
+    return `${symbol}${price.toFixed(price < 10 ? 1 : 0)}`;
+  };
 
   return (
     <Card className={cn('w-full', className)}>
@@ -69,7 +87,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           <div className="flex items-center space-x-2">
-            <CardTitle className="text-base font-medium">价格区间</CardTitle>
+            <CardTitle className="text-base font-medium">{t('filters.priceRange')}</CardTitle>
             {!isCollapsed && (
               <button
                 onClick={(e) => {
@@ -78,7 +96,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                 }}
                 className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
               >
-                {showDistribution ? '隐藏分布' : '显示分布'}
+                {showDistribution ? t('filters.hideDistribution') : t('filters.showDistribution')}
               </button>
             )}
           </div>
@@ -113,7 +131,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                   exit={{ opacity: 0, height: 0 }}
                   className="mb-4"
                 >
-                  <div className="text-sm font-medium text-gray-700 mb-2">价格分布</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.priceDistribution')}</div>
                   <div className="flex items-end justify-between h-16 bg-gray-50 rounded p-2">
                     {priceStats.distribution?.map((count, index) => {
                       const height = priceStats.distribution && priceStats.distribution.length > 0 
@@ -128,7 +146,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                           initial={{ height: 0 }}
                           animate={{ height: `${height}%` }}
                           transition={{ delay: index * 0.05 }}
-                          title={`${count} 个产品`}
+                          title={t('filters.productCount', { count })}
                         />
                       );
                     })}
@@ -179,7 +197,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                     }}
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                   />
-                  <span className="text-sm text-gray-700">只显示有优惠的产品</span>
+                  <span className="text-sm text-gray-700">{t('filters.showDiscountOnly')}</span>
                 </div>
               </div>
 
@@ -187,11 +205,11 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
               <div className="pt-2 border-t border-gray-200">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <div className="text-gray-500">最低价格</div>
+                    <div className="text-gray-500">{t('filters.minPrice')}</div>
                     <div className="font-medium">{formatPrice(priceStats.min)}</div>
                   </div>
                   <div>
-                    <div className="text-gray-500">最高价格</div>
+                    <div className="text-gray-500">{t('filters.maxPrice')}</div>
                     <div className="font-medium">{formatPrice(priceStats.max)}</div>
                   </div>
                 </div>

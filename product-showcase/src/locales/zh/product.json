@@ -48,7 +48,14 @@
     "filterBy": "筛选条件",
     "sortBy": "排序方式",
     "clearFilters": "清空筛选",
-    "applyFilters": "应用筛选"
+    "applyFilters": "应用筛选",
+    "showDistribution": "显示分布",
+    "hideDistribution": "隐藏分布",
+    "priceDistribution": "价格分布",
+    "productCount": "{{count}} 个产品",
+    "minPrice": "最低价格",
+    "maxPrice": "最高价格",
+    "allPrices": "全部"
   },
   "sorting": {
     "name": "按名称排序",

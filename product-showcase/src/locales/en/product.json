@@ -48,7 +48,14 @@
     "filterBy": "Filter By",
     "sortBy": "Sort By",
     "clearFilters": "Clear All Filters",
-    "applyFilters": "Apply Filters"
+    "applyFilters": "Apply Filters",
+    "showDistribution": "Show Distribution",
+    "hideDistribution": "Hide Distribution",
+    "priceDistribution": "Price Distribution",
+    "productCount": "{{count}} products",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "allPrices": "All"
   },
   "sorting": {
     "name": "Sort by name",

@@ -36,6 +36,11 @@ export interface Product {
     normal: number;
     discount?: number;
     discountRate?: number;
+    currency?: string; // 货币代码 (CNY, USD, EUR)
+    usd?: {           // USD价格
+      normal?: number;
+      discount?: number;
+    };
   };
 
   // 图片信息 - 整个 images 对象也可能为空
