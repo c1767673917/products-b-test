@@ -53,7 +53,8 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   // 使用i18n hooks获取本地化值
   const {
     getProductName,
-    getLocalizedValue
+    getLocalizedValue,
+    getFormattedPrice
   } = useProductI18n();
 
   const {
