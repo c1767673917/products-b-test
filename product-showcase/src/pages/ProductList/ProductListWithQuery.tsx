@@ -119,10 +119,11 @@ export const ProductListWithQuery: React.FC = () => {
     return {
       page: currentPage,
       limit: itemsPerPage,
-      sortBy: sortOption.includes('price') ? 'price' : 
+      sortBy: sortOption.includes('price') ? 'price' :
              sortOption === 'collect-time' ? 'time' : 'name',
       sortOrder: sortOption === 'price-desc' ? 'desc' : 'asc',
       search: searchQuery || undefined,
+      lang: currentLanguage, // 添加语言参数
       // 筛选参数
       ...(filters.categories.length > 0 && { category: filters.categories.join(',') }),
       ...(filters.platforms.length > 0 && { platform: filters.platforms.join(',') }),

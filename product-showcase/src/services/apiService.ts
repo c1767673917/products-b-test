@@ -203,10 +203,10 @@ export class ApiService {
   }
 
   // 筛选产品
-  async filterProducts(filters: FilterState, searchQuery?: string): Promise<ApiResponse<Product[]>> {
+  async filterProducts(filters: FilterState, searchQuery?: string, lang?: string): Promise<ApiResponse<Product[]>> {
     try {
       const params: any = {};
-      
+
       if (filters.categories.length > 0) {
         params.category = filters.categories.join(',');
       }
@@ -223,7 +223,10 @@ export class ApiService {
       if (searchQuery) {
         params.search = searchQuery;
       }
-      
+      if (lang) {
+        params.lang = lang; // 添加语言参数
+      }
+
       const response = await backendApiService.getProducts(params);
       return {
         data: response.data.products,

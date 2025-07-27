@@ -100,11 +100,11 @@ export const useSearchProducts = (query: string, params: any = {}, enabled: bool
 };
 
 // 筛选产品
-export const useFilterProducts = (filters: FilterState, searchQuery?: string, enabled: boolean = true) => {
+export const useFilterProducts = (filters: FilterState, searchQuery?: string, lang?: string, enabled: boolean = true) => {
   return useQuery({
     queryKey: queryKeys.filter(filters, searchQuery),
     queryFn: async () => {
-      const response = await apiService.filterProducts(filters, searchQuery);
+      const response = await apiService.filterProducts(filters, searchQuery, lang);
       return response.data;
     },
     enabled: enabled,

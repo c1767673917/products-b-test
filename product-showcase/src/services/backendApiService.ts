@@ -115,6 +115,7 @@ interface ProductListParams {
   sortOrder?: 'asc' | 'desc';
   search?: string;
   status?: 'active' | 'inactive';
+  lang?: string; // 添加语言参数
 }
 
 // 搜索参数接口

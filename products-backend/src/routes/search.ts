@@ -19,15 +19,16 @@ interface SuggestionQuery {
 // 搜索路由
 export async function searchRoutes(fastify: FastifyInstance) {
   // 全文搜索产品
-  fastify.get<{ Querystring: SearchQuery }>('/search', async (request, reply) => {
+  fastify.get<{ Querystring: SearchQuery & { lang?: string } }>('/search', async (request, reply) => {
     try {
-      const { 
-        q, 
-        page = 1, 
-        limit = 20, 
-        category, 
-        platform, 
-        highlight = false 
+      const {
+        q,
+        page = 1,
+        limit = 20,
+        category,
+        platform,
+        highlight = false,
+        lang = 'zh'
       } = request.query;
       
       if (!q || q.trim().length === 0) {
@@ -41,15 +42,39 @@ export async function searchRoutes(fastify: FastifyInstance) {
         });
       }
       
+      // 根据语言选择对应的字段路径
+      const getFieldPath = (baseField: string) => {
+        if (lang === 'en') {
+          return `${baseField}.english`;
+        }
+        return `${baseField}.chinese`;
+      };
+
       // 构建查询条件
       const query: any = {
         $text: { $search: q },
         status: 'active',
         isVisible: true
       };
-      
-      if (category) query['category.primary.display'] = category;
-      if (platform) query['platform.display'] = platform;
+
+      if (category) {
+        query.$and = query.$and || [];
+        query.$and.push({
+          $or: [
+            { [getFieldPath('category.primary')]: category },
+            { 'category.primary.display': category }
+          ]
+        });
+      }
+      if (platform) {
+        query.$and = query.$and || [];
+        query.$and.push({
+          $or: [
+            { [getFieldPath('platform')]: platform },
+            { 'platform.display': platform }
+          ]
+        });
+      }
       
       const skip = (page - 1) * limit;
       const maxLimit = 100;

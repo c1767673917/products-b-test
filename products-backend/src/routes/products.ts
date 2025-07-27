@@ -29,36 +29,69 @@ interface BatchProductRequest {
 // 产品路由
 export async function productRoutes(fastify: FastifyInstance) {
   // 获取产品列表
-  fastify.get<{ Querystring: ProductListQuery }>('/products', async (request, reply) => {
+  fastify.get<{ Querystring: ProductListQuery & { lang?: string } }>('/products', async (request, reply) => {
     try {
-      const { 
-        page = 1, 
-        limit = 20, 
-        category, 
-        platform, 
-        search, 
-        priceMin, 
-        priceMax, 
+      const {
+        page = 1,
+        limit = 20,
+        category,
+        platform,
+        search,
+        priceMin,
+        priceMax,
         province,
         sortBy = 'time',
         sortOrder = 'desc',
-        status = 'active'
+        status = 'active',
+        lang = 'zh'
       } = request.query;
-      
+
+      // 根据语言选择对应的字段路径
+      const getFieldPath = (baseField: string) => {
+        if (lang === 'en') {
+          return `${baseField}.english`;
+        }
+        return `${baseField}.chinese`;
+      };
+
       // 构建查询条件
       const query: any = { status, isVisible: true };
-      
+
       if (category) {
         const categories = category.split(',').map((c: string) => c.trim()).filter(Boolean);
-        query['category.primary.display'] = categories.length === 1 ? categories[0] : { $in: categories };
+        // 根据语言构建多字段查询，优先匹配对应语言字段，回退到display字段
+        const categoryQuery = {
+          $or: [
+            { [getFieldPath('category.primary')]: categories.length === 1 ? categories[0] : { $in: categories } },
+            { 'category.primary.display': categories.length === 1 ? categories[0] : { $in: categories } }
+          ]
+        };
+        query.$and = query.$and || [];
+        query.$and.push(categoryQuery);
       }
       if (platform) {
         const platforms = platform.split(',').map((p: string) => p.trim()).filter(Boolean);
-        query['platform.display'] = platforms.length === 1 ? platforms[0] : { $in: platforms };
+        // 根据语言构建多字段查询，优先匹配对应语言字段，回退到display字段
+        const platformQuery = {
+          $or: [
+            { [getFieldPath('platform')]: platforms.length === 1 ? platforms[0] : { $in: platforms } },
+            { 'platform.display': platforms.length === 1 ? platforms[0] : { $in: platforms } }
+          ]
+        };
+        query.$and = query.$and || [];
+        query.$and.push(platformQuery);
       }
       if (province) {
         const provinces = province.split(',').map((p: string) => p.trim()).filter(Boolean);
-        query['origin.province.display'] = provinces.length === 1 ? provinces[0] : { $in: provinces };
+        // 根据语言构建多字段查询，优先匹配对应语言字段，回退到display字段
+        const provinceQuery = {
+          $or: [
+            { [getFieldPath('origin.province')]: provinces.length === 1 ? provinces[0] : { $in: provinces } },
+            { 'origin.province.display': provinces.length === 1 ? provinces[0] : { $in: provinces } }
+          ]
+        };
+        query.$and = query.$and || [];
+        query.$and.push(provinceQuery);
       }
       if (search) {
         query.$text = { $search: search };

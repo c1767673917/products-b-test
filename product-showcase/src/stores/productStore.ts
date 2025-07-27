@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Product, FilterState, ViewMode, SortOption } from '../types/product';
 import { apiService } from '../services/backendApiService';
+import { useLanguageStore } from './languageStore';
 
 // 分页信息接口
 interface PaginationInfo {
@@ -209,13 +210,17 @@ export const useProductStore = create<ProductState>()(
         }));
 
         try {
+          // 获取当前语言
+          const currentLanguage = useLanguageStore.getState().currentLanguage;
+
           // 构建API参数
           const apiParams: any = {
             page,
             limit: state.itemsPerPage,
-            sortBy: state.sortOption.includes('price') ? 'price' : 
+            sortBy: state.sortOption.includes('price') ? 'price' :
                    state.sortOption === 'collect-time' ? 'time' : 'name',
-            sortOrder: state.sortOption === 'price-desc' ? 'desc' : 'asc'
+            sortOrder: state.sortOption === 'price-desc' ? 'desc' : 'asc',
+            lang: currentLanguage // 添加语言参数
           };
 
           // 添加筛选参数
