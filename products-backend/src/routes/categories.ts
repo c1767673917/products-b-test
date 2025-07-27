@@ -124,7 +124,7 @@ export async function statsRoutes(fastify: FastifyInstance) {
           { $limit: 10 }
         ]),
         
-        // 价格统计
+        // 价格统计 (CNY和USD)
         Product.aggregate([
           { $match: { status: 'active', isVisible: true, 'price.normal': { $gt: 0 } } },
           {
@@ -133,7 +133,12 @@ export async function statsRoutes(fastify: FastifyInstance) {
               minPrice: { $min: '$price.normal' },
               maxPrice: { $max: '$price.normal' },
               avgPrice: { $avg: '$price.normal' },
-              prices: { $push: '$price.normal' }
+              prices: { $push: '$price.normal' },
+              // USD价格统计
+              minPriceUSD: { $min: '$price.usd.normal' },
+              maxPriceUSD: { $max: '$price.usd.normal' },
+              avgPriceUSD: { $avg: '$price.usd.normal' },
+              pricesUSD: { $push: '$price.usd.normal' }
             }
           }
         ]),
@@ -171,12 +176,26 @@ export async function statsRoutes(fastify: FastifyInstance) {
       // 计算价格中位数
       const priceData = priceStats[0];
       let median = 0;
+      let medianUSD = 0;
       if (priceData && priceData.prices && priceData.prices.length > 0) {
         const sortedPrices = priceData.prices.sort((a: number, b: number) => a - b);
         const mid = Math.floor(sortedPrices.length / 2);
         median = sortedPrices.length % 2 === 0 
           ? (sortedPrices[mid - 1] + sortedPrices[mid]) / 2 
           : sortedPrices[mid];
+      }
+      
+      // 计算USD价格中位数
+      if (priceData && priceData.pricesUSD && priceData.pricesUSD.length > 0) {
+        const sortedPricesUSD = priceData.pricesUSD
+          .filter((price: number | null) => price !== null && price > 0)
+          .sort((a: number, b: number) => a - b);
+        if (sortedPricesUSD.length > 0) {
+          const midUSD = Math.floor(sortedPricesUSD.length / 2);
+          medianUSD = sortedPricesUSD.length % 2 === 0 
+            ? (sortedPricesUSD[midUSD - 1] + sortedPricesUSD[midUSD]) / 2 
+            : sortedPricesUSD[midUSD];
+        }
       }
       
       // 转换分布数据为对象格式
@@ -210,7 +229,12 @@ export async function statsRoutes(fastify: FastifyInstance) {
             min: priceData?.minPrice || 0,
             max: priceData?.maxPrice || 0,
             average: Math.round((priceData?.avgPrice || 0) * 100) / 100,
-            median: Math.round(median * 100) / 100
+            median: Math.round(median * 100) / 100,
+            // USD价格统计
+            minUSD: priceData?.minPriceUSD || 0,
+            maxUSD: priceData?.maxPriceUSD || 0,
+            averageUSD: Math.round((priceData?.avgPriceUSD || 0) * 100) / 100,
+            medianUSD: Math.round(medianUSD * 100) / 100
           },
           recentActivity: {
             newProductsToday: activityData.newProductsToday,

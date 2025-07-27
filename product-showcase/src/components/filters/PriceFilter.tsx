@@ -160,6 +160,8 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                 <PriceRangeQuickSelect
                   currentRange={currentRange}
                   onSelect={onChange}
+                  minPrice={priceStats.min}
+                  maxPrice={priceStats.max}
                 />
               </div>
 

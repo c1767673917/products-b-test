@@ -10,6 +10,7 @@ import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
 import { FilterState } from '../../types/product';
 import { useFilterOptions } from '../../hooks/useProducts';
+import { useProductI18n } from '../../hooks/useProductI18n';
 import { 
   FunnelIcon, 
   XMarkIcon,
@@ -47,6 +48,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const storeClearFilters = useProductStore(state => state.clearFilters);
   const filteredProducts = useProductStore(state => state.filteredProducts);
   const products = useProductStore(state => state.products);
+  const { currentLanguage } = useProductI18n();
   
   // 获取筛选选项数据
   const { data: filterOptions, isLoading: isFilterOptionsLoading, error: filterOptionsError } = useFilterOptions();
@@ -195,8 +197,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 onChange={handlePriceChange}
                 defaultCollapsed={true}
                 priceStats={filterOptions ? {
-                  min: filterOptions.priceRange[0],
-                  max: filterOptions.priceRange[1]
+                  min: currentLanguage === 'en' && filterOptions.priceRangeUSD 
+                    ? filterOptions.priceRangeUSD[0] 
+                    : filterOptions.priceRange[0],
+                  max: currentLanguage === 'en' && filterOptions.priceRangeUSD 
+                    ? filterOptions.priceRangeUSD[1] 
+                    : filterOptions.priceRange[1]
                 } : undefined}
               />
             </motion.div>

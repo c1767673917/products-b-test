@@ -155,32 +155,63 @@ export interface PriceRangeQuickSelectProps {
   onSelect: (range: [number, number]) => void;
   currentRange: [number, number];
   className?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export const PriceRangeQuickSelect: React.FC<PriceRangeQuickSelectProps> = ({
   onSelect,
   currentRange,
-  className
+  className,
+  minPrice,
+  maxPrice
 }) => {
   const { t } = useTranslation('product');
   const { currentLanguage } = useProductI18n();
   
-  // 根据语言选择不同的快速选择范围
-  const quickRanges = currentLanguage === 'en' ? [
-    { label: t('filters.allPrices', 'All'), range: [0, 100] as [number, number] },
-    { label: '$0-5', range: [0, 5] as [number, number] },
-    { label: '$5-10', range: [5, 10] as [number, number] },
-    { label: '$10-20', range: [10, 20] as [number, number] },
-    { label: '$20-50', range: [20, 50] as [number, number] },
-    { label: '$50+', range: [50, 100] as [number, number] },
-  ] : [
-    { label: t('filters.allPrices', '全部'), range: [1.5, 450] as [number, number] },
-    { label: '¥0-10', range: [1.5, 10] as [number, number] },
-    { label: '¥10-30', range: [10, 30] as [number, number] },
-    { label: '¥30-50', range: [30, 50] as [number, number] },
-    { label: '¥50-100', range: [50, 100] as [number, number] },
-    { label: '¥100+', range: [100, 450] as [number, number] },
-  ];
+  // 根据语言和实际价格范围动态生成快速选择范围
+  const quickRanges = React.useMemo(() => {
+    const min = minPrice ?? (currentLanguage === 'en' ? 0 : 1.5);
+    const max = maxPrice ?? (currentLanguage === 'en' ? 100 : 450);
+    const isUSD = currentLanguage === 'en';
+    
+    // 根据实际价格范围生成合理的分段
+    const ranges: Array<{ label: string; range: [number, number] }> = [];
+    
+    // 全部范围
+    ranges.push({ 
+      label: t('filters.allPrices', isUSD ? 'All' : '全部'), 
+      range: [min, max] 
+    });
+    
+    // 根据最大价格动态生成价格段
+    if (max <= 20) {
+      // 小价格范围
+      ranges.push(
+        { label: `${isUSD ? '$' : '¥'}0-5`, range: [min, 5] },
+        { label: `${isUSD ? '$' : '¥'}5-10`, range: [5, 10] },
+        { label: `${isUSD ? '$' : '¥'}10+`, range: [10, max] }
+      );
+    } else if (max <= 100) {
+      // 中等价格范围
+      ranges.push(
+        { label: `${isUSD ? '$' : '¥'}0-10`, range: [min, 10] },
+        { label: `${isUSD ? '$' : '¥'}10-30`, range: [10, 30] },
+        { label: `${isUSD ? '$' : '¥'}30-50`, range: [30, 50] },
+        { label: `${isUSD ? '$' : '¥'}50+`, range: [50, max] }
+      );
+    } else {
+      // 大价格范围
+      ranges.push(
+        { label: `${isUSD ? '$' : '¥'}0-50`, range: [min, 50] },
+        { label: `${isUSD ? '$' : '¥'}50-100`, range: [50, 100] },
+        { label: `${isUSD ? '$' : '¥'}100-200`, range: [100, 200] },
+        { label: `${isUSD ? '$' : '¥'}200+`, range: [200, max] }
+      );
+    }
+    
+    return ranges;
+  }, [currentLanguage, minPrice, maxPrice, t]);
 
   const isActive = (range: [number, number]) => {
     return currentRange[0] === range[0] && currentRange[1] === range[1];

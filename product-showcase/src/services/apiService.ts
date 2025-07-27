@@ -142,6 +142,7 @@ export class ApiService {
     locations: { value: string; label: string; count: number }[];
     platforms: { value: string; label: string; count: number }[];
     priceRange: [number, number];
+    priceRangeUSD?: [number, number];
   }>> {
     try {
       const response = await backendApiService.getStats();
@@ -163,7 +164,11 @@ export class ApiService {
           label: platform,
           count: count as number
         })),
-        priceRange: [stats.priceStats.min, stats.priceStats.max] as [number, number]
+        priceRange: [stats.priceStats.min, stats.priceStats.max] as [number, number],
+        // 添加USD价格范围
+        priceRangeUSD: stats.priceStats.minUSD && stats.priceStats.maxUSD 
+          ? [stats.priceStats.minUSD, stats.priceStats.maxUSD] as [number, number]
+          : undefined
       };
       
       return this.wrapResponse(options, '筛选选项获取成功');
