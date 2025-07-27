@@ -291,6 +291,136 @@ export class ApiService {
     }
   }
 
+  // ===== 收藏功能 API =====
+
+  // 切换收藏状态
+  async toggleFavorite(productId: string, userId?: string, sessionId?: string): Promise<ApiResponse<{
+    action: 'added' | 'removed';
+    productId: string;
+    isFavorited: boolean;
+    favoriteCount: number;
+  }>> {
+    try {
+      const response: AxiosResponse<ApiResponse<{
+        action: 'added' | 'removed';
+        productId: string;
+        isFavorited: boolean;
+        favoriteCount: number;
+      }>> = await httpClient.post('/favorites/toggle', {
+        productId,
+        userId,
+        sessionId: sessionId || this.getSessionId(),
+        metadata: {
+          source: 'web',
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('切换收藏状态失败:', error);
+      throw this.handleError(error, 'toggleFavorite');
+    }
+  }
+
+  // 获取收藏列表
+  async getFavorites(params: {
+    userId?: string;
+    sessionId?: string;
+    page?: number;
+    limit?: number;
+    populate?: boolean;
+  } = {}): Promise<ApiResponse<{
+    favorites: any[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }>> {
+    try {
+      const queryParams = {
+        ...params,
+        sessionId: params.sessionId || this.getSessionId()
+      };
+
+      const response = await httpClient.get('/favorites', { params: queryParams });
+      return response.data;
+    } catch (error) {
+      console.error('获取收藏列表失败:', error);
+      throw this.handleError(error, 'getFavorites');
+    }
+  }
+
+  // 检查收藏状态
+  async checkFavoriteStatus(productId: string, userId?: string, sessionId?: string): Promise<ApiResponse<{
+    productId: string;
+    isFavorited: boolean;
+    favoriteCount: number;
+  }>> {
+    try {
+      const response = await httpClient.get('/favorites/status', {
+        params: {
+          productId,
+          userId,
+          sessionId: sessionId || this.getSessionId()
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('检查收藏状态失败:', error);
+      throw this.handleError(error, 'checkFavoriteStatus');
+    }
+  }
+
+  // 批量检查收藏状态
+  async batchCheckFavoriteStatus(productIds: string[], userId?: string, sessionId?: string): Promise<ApiResponse<{
+    favoriteMap: { [productId: string]: boolean };
+  }>> {
+    try {
+      const response = await httpClient.get('/favorites/batch-status', {
+        params: {
+          productIds: productIds.join(','),
+          userId,
+          sessionId: sessionId || this.getSessionId()
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('批量检查收藏状态失败:', error);
+      throw this.handleError(error, 'batchCheckFavoriteStatus');
+    }
+  }
+
+  // 获取产品收藏统计
+  async getProductFavoriteStats(productId: string): Promise<ApiResponse<{
+    productId: string;
+    favoriteCount: number;
+  }>> {
+    try {
+      const response = await httpClient.get(`/favorites/stats/${productId}`);
+      return response.data;
+    } catch (error) {
+      console.error('获取产品收藏统计失败:', error);
+      throw this.handleError(error, 'getProductFavoriteStats');
+    }
+  }
+
+  // 获取或生成会话ID
+  private getSessionId(): string {
+    let sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('sessionId', sessionId);
+    }
+    return sessionId;
+  }
+
   // 处理产品图片URL
   private processProductImages(product: Product): Product {
     const processedProduct = { ...product };

@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HeartIcon, EyeIcon, ScaleIcon } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, ScaleIcon } from '@heroicons/react/24/outline';
 import type { ProductCardProps, ImageType } from '../../types/product';
 import { cn } from '../../utils/cn';
 import LazyImage from './LazyImage';
 import { useAnimationPreferences } from '../../hooks/useAnimationPreferences';
 import { useProductI18n } from '../../hooks/useProductI18n';
 import { calculateDiscountRate, formatDiscountRate } from '../../utils/discountCalculation';
+import FavoriteButton from './FavoriteButton';
 import {
   PRODUCT_CARD_VARIANTS,
   ANIMATION_DURATION,
@@ -24,7 +24,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onQuickAction,
   layout = 'grid',
   className,
-  isFavorited = false
+  isFavorited = false,
+  favoriteCount = 0,
+  isToggling = false
 }) => {
   const [currentImageType, setCurrentImageType] = useState<ImageType>('front');
   const { preferences, getAnimationConfig } = useAnimationPreferences();
@@ -220,19 +222,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
               {/* 快速操作按钮 */}
               <div className="flex flex-col sm:flex-row gap-1 ml-2">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                <FavoriteButton
+                  isFavorited={isFavorited}
+                  isLoading={isToggling}
                   onClick={handleFavorite}
-                  className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                  title={t('actions.favorite')}
-                >
-                  {isFavorited ? (
-                    <HeartSolidIcon className="w-4 h-4 text-red-500" />
-                  ) : (
-                    <HeartIcon className="w-4 h-4 text-gray-400" />
-                  )}
-                </motion.button>
+                  size="sm"
+                  showCount={false}
+                  favoriteCount={favoriteCount}
+                  className="!bg-transparent hover:!bg-gray-100"
+                />
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -309,20 +307,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* 快速操作按钮 */}
         <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 transform-gpu">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          <FavoriteButton
+            isFavorited={isFavorited}
+            isLoading={isToggling}
             onClick={handleFavorite}
-            className="p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors shadow-sm will-change-transform"
-            title={t('actions.favorite')}
-          >
-            {isFavorited ? (
-              <HeartSolidIcon className="w-4 h-4 text-red-500" />
-            ) : (
-              <HeartIcon className="w-4 h-4 text-gray-600" />
-            )}
-          </motion.button>
+            size="sm"
+            showCount={false}
+            favoriteCount={favoriteCount}
+          />
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}

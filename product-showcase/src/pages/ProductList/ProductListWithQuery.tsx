@@ -9,7 +9,8 @@ import {
   MagnifyingGlassIcon,
   ShareIcon,
   ArrowPathIcon,
-  XMarkIcon
+  XMarkIcon,
+  HeartIcon
 } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import type { Product, FilterState } from '../../types/product';
@@ -27,6 +28,7 @@ import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
+import { useProductListFavorites, useFavoriteProductIds } from '../../hooks/useFavorites';
 import { VirtualGrid, VirtualList } from '../../components/ui/VirtualGrid';
 import { convertPriceRangeForAPI } from '../../utils/priceConversion';
 
@@ -61,7 +63,7 @@ export const ProductListWithQuery: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(20); // 默认每页20个，这样可以看到分页
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialFilters);
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [compareList, setCompareList] = useState<string[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
@@ -143,6 +145,9 @@ export const ProductListWithQuery: React.FC = () => {
   const setProducts = useProductStore(state => state.setProducts);
   const storeProducts = useProductStore(state => state.products);
 
+  // 收藏功能hooks
+  const { favoriteProductIds, isLoading: isFavoritesLoading } = useFavoriteProductIds();
+
   // 监控 ProductStore 状态变化 (仅开发环境)
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
@@ -206,15 +211,44 @@ export const ProductListWithQuery: React.FC = () => {
   // 获取要显示的产品数据 - 直接使用后端返回的数据，无需前端排序
   const displayProducts = useMemo(() => {
     if (!productsQuery.data) return [];
-    
+
     // 处理新的分页API格式
     if (typeof productsQuery.data === 'object' && 'products' in productsQuery.data) {
       return productsQuery.data.products || [];
     }
-    
+
     // 兼容旧格式：直接返回产品数组
     return Array.isArray(productsQuery.data) ? productsQuery.data : [];
   }, [productsQuery.data]);
+
+  // 应用收藏筛选
+  const filteredProducts = useMemo(() => {
+    if (!showFavoritesOnly) {
+      return displayProducts;
+    }
+
+    // 如果正在加载收藏数据，显示所有产品
+    if (isFavoritesLoading) {
+      return displayProducts;
+    }
+
+    // 筛选出收藏的产品
+    return displayProducts.filter(product =>
+      favoriteProductIds.includes(product.productId)
+    );
+  }, [displayProducts, showFavoritesOnly, favoriteProductIds, isFavoritesLoading]);
+
+  // 收藏功能hooks - 基于筛选后的产品
+  const productIds = useMemo(() =>
+    filteredProducts?.map(p => p.productId) || [],
+    [filteredProducts]
+  );
+  const {
+    favoriteMap,
+    toggleFavorite,
+    getFavoriteStatus,
+    isToggling
+  } = useProductListFavorites(productIds);
 
   // 获取后端返回的分页信息
   const paginationInfo = useMemo(() => {
@@ -244,8 +278,8 @@ export const ProductListWithQuery: React.FC = () => {
   const actualProducts = paginationInfo.products;
   const actualPagination = paginationInfo.pagination;
 
-  // 使用后端分页的产品数据，无需前端再次分页
-  const paginatedProducts = actualProducts;
+  // 如果启用了收藏筛选，使用筛选后的产品；否则使用后端分页的产品数据
+  const paginatedProducts = showFavoritesOnly ? filteredProducts : actualProducts;
 
   // 获取当前选中的产品
   const selectedProduct = selectedProductId
@@ -296,16 +330,7 @@ export const ProductListWithQuery: React.FC = () => {
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
     switch (action) {
       case 'favorite':
-        setFavorites(prev =>
-          prev.includes(product.productId)
-            ? prev.filter(id => id !== product.productId)
-            : [...prev, product.productId]
-        );
-        showSuccess(
-          favorites.includes(product.productId)
-            ? t('product:detail.toast.favoriteRemoved')
-            : t('product:detail.toast.favoriteAdded')
-        );
+        toggleFavorite(product.productId);
         break;
       case 'detail':
         setSelectedProductId(product.productId);
@@ -415,6 +440,22 @@ export const ProductListWithQuery: React.FC = () => {
               >
                 <ArrowPathIcon className="h-4 w-4" />
                 {!isMobile && <span className="ml-1">{t('common:actions.refresh')}</span>}
+              </Button>
+
+              <Button
+                variant={showFavoritesOnly ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                disabled={isFavoritesLoading}
+                className={showFavoritesOnly ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+              >
+                <HeartIcon className={`h-4 w-4 ${showFavoritesOnly ? 'text-white' : 'text-red-500'}`} />
+                {!isMobile && (
+                  <span className="ml-1">
+                    {showFavoritesOnly ? '显示全部' : '仅收藏'}
+                    {favoriteProductIds.length > 0 && ` (${favoriteProductIds.length})`}
+                  </span>
+                )}
               </Button>
 
               <Button
@@ -649,8 +690,10 @@ export const ProductListWithQuery: React.FC = () => {
                           product={product}
                           layout="grid"
                           onQuickAction={(action) => handleProductAction(product, action)}
-                          isFavorited={favorites.includes(product.productId)}
+                          isFavorited={getFavoriteStatus(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
+                          favoriteCount={0}
+                          isToggling={isToggling}
                         />
                       ))}
                     </div>
@@ -662,8 +705,10 @@ export const ProductListWithQuery: React.FC = () => {
                           product={product}
                           layout="list"
                           onQuickAction={(action) => handleProductAction(product, action)}
-                          isFavorited={favorites.includes(product.productId)}
+                          isFavorited={getFavoriteStatus(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
+                          favoriteCount={0}
+                          isToggling={isToggling}
                         />
                       ))}
                     </div>

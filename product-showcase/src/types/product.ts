@@ -133,6 +133,8 @@ export interface ProductCardProps {
   className?: string;
   isFavorited?: boolean;
   isInCompare?: boolean;
+  favoriteCount?: number;
+  isToggling?: boolean;
 }
 
 // 筛选器属性

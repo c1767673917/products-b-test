@@ -56,7 +56,8 @@ interface ProductState {
   setItemsPerPage: (itemsPerPage: number) => void;
   setFilters: (filters: Partial<FilterState>) => void;
   setShowFilters: (show: boolean) => void;
-  toggleFavorite: (productId: string) => void;
+  toggleFavorite: (productId: string) => Promise<void>;
+  syncFavorites: (favoriteIds: string[]) => void;
   addToCompare: (productId: string) => void;
   removeFromCompare: (productId: string) => void;
   clearFilters: () => void;
@@ -167,13 +168,34 @@ export const useProductStore = create<ProductState>()(
       // 设置筛选面板显示状态
       setShowFilters: (showFilters) => set({ showFilters }),
 
-      // 切换收藏状态
-      toggleFavorite: (productId) => {
-        const { favorites } = get();
-        const newFavorites = favorites.includes(productId)
-          ? favorites.filter(id => id !== productId)
-          : [...favorites, productId];
-        set({ favorites: newFavorites });
+      // 切换收藏状态 - 现在通过API调用处理
+      toggleFavorite: async (productId) => {
+        try {
+          // 乐观更新：先更新本地状态
+          const { favorites } = get();
+          const newFavorites = favorites.includes(productId)
+            ? favorites.filter(id => id !== productId)
+            : [...favorites, productId];
+          set({ favorites: newFavorites });
+
+          // 调用API更新后端
+          await apiService.toggleFavorite(productId);
+        } catch (error) {
+          // 如果API调用失败，回滚本地状态
+          const { favorites } = get();
+          const revertedFavorites = favorites.includes(productId)
+            ? favorites.filter(id => id !== productId)
+            : [...favorites, productId];
+          set({ favorites: revertedFavorites });
+
+          console.error('切换收藏状态失败:', error);
+          throw error;
+        }
+      },
+
+      // 同步收藏状态（从API获取的数据）
+      syncFavorites: (favoriteIds) => {
+        set({ favorites: favoriteIds });
       },
 
       // 添加到对比列表
@@ -360,6 +382,7 @@ export const useProductActions = () => useProductStore(state => ({
   setFilters: state.setFilters,
   setShowFilters: state.setShowFilters,
   toggleFavorite: state.toggleFavorite,
+  syncFavorites: state.syncFavorites,
   addToCompare: state.addToCompare,
   removeFromCompare: state.removeFromCompare,
   clearFilters: state.clearFilters,

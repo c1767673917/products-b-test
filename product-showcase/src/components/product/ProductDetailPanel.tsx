@@ -22,6 +22,7 @@ import { useToast } from '../ui/ToastNotification';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useProductI18n } from '../../hooks/useProductI18n';
+import { useProductFavorite } from '../../hooks/useFavorites';
 
 interface ProductDetailPanelProps {
   product: Product | null;
@@ -58,12 +59,18 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   } = useProductI18n();
 
   const {
-    favorites,
     compareList,
-    toggleFavorite,
     addToCompare,
     removeFromCompare
   } = useProductStore();
+
+  // 收藏功能hooks
+  const {
+    isFavorited,
+    favoriteCount,
+    toggleFavorite,
+    isToggling
+  } = useProductFavorite(product?.productId || '');
 
   // 处理面板宽度调整
   const handleWidthChange = (newWidth: number) => {
@@ -125,11 +132,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
 
   const handleToggleFavorite = () => {
     if (product) {
-      toggleFavorite(product.productId);
-      const isFavorited = favorites.includes(product.productId);
-      showSuccess(
-        isFavorited ? t('detail.toast.favoriteRemoved') : t('detail.toast.favoriteAdded')
-      );
+      toggleFavorite();
     }
   };
 
@@ -177,8 +180,6 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
   };
 
   if (!product) return null;
-
-  const isFavorited = favorites.includes(product.productId);
 
   return (
     <AnimatePresence mode="wait">
@@ -245,12 +246,18 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={handleToggleFavorite}
+                disabled={isToggling}
                 className="flex items-center space-x-1"
               >
-                {isFavorited ? (
+                {isToggling ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-500" />
+                ) : isFavorited ? (
                   <HeartSolidIcon className="h-4 w-4 text-red-500" />
                 ) : (
                   <HeartIcon className="h-4 w-4" />
+                )}
+                {favoriteCount > 0 && (
+                  <span className="text-xs text-gray-500">({favoriteCount})</span>
                 )}
               </Button>
 

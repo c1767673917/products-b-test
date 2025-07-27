@@ -353,6 +353,67 @@ export class ApiService {
     }
   }
 
+  // ===== 收藏功能 =====
+
+  // 切换收藏状态
+  async toggleFavorite(productId: string, userId?: string): Promise<ApiResponse<{
+    action: 'added' | 'removed';
+    productId: string;
+    isFavorited: boolean;
+    favoriteCount: number;
+  }>> {
+    try {
+      const response = await backendApiService.toggleFavorite(productId, userId);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 获取收藏列表
+  async getFavorites(params: {
+    userId?: string;
+    page?: number;
+    limit?: number;
+    populate?: boolean;
+  } = {}): Promise<ApiResponse<{
+    favorites: any[];
+    pagination: any;
+  }>> {
+    try {
+      const response = await backendApiService.getFavorites(params);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 检查收藏状态
+  async checkFavoriteStatus(productId: string, userId?: string): Promise<ApiResponse<{
+    productId: string;
+    isFavorited: boolean;
+    favoriteCount: number;
+  }>> {
+    try {
+      const response = await backendApiService.checkFavoriteStatus(productId, userId);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  // 批量检查收藏状态
+  async batchCheckFavoriteStatus(productIds: string[], userId?: string): Promise<ApiResponse<{
+    favoriteMap: { [productId: string]: boolean };
+  }>> {
+    try {
+      const response = await backendApiService.batchCheckFavoriteStatus(productIds, userId);
+      return this.wrapResponse(response.data, response.message);
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
   // 包装API响应
   private wrapResponse<T>(data: T, message?: string): ApiResponse<T> {
     return {

@@ -83,7 +83,11 @@ app.register(async function(fastify) {
   // 注册图片相关路由
   const { imageRoutes } = await import('./routes/images');
   await fastify.register(imageRoutes, { prefix: '/images' });
-  
+
+  // 注册收藏功能路由
+  const { favoriteRoutes } = await import('./routes/favorites');
+  await fastify.register(favoriteRoutes);
+
   // 注册数据同步路由 (增强版)
   const { syncRoutes } = await import('./routes/sync');
   await fastify.register(syncRoutes);
