@@ -173,28 +173,57 @@ export async function statsRoutes(fastify: FastifyInstance) {
         ])
       ]);
       
-      // 计算价格中位数
+      // 计算价格中位数和分布
       const priceData = priceStats[0];
       let median = 0;
       let medianUSD = 0;
+      let priceDistribution: number[] = [];
+      let priceDistributionUSD: number[] = [];
+
       if (priceData && priceData.prices && priceData.prices.length > 0) {
         const sortedPrices = priceData.prices.sort((a: number, b: number) => a - b);
         const mid = Math.floor(sortedPrices.length / 2);
-        median = sortedPrices.length % 2 === 0 
-          ? (sortedPrices[mid - 1] + sortedPrices[mid]) / 2 
+        median = sortedPrices.length % 2 === 0
+          ? (sortedPrices[mid - 1] + sortedPrices[mid]) / 2
           : sortedPrices[mid];
+
+        // 计算CNY价格分布（10个区间）
+        const minPrice = priceData.minPrice;
+        const maxPrice = priceData.maxPrice;
+        const bucketCount = 10;
+        const bucketSize = (maxPrice - minPrice) / bucketCount;
+        priceDistribution = Array(bucketCount).fill(0);
+
+        priceData.prices.forEach((price: number) => {
+          if (price > 0) {
+            const bucketIndex = Math.min(Math.floor((price - minPrice) / bucketSize), bucketCount - 1);
+            priceDistribution[bucketIndex]++;
+          }
+        });
       }
-      
-      // 计算USD价格中位数
+
+      // 计算USD价格中位数和分布
       if (priceData && priceData.pricesUSD && priceData.pricesUSD.length > 0) {
         const sortedPricesUSD = priceData.pricesUSD
           .filter((price: number | null) => price !== null && price > 0)
           .sort((a: number, b: number) => a - b);
         if (sortedPricesUSD.length > 0) {
           const midUSD = Math.floor(sortedPricesUSD.length / 2);
-          medianUSD = sortedPricesUSD.length % 2 === 0 
-            ? (sortedPricesUSD[midUSD - 1] + sortedPricesUSD[midUSD]) / 2 
+          medianUSD = sortedPricesUSD.length % 2 === 0
+            ? (sortedPricesUSD[midUSD - 1] + sortedPricesUSD[midUSD]) / 2
             : sortedPricesUSD[midUSD];
+
+          // 计算USD价格分布（10个区间）
+          const minPriceUSD = priceData.minPriceUSD;
+          const maxPriceUSD = priceData.maxPriceUSD;
+          const bucketCount = 10;
+          const bucketSizeUSD = (maxPriceUSD - minPriceUSD) / bucketCount;
+          priceDistributionUSD = Array(bucketCount).fill(0);
+
+          sortedPricesUSD.forEach((price: number) => {
+            const bucketIndex = Math.min(Math.floor((price - minPriceUSD) / bucketSizeUSD), bucketCount - 1);
+            priceDistributionUSD[bucketIndex]++;
+          });
         }
       }
       
@@ -230,11 +259,13 @@ export async function statsRoutes(fastify: FastifyInstance) {
             max: priceData?.maxPrice || 0,
             average: Math.round((priceData?.avgPrice || 0) * 100) / 100,
             median: Math.round(median * 100) / 100,
+            distribution: priceDistribution,
             // USD价格统计
             minUSD: priceData?.minPriceUSD || 0,
             maxUSD: priceData?.maxPriceUSD || 0,
             averageUSD: Math.round((priceData?.avgPriceUSD || 0) * 100) / 100,
-            medianUSD: Math.round(medianUSD * 100) / 100
+            medianUSD: Math.round(medianUSD * 100) / 100,
+            distributionUSD: priceDistributionUSD
           },
           recentActivity: {
             newProductsToday: activityData.newProductsToday,

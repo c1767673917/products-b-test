@@ -197,12 +197,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                 onChange={handlePriceChange}
                 defaultCollapsed={true}
                 priceStats={filterOptions ? {
-                  min: currentLanguage === 'en' && filterOptions.priceRangeUSD 
-                    ? filterOptions.priceRangeUSD[0] 
+                  min: currentLanguage === 'en' && filterOptions.priceRangeUSD
+                    ? filterOptions.priceRangeUSD[0]
                     : filterOptions.priceRange[0],
-                  max: currentLanguage === 'en' && filterOptions.priceRangeUSD 
-                    ? filterOptions.priceRangeUSD[1] 
-                    : filterOptions.priceRange[1]
+                  max: currentLanguage === 'en' && filterOptions.priceRangeUSD
+                    ? filterOptions.priceRangeUSD[1]
+                    : filterOptions.priceRange[1],
+                  distribution: currentLanguage === 'en' && filterOptions.priceDistributionUSD
+                    ? filterOptions.priceDistributionUSD
+                    : filterOptions.priceDistribution
                 } : undefined}
               />
             </motion.div>

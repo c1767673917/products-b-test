@@ -85,11 +85,13 @@ interface StatsResponse {
       max: number;
       average: number;
       median: number;
+      distribution: number[];
       // USD价格统计
       minUSD?: number;
       maxUSD?: number;
       averageUSD?: number;
       medianUSD?: number;
+      distributionUSD?: number[];
     };
     recentActivity: {
       newProductsToday: number;

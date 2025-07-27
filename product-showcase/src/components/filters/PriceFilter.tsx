@@ -132,25 +132,32 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
                   className="mb-4"
                 >
                   <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.priceDistribution')}</div>
-                  <div className="flex items-end justify-between h-16 bg-gray-50 rounded p-2">
-                    {priceStats.distribution?.map((count, index) => {
-                      const height = priceStats.distribution && priceStats.distribution.length > 0 
-                        ? (count / Math.max(...priceStats.distribution)) * 100 
-                        : 0;
-                      
-                      return (
-                        <motion.div
-                          key={index}
-                          className="bg-blue-400 rounded-sm min-w-[4px] mx-0.5"
-                          style={{ height: `${height}%` }}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${height}%` }}
-                          transition={{ delay: index * 0.05 }}
-                          title={t('filters.productCount', { count })}
-                        />
-                      );
-                    })}
-                  </div>
+                  {priceStats.distribution && priceStats.distribution.length > 0 ? (
+                    <div className="flex items-end justify-between h-16 bg-gray-50 rounded p-2">
+                      {priceStats.distribution.map((count, index) => {
+                        const maxCount = Math.max(...priceStats.distribution!);
+                        const height = maxCount > 0 ? (count / maxCount) * 100 : 0;
+
+                        return (
+                          <motion.div
+                            key={index}
+                            className="bg-blue-400 rounded-sm min-w-[4px] mx-0.5"
+                            style={{ height: `${height}%` }}
+                            initial={{ height: 0 }}
+                            animate={{ height: `${height}%` }}
+                            transition={{ delay: index * 0.05 }}
+                            title={t('filters.productCount', { count })}
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-16 bg-gray-50 rounded p-2">
+                      <div className="text-sm text-gray-500">
+                        {t('filters.noDistributionData', '暂无分布数据')}
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
