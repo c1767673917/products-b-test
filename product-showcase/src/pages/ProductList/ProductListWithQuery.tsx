@@ -28,6 +28,7 @@ import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { VirtualGrid, VirtualList } from '../../components/ui/VirtualGrid';
+import { convertPriceRangeForAPI } from '../../utils/priceConversion';
 
 import { useRealTimeResponsiveGrid } from '../../hooks/useRealTimeResponsiveGrid';
 import { useContainerDimensions } from '../../hooks/useContainerDimensions';
@@ -45,7 +46,8 @@ const initialFilters: FilterState = {
 
 export const ProductListWithQuery: React.FC = () => {
   // 翻译
-  const { t } = useTranslation(['navigation', 'product', 'common']);
+  const { t, i18n } = useTranslation(['navigation', 'product', 'common']);
+  const currentLanguage = i18n.language;
 
   // 路由状态
   const location = useLocation();
@@ -108,22 +110,29 @@ export const ProductListWithQuery: React.FC = () => {
 
 
   // React Query hooks - 传递分页参数到后端
-  const apiParams = useMemo(() => ({
-    page: currentPage,
-    limit: itemsPerPage,
-    sortBy: sortOption.includes('price') ? 'price' : 
-           sortOption === 'collect-time' ? 'time' : 'name',
-    sortOrder: sortOption === 'price-desc' ? 'desc' : 'asc',
-    search: searchQuery || undefined,
-    // 筛选参数
-    ...(filters.categories.length > 0 && { category: filters.categories.join(',') }),
-    ...(filters.platforms.length > 0 && { platform: filters.platforms.join(',') }),
-    ...(filters.locations.length > 0 && { province: filters.locations.join(',') }),
-    ...(filters.priceRange && {
-      priceMin: filters.priceRange[0],
-      priceMax: filters.priceRange[1]
-    })
-  }), [currentPage, itemsPerPage, sortOption, searchQuery, filters]);
+  const apiParams = useMemo(() => {
+    // 转换价格范围（如果需要）
+    const convertedPriceRange = filters.priceRange 
+      ? convertPriceRangeForAPI(filters.priceRange, currentLanguage)
+      : undefined;
+    
+    return {
+      page: currentPage,
+      limit: itemsPerPage,
+      sortBy: sortOption.includes('price') ? 'price' : 
+             sortOption === 'collect-time' ? 'time' : 'name',
+      sortOrder: sortOption === 'price-desc' ? 'desc' : 'asc',
+      search: searchQuery || undefined,
+      // 筛选参数
+      ...(filters.categories.length > 0 && { category: filters.categories.join(',') }),
+      ...(filters.platforms.length > 0 && { platform: filters.platforms.join(',') }),
+      ...(filters.locations.length > 0 && { province: filters.locations.join(',') }),
+      ...(convertedPriceRange && {
+        priceMin: convertedPriceRange[0],
+        priceMax: convertedPriceRange[1]
+      })
+    };
+  }, [currentPage, itemsPerPage, sortOption, searchQuery, filters, currentLanguage]);
 
   const productsQuery = useProducts(apiParams);
   const refreshMutation = useRefreshProducts();

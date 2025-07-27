@@ -1,6 +1,7 @@
 // API服务层 - 统一管理所有API调用
 import type { Product, FilterState, DataStats } from '../types/product';
 import { apiService as backendApiService } from './backendApiService';
+import { convertPriceRangeForAPI } from '../utils/priceConversion';
 
 // API响应类型
 export interface ApiResponse<T> {
