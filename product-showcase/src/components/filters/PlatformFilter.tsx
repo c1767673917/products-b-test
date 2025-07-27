@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
-import { 
-  BuildingStorefrontIcon, 
+import { useTranslation } from 'react-i18next';
+import {
+  BuildingStorefrontIcon,
   DevicePhoneMobileIcon,
   GlobeAltIcon,
   ShoppingBagIcon,
@@ -75,6 +76,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
   loading = false
 }) => {
   const products = useProductStore(state => state.products);
+  const { t } = useTranslation('product');
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   
   // 计算平台分布
@@ -135,13 +137,16 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          <CardTitle className="text-base font-medium">采集平台</CardTitle>
+          <CardTitle className="text-base font-medium">{t('filters.platforms.title')}</CardTitle>
           <div className="flex items-center space-x-2">
             {loading ? (
-              <div className="text-sm text-gray-500">加载中...</div>
+              <div className="text-sm text-gray-500">{t('filters.platforms.loading')}</div>
             ) : (
               <div className="text-sm text-gray-600">
-                {value.length > 0 ? `已选择 ${value.length} 个平台` : `共 ${platformData.length} 个平台`}
+                {value.length > 0
+                  ? t('filters.platforms.selected', { count: value.length })
+                  : t('filters.platforms.total', { count: platformData.length })
+                }
               </div>
             )}
             {isCollapsed ? (
@@ -189,7 +194,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                     />
                     <span className="ml-3 text-sm font-medium text-gray-900">
-                      全部平台 ({platformData.reduce((sum, p) => sum + p.count, 0)} 个产品)
+                      {t('filters.platforms.allPlatforms', { count: platformData.reduce((sum, p) => sum + p.count, 0) })}
                     </span>
                   </div>
                   <button
@@ -199,7 +204,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                     }}
                     className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
                   >
-                    {isAllSelected ? '取消全选' : '全选'}
+                    {isAllSelected ? t('filters.platforms.deselectAll') : t('filters.platforms.selectAll')}
                   </button>
                 </div>
               </div>
@@ -245,7 +250,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                             </div>
                             <div className="text-right">
                               <div className="text-sm font-medium text-gray-900">
-                                {platform.count} 个产品
+                                {t('filters.platforms.itemsCount', { count: platform.count })} {t('filters.productCount', { count: 1 }).replace(/\d+\s*/, '')}
                               </div>
                               <div className="text-xs text-gray-500">
                                 {platform.percentage.toFixed(1)}%
@@ -275,7 +280,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
               {/* 选中的平台标签 */}
               {value.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="text-sm font-medium text-gray-700 mb-2">已选择的平台</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.platforms.selectedPlatforms')}</div>
                   <div className="flex flex-wrap gap-2">
                     {value.map((platformName) => {
                       const platformInfo = platformData.find(p => p.name === platformName);
@@ -313,14 +318,14 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
 
               {/* 平台统计摘要 */}
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="text-sm font-medium text-gray-700 mb-2">平台统计</div>
+                <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.platforms.platformStatistics')}</div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <div className="text-gray-500">总平台数</div>
-                    <div className="font-medium">{platformData.length} 个</div>
+                    <div className="text-gray-500">{t('filters.platforms.totalPlatforms')}</div>
+                    <div className="font-medium">{t('filters.platforms.itemsCount', { count: platformData.length })}</div>
                   </div>
                   <div>
-                    <div className="text-gray-500">最大平台</div>
+                    <div className="text-gray-500">{t('filters.platforms.largestPlatform')}</div>
                     <div className="font-medium">
                       {platformData[0]?.name} ({platformData[0]?.count})
                     </div>

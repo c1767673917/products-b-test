@@ -85,8 +85,18 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 // 统计路由
 export async function statsRoutes(fastify: FastifyInstance) {
   // 获取数据概览统计
-  fastify.get('/stats/overview', async (request, reply) => {
+  fastify.get<{ Querystring: { lang?: string } }>('/stats/overview', async (request, reply) => {
     try {
+      const { lang = 'zh' } = request.query;
+
+      // 根据语言选择对应的字段
+      const getFieldPath = (baseField: string) => {
+        if (lang === 'en') {
+          return `${baseField}.english`;
+        }
+        return `${baseField}.chinese`;
+      };
+
       // 并行执行多个统计查询
       const [
         totalProducts,
@@ -99,26 +109,59 @@ export async function statsRoutes(fastify: FastifyInstance) {
         // 总产品数
         Product.countDocuments({ status: 'active', isVisible: true }),
         
-        // 分类分布
+        // 分类分布 - 根据语言选择字段
         Product.aggregate([
           { $match: { status: 'active', isVisible: true } },
-          { $group: { _id: '$category.primary.display', count: { $sum: 1 } } },
-          { $match: { _id: { $nin: [null, '', '未分类'] } } },
+          {
+            $addFields: {
+              categoryField: {
+                $cond: {
+                  if: { $and: [{ $eq: [lang, 'en'] }, { $ne: [`$${getFieldPath('category.primary')}`, null] }] },
+                  then: `$${getFieldPath('category.primary')}`,
+                  else: '$category.primary.display'
+                }
+              }
+            }
+          },
+          { $group: { _id: '$categoryField', count: { $sum: 1 } } },
+          { $match: { _id: { $nin: [null, '', '未分类', 'Uncategorized'] } } },
           { $sort: { count: -1 } }
         ]),
 
-        // 平台分布
+        // 平台分布 - 根据语言选择字段
         Product.aggregate([
           { $match: { status: 'active', isVisible: true } },
-          { $group: { _id: '$platform.display', count: { $sum: 1 } } },
-          { $match: { _id: { $nin: [null, '', '未知平台'] } } },
+          {
+            $addFields: {
+              platformField: {
+                $cond: {
+                  if: { $and: [{ $eq: [lang, 'en'] }, { $ne: [`$${getFieldPath('platform')}`, null] }] },
+                  then: `$${getFieldPath('platform')}`,
+                  else: '$platform.display'
+                }
+              }
+            }
+          },
+          { $group: { _id: '$platformField', count: { $sum: 1 } } },
+          { $match: { _id: { $nin: [null, '', '未知平台', 'Unknown Platform'] } } },
           { $sort: { count: -1 } }
         ]),
 
-        // 地区分布
+        // 地区分布 - 根据语言选择字段
         Product.aggregate([
           { $match: { status: 'active', isVisible: true, 'origin.province.display': { $exists: true, $ne: '' } } },
-          { $group: { _id: '$origin.province.display', count: { $sum: 1 } } },
+          {
+            $addFields: {
+              provinceField: {
+                $cond: {
+                  if: { $and: [{ $eq: [lang, 'en'] }, { $ne: [`$${getFieldPath('origin.province')}`, null] }] },
+                  then: `$${getFieldPath('origin.province')}`,
+                  else: '$origin.province.display'
+                }
+              }
+            }
+          },
+          { $group: { _id: '$provinceField', count: { $sum: 1 } } },
           { $match: { _id: { $nin: [null, ''] } } },
           { $sort: { count: -1 } },
           { $limit: 10 }

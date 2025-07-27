@@ -154,11 +154,11 @@ export const useRelatedProducts = (productId: string, limit: number = 8, enabled
 // =========================
 
 // 获取数据统计
-export const useStats = () => {
+export const useStats = (lang?: string) => {
   return useQuery({
-    queryKey: queryKeys.stats,
+    queryKey: [...queryKeys.stats, lang],
     queryFn: async () => {
-      const response = await apiService.getStats();
+      const response = await apiService.getStats(lang);
       return response.data;
     },
     staleTime: 15 * 60 * 1000, // 统计数据长缓存
@@ -166,11 +166,11 @@ export const useStats = () => {
 };
 
 // 获取筛选选项
-export const useFilterOptions = () => {
+export const useFilterOptions = (lang?: string) => {
   return useQuery({
-    queryKey: queryKeys.filterOptions,
+    queryKey: [...queryKeys.filterOptions, lang],
     queryFn: async () => {
-      const response = await apiService.getFilterOptions();
+      const response = await apiService.getFilterOptions(lang);
       return response.data;
     },
     staleTime: 30 * 60 * 1000, // 筛选选项超长缓存

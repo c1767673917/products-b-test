@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
 import { useProductI18n } from '../../hooks/useProductI18n';
+import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface CategoryFilterProps {
@@ -25,6 +26,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 }) => {
   const products = useProductStore(state => state.products);
   const { getProductCategory } = useProductI18n();
+  const { t } = useTranslation('product');
 
   // 添加调试信息
   React.useEffect(() => {
@@ -69,7 +71,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       
       // 记录有品类信息的商品
       if (primary) {
-        processedProducts.add(product.id);
+        processedProducts.add(product.productId);
       }
 
       if (secondary) {
@@ -133,13 +135,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          <CardTitle className="text-base font-medium">商品品类</CardTitle>
+          <CardTitle className="text-base font-medium">{t('filters.categories.title')}</CardTitle>
           <div className="flex items-center space-x-2">
             {loading ? (
-              <div className="text-sm text-gray-500">加载中...</div>
+              <div className="text-sm text-gray-500">{t('filters.categories.loading')}</div>
             ) : (
               <div className="text-sm text-gray-600">
-                {value.length > 0 ? `已选择 ${value.length} 个品类` : `共 ${categoryData.categories?.length || 0} 个品类`}
+                {value.length > 0
+                  ? t('filters.categories.selected', { count: value.length })
+                  : t('filters.categories.total', { count: categoryData.categories?.length || 0 })
+                }
               </div>
             )}
             {isCollapsed ? (
@@ -194,7 +199,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                                 {category.name}
                               </span>
                               <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                <span>{category.count} 个</span>
+                                <span>{t('filters.platforms.itemsCount', { count: category.count })}</span>
                                 <span>({getPercentage(category.count)}%)</span>
                               </div>
                             </div>
@@ -235,7 +240,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                                     {subcategory.name}
                                   </span>
                                   <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                    <span>{subcategory.count} 个</span>
+                                    <span>{t('filters.platforms.itemsCount', { count: subcategory.count })}</span>
                                     <span>({getPercentage(subcategory.count)}%)</span>
                                   </div>
                                 </div>

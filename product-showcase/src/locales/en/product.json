@@ -40,6 +40,7 @@
     "imageError": "Failed to load image"
   },
   "filters": {
+    "title": "Filters",
     "allCategories": "All Categories",
     "allPlatforms": "All Platforms",
     "allLocations": "All Locations",
@@ -48,14 +49,74 @@
     "filterBy": "Filter By",
     "sortBy": "Sort By",
     "clearFilters": "Clear All Filters",
+    "resetFilters": "Reset Filters",
     "applyFilters": "Apply Filters",
     "showDistribution": "Show Distribution",
     "hideDistribution": "Hide Distribution",
     "priceDistribution": "Price Distribution",
     "productCount": "{{count}} products",
+    "showingProducts": "Showing {{filtered}} / {{total}} products",
+    "appliedFilters": "{{count}} filters applied, showing {{filtered}} products",
+    "filterResults": "Filter Results: {{count}} products",
     "minPrice": "Min Price",
+    "quickSelect": "Quick Select",
+    "customRange": "Custom Range",
     "maxPrice": "Max Price",
-    "allPrices": "All"
+    "allPrices": "All",
+    "categories": {
+      "title": "Product Categories",
+      "loading": "Loading...",
+      "selected": "{{count}} categories selected",
+      "total": "{{count}} categories total",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "noCategories": "No categories available"
+    },
+    "platforms": {
+      "title": "Collection Platforms",
+      "loading": "Loading...",
+      "selected": "{{count}} platforms selected",
+      "total": "{{count}} platforms total",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "allPlatforms": "All Platforms ({{count}} products)",
+      "noPlatforms": "No platforms available",
+      "selectedPlatforms": "Selected Platforms",
+      "platformStatistics": "Platform Statistics",
+      "totalPlatforms": "Total Platforms",
+      "largestPlatform": "Largest Platform",
+      "itemsCount": "{{count}} items"
+    },
+    "locations": {
+      "title": "Product Origins",
+      "loading": "Loading...",
+      "selected": "{{count}} locations selected",
+      "total": "{{count}} locations total",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "searchPlaceholder": "Search locations...",
+      "popularOrigins": "Popular Origins",
+      "selectedOrigins": "Selected Origins",
+      "viewMode": {
+        "list": "List View",
+        "map": "Map View"
+      },
+      "noLocations": "No locations available",
+      "noResults": "No matching locations found"
+    },
+    "price": {
+      "title": "Price Range",
+      "loading": "Loading...",
+      "from": "From",
+      "to": "To",
+      "currency": {
+        "cny": "¥",
+        "usd": "$"
+      },
+      "distribution": "Price Distribution",
+      "showDistribution": "Show Distribution",
+      "hideDistribution": "Hide Distribution"
+    }
   },
   "sorting": {
     "name": "Sort by name",

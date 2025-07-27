@@ -98,10 +98,10 @@ export class ApiService {
   }
 
   // 获取数据统计
-  async getStats(): Promise<ApiResponse<DataStats>> {
+  async getStats(lang?: string): Promise<ApiResponse<DataStats>> {
     try {
       // 使用后端API
-      const response = await backendApiService.getStats();
+      const response = await backendApiService.getStats({ lang });
       return {
         data: {
           ...response.data,
@@ -137,7 +137,7 @@ export class ApiService {
   }
 
   // 获取筛选选项
-  async getFilterOptions(): Promise<ApiResponse<{
+  async getFilterOptions(lang?: string): Promise<ApiResponse<{
     categories: { value: string; label: string; count: number }[];
     locations: { value: string; label: string; count: number }[];
     platforms: { value: string; label: string; count: number }[];
@@ -147,7 +147,7 @@ export class ApiService {
     priceDistributionUSD?: number[];
   }>> {
     try {
-      const response = await backendApiService.getStats();
+      const response = await backendApiService.getStats({ lang });
       const stats = response.data;
       
       const options = {

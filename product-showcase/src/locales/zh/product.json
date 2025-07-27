@@ -40,6 +40,7 @@
     "imageError": "图片加载失败"
   },
   "filters": {
+    "title": "筛选器",
     "allCategories": "全部分类",
     "allPlatforms": "全部平台",
     "allLocations": "全部地区",
@@ -48,14 +49,74 @@
     "filterBy": "筛选条件",
     "sortBy": "排序方式",
     "clearFilters": "清空筛选",
+    "resetFilters": "重置筛选",
     "applyFilters": "应用筛选",
     "showDistribution": "显示分布",
     "hideDistribution": "隐藏分布",
     "priceDistribution": "价格分布",
     "productCount": "{{count}} 个产品",
+    "showingProducts": "显示 {{filtered}} / {{total}} 个产品",
+    "appliedFilters": "已应用 {{count}} 个筛选条件，显示 {{filtered}} 个产品",
+    "filterResults": "筛选结果: {{count}} 个产品",
     "minPrice": "最低价格",
     "maxPrice": "最高价格",
-    "allPrices": "全部"
+    "quickSelect": "快速选择",
+    "customRange": "自定义范围",
+    "allPrices": "全部",
+    "categories": {
+      "title": "商品品类",
+      "loading": "加载中...",
+      "selected": "已选择 {{count}} 个品类",
+      "total": "共 {{count}} 个品类",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "noCategories": "暂无品类"
+    },
+    "platforms": {
+      "title": "采集平台",
+      "loading": "加载中...",
+      "selected": "已选择 {{count}} 个平台",
+      "total": "共 {{count}} 个平台",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "allPlatforms": "全部平台 ({{count}} 个产品)",
+      "noPlatforms": "暂无平台",
+      "selectedPlatforms": "已选择的平台",
+      "platformStatistics": "平台统计",
+      "totalPlatforms": "总平台数",
+      "largestPlatform": "最大平台",
+      "itemsCount": "{{count}} 个"
+    },
+    "locations": {
+      "title": "产品产地",
+      "loading": "加载中...",
+      "selected": "已选择 {{count}} 个地区",
+      "total": "共 {{count}} 个地区",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "searchPlaceholder": "搜索地区...",
+      "popularOrigins": "热门产地",
+      "selectedOrigins": "已选择的产地",
+      "viewMode": {
+        "list": "列表视图",
+        "map": "地图视图"
+      },
+      "noLocations": "暂无地区",
+      "noResults": "未找到匹配的地区"
+    },
+    "price": {
+      "title": "价格区间",
+      "loading": "加载中...",
+      "from": "从",
+      "to": "到",
+      "currency": {
+        "cny": "¥",
+        "usd": "$"
+      },
+      "distribution": "价格分布",
+      "showDistribution": "显示分布",
+      "hideDistribution": "隐藏分布"
+    }
   },
   "sorting": {
     "name": "按名称排序",

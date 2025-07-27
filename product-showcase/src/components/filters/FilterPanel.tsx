@@ -11,6 +11,7 @@ import { useProductStore } from '../../stores/productStore';
 import { FilterState } from '../../types/product';
 import { useFilterOptions } from '../../hooks/useProducts';
 import { useProductI18n } from '../../hooks/useProductI18n';
+import { useTranslation } from 'react-i18next';
 import { 
   FunnelIcon, 
   XMarkIcon,
@@ -49,9 +50,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   const filteredProducts = useProductStore(state => state.filteredProducts);
   const products = useProductStore(state => state.products);
   const { currentLanguage } = useProductI18n();
-  
+  const { t } = useTranslation('product');
+
   // 获取筛选选项数据
-  const { data: filterOptions, isLoading: isFilterOptionsLoading, error: filterOptionsError } = useFilterOptions();
+  const { data: filterOptions, isLoading: isFilterOptionsLoading, error: filterOptionsError } = useFilterOptions(currentLanguage);
 
   // 添加调试信息
   React.useEffect(() => {
@@ -118,7 +120,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <FunnelIcon className="w-5 h-5 text-gray-600" />
-                <CardTitle className="text-lg font-semibold">筛选器</CardTitle>
+                <CardTitle className="text-lg font-semibold">{t('filters.title')}</CardTitle>
                 {hasActiveFilters && (
                   <motion.div
                     initial={{ scale: 0 }}
@@ -161,10 +163,16 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
           {/* 筛选结果摘要 */}
           <div className="text-sm text-gray-600">
-            显示 {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} / {propTotalCount !== undefined ? propTotalCount : products.length} 个产品
+            {t('filters.showingProducts', {
+              filtered: propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length,
+              total: propTotalCount !== undefined ? propTotalCount : products.length
+            })}
             {hasActiveFilters && (
               <span className="ml-2 text-blue-600">
-                (已应用 {activeFiltersCount} 个筛选条件)
+                ({t('filters.appliedFilters', {
+                  count: activeFiltersCount,
+                  filtered: propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length
+                })})
               </span>
             )}
           </div>
@@ -324,7 +332,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                       onClick={handleClearFilters}
                       className="flex-1"
                     >
-                      清空筛选
+                      {t('filters.clearFilters')}
                     </Button>
                   )}
                   <Button
@@ -357,7 +365,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
-                  已应用 {activeFiltersCount} 个筛选条件，显示 {propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length} 个产品
+                  {t('filters.appliedFilters', {
+                    count: activeFiltersCount,
+                    filtered: propFilteredCount !== undefined ? propFilteredCount : filteredProducts.length
+                  })}
                 </div>
                 <Button
                   variant="ghost"
@@ -365,7 +376,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
                   onClick={handleClearFilters}
                   className="text-red-600 hover:text-red-700"
                 >
-                  清空筛选
+                  {t('filters.clearFilters')}
                 </Button>
               </div>
             </CardContent>

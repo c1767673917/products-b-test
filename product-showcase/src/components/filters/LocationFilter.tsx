@@ -5,6 +5,7 @@ import { Input } from '../ui/Input';
 import { cn } from '../../utils/cn';
 import { useProductStore } from '../../stores/productStore';
 import { useProductI18n } from '../../hooks/useProductI18n';
+import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, MapPinIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface LocationFilterProps {
@@ -26,6 +27,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
 }) => {
   const products = useProductStore(state => state.products);
   const { getLocalizedValue } = useProductI18n();
+  const { t } = useTranslation('product');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
@@ -126,13 +128,16 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
           className="flex items-center justify-between cursor-pointer"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          <CardTitle className="text-base font-medium">产地筛选</CardTitle>
+          <CardTitle className="text-base font-medium">{t('filters.locations.title')}</CardTitle>
           <div className="flex items-center space-x-2">
             {loading ? (
-              <div className="text-sm text-gray-500">加载中...</div>
+              <div className="text-sm text-gray-500">{t('filters.locations.loading')}</div>
             ) : (
               <div className="text-sm text-gray-600">
-                {value.length > 0 ? `已选择 ${value.length} 个产地` : `共 ${(locationData.locations || []).length} 个产地`}
+                {value.length > 0
+                  ? t('filters.locations.selected', { count: value.length })
+                  : t('filters.locations.total', { count: (locationData.locations || []).length })
+                }
               </div>
             )}
             {isCollapsed ? (
@@ -171,25 +176,25 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   )}
                 >
-                  列表
+                  {t('filters.locations.viewMode.list')}
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
                   className={cn(
                     'px-2 py-1 text-xs rounded transition-colors',
-                    viewMode === 'map' 
-                      ? 'bg-blue-500 text-white' 
+                    viewMode === 'map'
+                      ? 'bg-blue-500 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   )}
                 >
-                  地图
+                  {t('filters.locations.viewMode.map')}
                 </button>
               </div>
 
               {/* 搜索框 */}
               <div className="mb-4">
                 <Input
-                  placeholder="搜索省份或城市..."
+                  placeholder={t('filters.locations.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   leftIcon={<MagnifyingGlassIcon className="w-4 h-4" />}
@@ -200,7 +205,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
               {/* 热门产地快速选择 */}
               {!searchQuery && (
                 <div className="mb-4">
-                  <div className="text-sm font-medium text-gray-700 mb-2">热门产地</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.locations.popularOrigins')}</div>
                   <div className="flex flex-wrap gap-2">
                     {topLocations.map((location) => (
                       <motion.button
@@ -284,7 +289,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                   >
                     <div className="text-center text-gray-500">
                       <MapPinIcon className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                      <div className="text-sm">地图视图</div>
+                      <div className="text-sm">{t('filters.locations.viewMode.map')}</div>
                       <div className="text-xs mt-1">功能开发中...</div>
                     </div>
                   </motion.div>
@@ -294,7 +299,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
               {/* 选中的产地标签 */}
               {value.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="text-sm font-medium text-gray-700 mb-2">已选择的产地</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.locations.selectedOrigins')}</div>
                   <div className="flex flex-wrap gap-2">
                     {value.map((locationName) => {
                       const locationInfo = (locationData.locations || []).find(loc => loc.name === locationName);
@@ -328,8 +333,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
               {searchQuery && filteredLocations.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <MapPinIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                  <div className="text-sm">未找到匹配的产地</div>
-                  <div className="text-xs mt-1">尝试使用其他关键词搜索</div>
+                  <div className="text-sm">{t('filters.locations.noResults')}</div>
                 </div>
               )}
                 </>

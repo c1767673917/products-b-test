@@ -163,7 +163,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
 
               {/* 快速选择按钮 */}
               <div>
-                <div className="text-sm font-medium text-gray-700 mb-2">快速选择</div>
+                <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.quickSelect')}</div>
                 <PriceRangeQuickSelect
                   currentRange={currentRange}
                   onSelect={onChange}
@@ -174,7 +174,7 @@ export const PriceFilter: React.FC<PriceFilterProps> = ({
 
               {/* 价格滑块 */}
               <div>
-                <div className="text-sm font-medium text-gray-700 mb-3">自定义范围</div>
+                <div className="text-sm font-medium text-gray-700 mb-3">{t('filters.customRange')}</div>
                 <Slider
                   min={priceStats.min}
                   max={priceStats.max}

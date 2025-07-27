@@ -241,12 +241,13 @@ export class ApiService {
   }
 
   // 获取统计数据
-  async getStats(): Promise<StatsResponse> {
+  async getStats(params?: { lang?: string }): Promise<StatsResponse> {
     try {
       const response: AxiosResponse<StatsResponse> = await httpClient.get(
-        API_CONFIG.endpoints.stats
+        API_CONFIG.endpoints.stats,
+        { params }
       );
-      
+
       return response.data;
     } catch (error) {
       console.error('获取统计数据失败:', error);

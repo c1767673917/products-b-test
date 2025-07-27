@@ -179,9 +179,9 @@ export const PriceRangeQuickSelect: React.FC<PriceRangeQuickSelectProps> = ({
     const ranges: Array<{ label: string; range: [number, number] }> = [];
     
     // 全部范围
-    ranges.push({ 
-      label: t('filters.allPrices', isUSD ? 'All' : '全部'), 
-      range: [min, max] 
+    ranges.push({
+      label: t('filters.allPrices'),
+      range: [min, max]
     });
     
     // 根据最大价格动态生成价格段
