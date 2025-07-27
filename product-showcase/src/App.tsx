@@ -17,11 +17,7 @@ const ProductListWithQuery = React.lazy(() =>
   }))
 );
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
-const ApiDemo = React.lazy(() =>
-  import('./pages/ApiDemo').then(module => ({
-    default: module.ApiDemo
-  }))
-);
+
 const SyncManagement = React.lazy(() => import('./pages/SyncManagement'));
 const FilterTest = React.lazy(() =>
   import('./pages/FilterTest').then(module => ({
@@ -106,18 +102,7 @@ const AnimatedRoutes: React.FC = () => {
             </ErrorBoundary>
           }
         />
-        <Route
-          path="/api-demo"
-          element={
-            <ErrorBoundary>
-              <Suspense fallback={<PageLoader />}>
-                <PageTransitionWrapper type="fade">
-                  <ApiDemo />
-                </PageTransitionWrapper>
-              </Suspense>
-            </ErrorBoundary>
-          }
-        />
+
         <Route
           path="/filter-test"
           element={

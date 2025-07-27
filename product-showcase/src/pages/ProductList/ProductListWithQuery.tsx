@@ -400,7 +400,6 @@ export const ProductListWithQuery: React.FC = () => {
       <ScrollProgress />
 
       {/* 页面导航 */}
-      <PageNavigation title="Product display" />
 
       {/* 顶部工具栏 */}
       <div className="bg-white shadow-sm border-b sticky top-12 z-30">

@@ -1,13 +1,10 @@
 {
   "titles": {
     "home": "产品展示",
-    "products": "产品列表 - 产品展示",
     "productDetail": "{{productName}} - 产品详情",
     "categories": "分类浏览 - 产品展示",
     "search": "搜索结果 - 产品展示",
-    "sync": "数据同步 - 产品展示",
-    "performance": "性能演示 - 产品展示",
-    "demo": "API 演示 - 产品展示"
+    "sync": "数据同步 - 产品展示"
   },
   "meta": {
     "description": "全面的产品展示应用，具备高级筛选和搜索功能",
@@ -52,10 +49,7 @@
     "noProductsFound": "没有找到符合条件的产品"
   },
   "navigation": {
-    "list": "产品列表",
     "sync": "数据同步",
-    "demo": "API 演示",
-    "imageTest": "图片测试",
-    "performanceDemo": "性能演示"
+    "imageTest": "图片测试"
   }
 }

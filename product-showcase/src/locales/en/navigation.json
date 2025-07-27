@@ -1,13 +1,10 @@
 {
   "titles": {
     "home": "Product Showcase",
-    "products": "Products - Product Showcase",
     "productDetail": "{{productName}} - Product Detail",
     "categories": "Categories - Product Showcase",
     "search": "Search Results - Product Showcase",
-    "sync": "Data Sync - Product Showcase",
-    "performance": "Performance Demo - Product Showcase",
-    "demo": "API Demo - Product Showcase"
+    "sync": "Data Sync - Product Showcase"
   },
   "meta": {
     "description": "Comprehensive product showcase application with advanced filtering and search capabilities",
@@ -52,10 +49,7 @@
     "noProductsFound": "No products match the criteria"
   },
   "navigation": {
-    "list": "Product List",
     "sync": "Data Sync",
-    "demo": "API Demo",
-    "imageTest": "Image Test",
-    "performanceDemo": "Performance Demo"
+    "imageTest": "Image Test"
   }
 }

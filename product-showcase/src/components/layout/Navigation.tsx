@@ -10,9 +10,7 @@ export const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }
   const { t } = useTranslation('navigation');
   
   const navItems = [
-    { path: '/', label: t('navigation.list') },
     { path: '/sync-management', label: t('navigation.sync') },
-    { path: '/api-demo', label: t('navigation.demo') },
     { path: '/image-test', label: t('navigation.imageTest') }
   ];
 

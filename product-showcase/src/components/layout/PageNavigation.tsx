@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  HomeIcon,
-  CpuChipIcon,
-  ChartBarIcon,
   Bars3Icon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
@@ -35,21 +32,6 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems: NavigationItem[] = [
-    {
-      path: '/',
-      label: t('navigation.list'),
-      icon: HomeIcon
-    },
-    {
-      path: '/api-demo',
-      label: t('navigation.demo'),
-      icon: CpuChipIcon
-    },
-    {
-      path: '/performance-demo',
-      label: t('navigation.performanceDemo'),
-      icon: ChartBarIcon
-    }
   ];
 
   // 监听路由变化，关闭移动端菜单
