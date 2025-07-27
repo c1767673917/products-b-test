@@ -58,7 +58,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
       if (!province) return;
       
       // 记录有产地信息的商品
-      processedProducts.add(product.id);
+      processedProducts.add(product.productId);
 
       // 处理复合产地（如"浙江/四川"）
       const provinces = province.split('/').map(p => p.trim()).filter(p => p);
@@ -238,12 +238,12 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                     className="space-y-2 max-h-64 overflow-y-auto"
                   >
                     {filteredLocations.map((location) => (
-                      <div 
-                        key={location.name} 
-                        className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                      <div
+                        key={location.name}
+                        className="flex items-start justify-between p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
                         onClick={() => handleLocationChange(location.name, !isSelected(location.name))}
                       >
-                        <div className="flex items-center flex-1">
+                        <div className="flex items-start flex-1">
                           <input
                             type="checkbox"
                             checked={isSelected(location.name)}
@@ -254,22 +254,22 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                           />
                           <div className="ml-3 flex-1">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <MapPinIcon className="w-4 h-4 text-gray-400 mr-1" />
-                                <span className="text-sm font-medium text-gray-900">
+                            <div className="flex justify-between">
+                              <div className="flex">
+                                <MapPinIcon className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
+                                <span className="text-sm font-medium text-gray-900 text-left">
                                   {location.name}
                                 </span>
                               </div>
-                              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                <span>{location.count} 个产品</span>
+                              <div className="flex items-center space-x-2 text-xs text-gray-500 flex-shrink-0 ml-2">
+                                <span>{t('filters.productCount', { count: location.count })}</span>
                                 <span>({getPercentage(location.count)}%)</span>
                               </div>
                             </div>
                             {location.cities.length > 0 && (
                               <div className="text-xs text-gray-500 mt-1">
-                                城市: {location.cities.slice(0, 3).join(', ')}
-                                {location.cities.length > 3 && ` 等${location.cities.length}个城市`}
+                                {t('filters.locations.cities')}: {location.cities.slice(0, 3).join(', ')}
+                                {location.cities.length > 3 && ` ${t('filters.locations.citiesCount', { count: location.cities.length })}`}
                               </div>
                             )}
                           </div>

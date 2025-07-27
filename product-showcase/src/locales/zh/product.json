@@ -70,7 +70,8 @@
       "total": "共 {{count}} 个品类",
       "selectAll": "全选",
       "deselectAll": "取消全选",
-      "noCategories": "暂无品类"
+      "noCategories": "暂无品类",
+      "selectedCategories": "已选择的品类"
     },
     "platforms": {
       "title": "采集平台",
@@ -102,7 +103,9 @@
         "map": "地图视图"
       },
       "noLocations": "暂无地区",
-      "noResults": "未找到匹配的地区"
+      "noResults": "未找到匹配的地区",
+      "cities": "城市",
+      "citiesCount": "等{{count}}个城市"
     },
     "price": {
       "title": "价格区间",

@@ -229,7 +229,7 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handlePlatformChange(platform.name, !selected)}
                     >
-                      <div className="flex items-center">
+                      <div className="flex items-start">
                         <input
                           type="checkbox"
                           checked={selected}
@@ -241,16 +241,16 @@ export const PlatformFilter: React.FC<PlatformFilterProps> = ({
                         />
                         
                         <div className="ml-3 flex-1">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <IconComponent className="w-5 h-5 mr-2" style={{ color }} />
-                              <span className="text-sm font-medium text-gray-900">
+                          <div className="flex justify-between">
+                            <div className="flex">
+                              <IconComponent className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" style={{ color }} />
+                              <span className="text-sm font-medium text-gray-900 text-left">
                                 {platform.name}
                               </span>
                             </div>
-                            <div className="text-right">
+                            <div className="text-right flex-shrink-0">
                               <div className="text-sm font-medium text-gray-900">
-                                {t('filters.platforms.itemsCount', { count: platform.count })} {t('filters.productCount', { count: 1 }).replace(/\d+\s*/, '')}
+                                {t('filters.productCount', { count: platform.count })}
                               </div>
                               <div className="text-xs text-gray-500">
                                 {platform.percentage.toFixed(1)}%

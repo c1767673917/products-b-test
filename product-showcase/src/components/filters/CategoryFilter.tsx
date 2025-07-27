@@ -168,7 +168,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             <CardContent className="pt-0">
               {loading ? (
                 <div className="flex justify-center py-4">
-                  <div className="text-sm text-gray-500">加载筛选选项中...</div>
+                  <div className="text-sm text-gray-500">{t('filters.categories.loading')}</div>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-80 overflow-y-auto">
@@ -179,11 +179,11 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   return (
                     <div key={category.name} className="border border-gray-200 rounded-lg">
                       {/* 主品类 */}
-                      <div 
-                        className="flex items-center p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                      <div
+                        className="flex items-start p-3 cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => handleCategoryChange(category.name, !isSelected(category.name))}
                       >
-                        <div className="flex items-center flex-1">
+                        <div className="flex items-start flex-1">
                           <input
                             type="checkbox"
                             checked={isSelected(category.name)}
@@ -194,12 +194,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none"
                           />
                           <div className="ml-3 flex-1">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-gray-900">
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium text-gray-900 text-left">
                                 {category.name}
                               </span>
-                              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                <span>{t('filters.platforms.itemsCount', { count: category.count })}</span>
+                              <div className="flex items-center space-x-2 text-xs text-gray-500 flex-shrink-0 ml-2">
+                                <span>{t('filters.productCount', { count: category.count })}</span>
                                 <span>({getPercentage(category.count)}%)</span>
                               </div>
                             </div>
@@ -240,7 +240,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                                     {subcategory.name}
                                   </span>
                                   <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                    <span>{t('filters.platforms.itemsCount', { count: subcategory.count })}</span>
+                                    <span>{t('filters.productCount', { count: subcategory.count })}</span>
                                     <span>({getPercentage(subcategory.count)}%)</span>
                                   </div>
                                 </div>
@@ -258,7 +258,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               {/* 选中的品类标签 */}
               {value.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="text-sm font-medium text-gray-700 mb-2">已选择的品类</div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">{t('filters.categories.selectedCategories')}</div>
                   <div className="flex flex-wrap gap-2">
                     {value.map((categoryName) => {
                       const categoryInfo = (categoryData.categories || []).find(cat => cat.name === categoryName);

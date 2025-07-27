@@ -70,7 +70,8 @@
       "total": "{{count}} categories total",
       "selectAll": "Select All",
       "deselectAll": "Deselect All",
-      "noCategories": "No categories available"
+      "noCategories": "No categories available",
+      "selectedCategories": "Selected Categories"
     },
     "platforms": {
       "title": "Collection Platforms",
@@ -102,7 +103,9 @@
         "map": "Map View"
       },
       "noLocations": "No locations available",
-      "noResults": "No matching locations found"
+      "noResults": "No matching locations found",
+      "cities": "Cities",
+      "citiesCount": "and {{count}} more cities"
     },
     "price": {
       "title": "Price Range",
