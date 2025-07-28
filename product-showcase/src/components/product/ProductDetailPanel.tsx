@@ -22,7 +22,7 @@ import { useToast } from '../ui/ToastNotification';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
 import { useProductI18n } from '../../hooks/useProductI18n';
-import { useProductFavorite } from '../../hooks/useFavorites';
+import { useProductGlobalFavorite } from '../../hooks/useGlobalFavorites';
 
 interface ProductDetailPanelProps {
   product: Product | null;
@@ -70,7 +70,7 @@ const ProductDetailPanel: React.FC<ProductDetailPanelProps> = ({
     favoriteCount,
     toggleFavorite,
     isToggling
-  } = useProductFavorite(product?.productId || '');
+  } = useProductGlobalFavorite(product?.productId || '');
 
   // 处理面板宽度调整
   const handleWidthChange = (newWidth: number) => {

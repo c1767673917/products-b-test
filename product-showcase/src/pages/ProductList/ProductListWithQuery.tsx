@@ -28,7 +28,7 @@ import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useProductListFavorites, useFavoriteProductIds, useFavorites } from '../../hooks/useFavorites';
+import { useProductListGlobalFavorites, useGlobalFavoriteProductIds, useGlobalFavorites } from '../../hooks/useGlobalFavorites';
 import { VirtualGrid, VirtualList } from '../../components/ui/VirtualGrid';
 import { convertPriceRangeForAPI } from '../../utils/priceConversion';
 
@@ -145,11 +145,11 @@ export const ProductListWithQuery: React.FC = () => {
   const setProducts = useProductStore(state => state.setProducts);
   const storeProducts = useProductStore(state => state.products);
 
-  // 收藏功能hooks
-  const { favoriteProductIds, isLoading: isFavoritesLoading } = useFavoriteProductIds();
+  // 全局收藏功能hooks
+  const { favoriteProductIds, isLoading: isFavoritesLoading } = useGlobalFavoriteProductIds();
 
   // 获取收藏产品的详细信息（当启用收藏筛选时）
-  const favoritesQuery = useFavorites({
+  const favoritesQuery = useGlobalFavorites({
     limit: 1000, // 获取所有收藏
     populate: true // 需要完整的产品信息
   });
@@ -268,10 +268,12 @@ export const ProductListWithQuery: React.FC = () => {
   );
   const {
     favoriteMap,
+    countMap,
     toggleFavorite,
     getFavoriteStatus,
+    getFavoriteCount,
     isToggling
-  } = useProductListFavorites(productIds);
+  } = useProductListGlobalFavorites(productIds);
 
   // 获取后端返回的分页信息
   const paginationInfo = useMemo(() => {
@@ -747,7 +749,7 @@ export const ProductListWithQuery: React.FC = () => {
                           onQuickAction={(action) => handleProductAction(product, action)}
                           isFavorited={getFavoriteStatus(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
-                          favoriteCount={0}
+                          favoriteCount={getFavoriteCount(product.productId)}
                           isToggling={isToggling}
                         />
                       ))}
@@ -762,7 +764,7 @@ export const ProductListWithQuery: React.FC = () => {
                           onQuickAction={(action) => handleProductAction(product, action)}
                           isFavorited={getFavoriteStatus(product.productId)}
                           isInCompare={compareList.includes(product.productId)}
-                          favoriteCount={0}
+                          favoriteCount={getFavoriteCount(product.productId)}
                           isToggling={isToggling}
                         />
                       ))}

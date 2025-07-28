@@ -87,6 +87,10 @@ app.register(async function(fastify) {
   // 注册收藏功能路由
   const { favoriteRoutes } = await import('./routes/favorites');
   await fastify.register(favoriteRoutes);
+  
+  // 注册全局收藏功能路由
+  const { globalFavoriteRoutes } = await import('./routes/globalFavorites');
+  await fastify.register(globalFavoriteRoutes);
 
   // 注册数据同步路由 (增强版)
   const { syncRoutes } = await import('./routes/sync');

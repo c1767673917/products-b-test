@@ -24,6 +24,7 @@ import {
   GPU_ACCELERATED_CLASS,
   getResponsiveAnimationConfig,
 } from '../../constants/animations';
+import { useProductGlobalFavorite } from '../../hooks/useGlobalFavorites';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,11 +34,12 @@ const ProductDetail: React.FC = () => {
   const { shouldEnableAnimation } = useAnimationPreferences();
   const { getProductName, getProductSpecification, getProductManufacturer, getProductOrigin } = useProductI18n();
   
+  // 使用全局收藏功能
+  const productFavorite = useProductGlobalFavorite(id || '');
+  
   const { 
-    favorites, 
     compareList,
     products: storeProducts,
-    toggleFavorite, 
     addToCompare, 
     removeFromCompare
   } = useProductStore();
@@ -127,13 +129,8 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleToggleFavorite = () => {
-    const currentProduct = product.data || storeProducts.find(p => p.productId === id);
     if (currentProduct) {
-      toggleFavorite(currentProduct.productId);
-      const isFavorited = favorites.includes(currentProduct.productId);
-      showSuccess(
-        isFavorited ? t('product:detail.toast.favoriteRemoved') : t('product:detail.toast.favoriteAdded')
-      );
+      productFavorite.toggleFavorite();
     }
   };
 
@@ -201,7 +198,8 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const isFavorited = favorites.includes(currentProduct.productId);
+  const isFavorited = productFavorite.isFavorited;
+  const favoriteCount = productFavorite.favoriteCount;
   const isInCompare = compareList.includes(currentProduct.productId);
 
   return (
