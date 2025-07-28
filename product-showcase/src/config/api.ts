@@ -33,7 +33,8 @@ export const API_CONFIG = {
     categories: '/categories', 
     stats: '/stats/overview',
     images: '/images',
-    health: '/health'
+    health: '/health',
+    favorites: '/favorites'
   }
 } as const;
 

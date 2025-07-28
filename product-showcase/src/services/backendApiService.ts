@@ -306,7 +306,7 @@ export class ApiService {
         productId: string;
         isFavorited: boolean;
         favoriteCount: number;
-      }>> = await httpClient.post('/favorites/toggle', {
+      }>> = await httpClient.post(`${API_CONFIG.endpoints.favorites}/toggle`, {
         productId,
         userId,
         sessionId: sessionId || this.getSessionId(),
@@ -347,7 +347,7 @@ export class ApiService {
         sessionId: params.sessionId || this.getSessionId()
       };
 
-      const response = await httpClient.get('/favorites', { params: queryParams });
+      const response = await httpClient.get(API_CONFIG.endpoints.favorites, { params: queryParams });
       return response.data;
     } catch (error) {
       console.error('获取收藏列表失败:', error);
@@ -362,7 +362,7 @@ export class ApiService {
     favoriteCount: number;
   }>> {
     try {
-      const response = await httpClient.get('/favorites/status', {
+      const response = await httpClient.get(`${API_CONFIG.endpoints.favorites}/status`, {
         params: {
           productId,
           userId,
@@ -382,7 +382,7 @@ export class ApiService {
     favoriteMap: { [productId: string]: boolean };
   }>> {
     try {
-      const response = await httpClient.get('/favorites/batch-status', {
+      const response = await httpClient.get(`${API_CONFIG.endpoints.favorites}/batch-status`, {
         params: {
           productIds: productIds.join(','),
           userId,

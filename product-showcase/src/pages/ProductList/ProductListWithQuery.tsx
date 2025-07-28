@@ -240,9 +240,19 @@ export const ProductListWithQuery: React.FC = () => {
 
     // 从收藏列表中获取完整的产品信息
     if (favoritesQuery.data?.favorites) {
-      return favoritesQuery.data.favorites
-        .map((fav: any) => fav.productId) // 获取产品详细信息
-        .filter(Boolean); // 过滤掉空值
+      // 如果收藏数据包含完整的产品信息，直接返回产品对象
+      if (favoritesQuery.data.favorites.length > 0 && favoritesQuery.data.favorites[0].product) {
+        return favoritesQuery.data.favorites
+          .map((fav: any) => fav.product)
+          .filter(Boolean); // 过滤掉空值
+      }
+      // 否则，根据产品ID筛选当前页面的产品
+      const favoriteIds = favoritesQuery.data.favorites
+        .map((fav: any) => fav.productId)
+        .filter(Boolean);
+      return displayProducts.filter(product =>
+        favoriteIds.includes(product.productId)
+      );
     }
 
     // 回退方案：如果收藏查询失败，仍然筛选当前页面

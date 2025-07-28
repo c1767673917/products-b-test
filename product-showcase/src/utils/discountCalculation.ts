@@ -9,6 +9,11 @@ import { Product } from '../types/product';
  * @returns 折扣率百分比（如20表示20%）
  */
 export const calculateDiscountRate = (product: Product): number => {
+  // 安全检查
+  if (!product || !product.price) {
+    return 0;
+  }
+  
   // 优先使用数据中预计算的折扣率（需要转换为百分比）
   if (product.price.discountRate && product.price.discountRate > 0) {
     // discountRate 是0-1之间的小数，需要转换为百分比并保留2位小数

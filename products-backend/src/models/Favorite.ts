@@ -182,19 +182,46 @@ FavoriteSchema.statics.getFavoritesList = async function(options: {
 
   const skip = (page - 1) * limit;
   
-  let queryBuilder = this.find(query)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
-
-  if (populate) {
-    queryBuilder = queryBuilder.populate('productId');
-  }
-
   const [favorites, total] = await Promise.all([
-    queryBuilder.exec(),
+    this.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec(),
     this.countDocuments(query)
   ]);
+
+  // 如果需要填充产品数据，手动获取产品信息
+  if (populate && favorites.length > 0) {
+    const Product = mongoose.model('Product');
+    const productIds = favorites.map((fav: IFavorite) => fav.productId);
+    const products = await Product.find({ 
+      productId: { $in: productIds },
+      status: 'active',
+      isVisible: true 
+    });
+    
+    const productMap = new Map(products.map((p: any) => [p.productId, p]));
+    
+    // 将产品信息附加到收藏记录
+    const populatedFavorites = favorites.map((fav: IFavorite) => {
+      const favObj = fav.toObject();
+      favObj.product = productMap.get(fav.productId) || null;
+      return favObj;
+    });
+    
+    return {
+      favorites: populatedFavorites,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasNext: page * limit < total,
+        hasPrev: page > 1
+      }
+    };
+  }
 
   return {
     favorites,
