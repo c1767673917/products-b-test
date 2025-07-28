@@ -28,7 +28,7 @@ import { useToast } from '../../components/ui/ToastNotification';
 import { ScrollReveal, ScrollStagger, ScrollProgress } from '../../components/ui/ScrollAnimations';
 import { useProductStore } from '../../stores/productStore';
 import { usePanelPreferences } from '../../hooks/usePanelPreferences';
-import { useProductListFavorites, useFavoriteProductIds } from '../../hooks/useFavorites';
+import { useProductListFavorites, useFavoriteProductIds, useFavorites } from '../../hooks/useFavorites';
 import { VirtualGrid, VirtualList } from '../../components/ui/VirtualGrid';
 import { convertPriceRangeForAPI } from '../../utils/priceConversion';
 
@@ -148,6 +148,12 @@ export const ProductListWithQuery: React.FC = () => {
   // 收藏功能hooks
   const { favoriteProductIds, isLoading: isFavoritesLoading } = useFavoriteProductIds();
 
+  // 获取收藏产品的详细信息（当启用收藏筛选时）
+  const favoritesQuery = useFavorites({
+    limit: 1000, // 获取所有收藏
+    populate: true // 需要完整的产品信息
+  });
+
   // 监控 ProductStore 状态变化 (仅开发环境)
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
@@ -221,22 +227,29 @@ export const ProductListWithQuery: React.FC = () => {
     return Array.isArray(productsQuery.data) ? productsQuery.data : [];
   }, [productsQuery.data]);
 
-  // 应用收藏筛选
+  // 应用收藏筛选 - 修复：获取所有收藏的产品，而不是仅筛选当前页面
   const filteredProducts = useMemo(() => {
     if (!showFavoritesOnly) {
       return displayProducts;
     }
 
-    // 如果正在加载收藏数据，显示所有产品
-    if (isFavoritesLoading) {
+    // 如果正在加载收藏数据，显示当前页面产品
+    if (isFavoritesLoading || favoritesQuery.isLoading) {
       return displayProducts;
     }
 
-    // 筛选出收藏的产品
+    // 从收藏列表中获取完整的产品信息
+    if (favoritesQuery.data?.favorites) {
+      return favoritesQuery.data.favorites
+        .map((fav: any) => fav.productId) // 获取产品详细信息
+        .filter(Boolean); // 过滤掉空值
+    }
+
+    // 回退方案：如果收藏查询失败，仍然筛选当前页面
     return displayProducts.filter(product =>
       favoriteProductIds.includes(product.productId)
     );
-  }, [displayProducts, showFavoritesOnly, favoriteProductIds, isFavoritesLoading]);
+  }, [displayProducts, showFavoritesOnly, favoriteProductIds, isFavoritesLoading, favoritesQuery.data, favoritesQuery.isLoading]);
 
   // 收藏功能hooks - 基于筛选后的产品
   const productIds = useMemo(() =>
@@ -278,8 +291,17 @@ export const ProductListWithQuery: React.FC = () => {
   const actualProducts = paginationInfo.products;
   const actualPagination = paginationInfo.pagination;
 
-  // 如果启用了收藏筛选，使用筛选后的产品；否则使用后端分页的产品数据
-  const paginatedProducts = showFavoritesOnly ? filteredProducts : actualProducts;
+  // 如果启用了收藏筛选，对收藏产品进行前端分页；否则使用后端分页的产品数据
+  const paginatedProducts = useMemo(() => {
+    if (!showFavoritesOnly) {
+      return actualProducts;
+    }
+
+    // 对收藏产品进行前端分页
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredProducts.slice(startIndex, endIndex);
+  }, [showFavoritesOnly, actualProducts, filteredProducts, currentPage, itemsPerPage]);
 
   // 获取当前选中的产品
   const selectedProduct = selectedProductId
@@ -323,8 +345,27 @@ export const ProductListWithQuery: React.FC = () => {
     setSelectedProductId(null);
   };
 
-  // 使用后端返回的总页数
-  const totalPages = actualPagination.totalPages;
+  // 计算分页信息 - 收藏筛选时使用收藏产品总数，否则使用后端分页信息
+  const paginationData = useMemo(() => {
+    if (!showFavoritesOnly) {
+      return actualPagination;
+    }
+
+    // 收藏筛选时的分页信息
+    const totalFavorites = filteredProducts.length;
+    const totalPages = Math.ceil(totalFavorites / itemsPerPage);
+
+    return {
+      page: currentPage,
+      limit: itemsPerPage,
+      total: totalFavorites,
+      totalPages: totalPages,
+      hasNext: currentPage < totalPages,
+      hasPrev: currentPage > 1
+    };
+  }, [showFavoritesOnly, actualPagination, filteredProducts.length, itemsPerPage, currentPage]);
+
+  const totalPages = paginationData.totalPages;
 
   // 处理产品操作
   const handleProductAction = (product: Product, action: 'favorite' | 'compare' | 'detail') => {
@@ -445,7 +486,11 @@ export const ProductListWithQuery: React.FC = () => {
               <Button
                 variant={showFavoritesOnly ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                onClick={() => {
+                  setShowFavoritesOnly(!showFavoritesOnly);
+                  // 切换收藏筛选时重置到第一页
+                  setCurrentPage(1);
+                }}
                 disabled={isFavoritesLoading}
                 className={showFavoritesOnly ? "bg-red-500 hover:bg-red-600 text-white" : ""}
               >
@@ -535,7 +580,7 @@ export const ProductListWithQuery: React.FC = () => {
                     onFiltersChange={handleFiltersChange}
                     onClearFilters={handleClearFilters}
                     totalCount={statsQuery.data?.totalProducts}
-                    filteredCount={actualPagination.total}
+                    filteredCount={paginationData.total}
                   />
                 </motion.div>
               )}
@@ -608,7 +653,7 @@ export const ProductListWithQuery: React.FC = () => {
                         onClearFilters={handleClearFilters}
                         isMobile={true}
                         totalCount={statsQuery.data?.totalProducts}
-                        filteredCount={actualPagination.total}
+                        filteredCount={paginationData.total}
                       />
                     </div>
                   </motion.div>
@@ -646,9 +691,9 @@ export const ProductListWithQuery: React.FC = () => {
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>
                       {t('navigation:search.resultsCountWithRange', {
-                        count: actualPagination.total,
-                        start: (actualPagination.page - 1) * actualPagination.limit + 1,
-                        end: Math.min(actualPagination.page * actualPagination.limit, actualPagination.total)
+                        count: paginationData.total,
+                        start: (paginationData.page - 1) * paginationData.limit + 1,
+                        end: Math.min(paginationData.page * paginationData.limit, paginationData.total)
                       })}
                       {searchQuery && ` (${t('navigation:search.searchBy')}: "${searchQuery}")`}
                     </span>
@@ -717,9 +762,9 @@ export const ProductListWithQuery: React.FC = () => {
                   {/* 分页 */}
                   <ScrollReveal direction="up" delay={0.3}>
                     <Pagination
-                      currentPage={actualPagination.page}
-                      totalPages={actualPagination.totalPages}
-                      totalItems={actualPagination.total}
+                      currentPage={paginationData.page}
+                      totalPages={paginationData.totalPages}
+                      totalItems={paginationData.total}
                       itemsPerPage={itemsPerPage} // 使用组件自身的状态，而不是后端返回的limit
                       itemsPerPageOptions={[20, 50, 100, 200, 1000]}
                       onPageChange={handlePageChange}

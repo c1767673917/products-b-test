@@ -127,11 +127,15 @@ export async function favoriteRoutes(fastify: FastifyInstance) {
         });
       }
       
+      // 特殊处理：如果limit为1000或更大，允许获取所有收藏（用于筛选功能）
+      const requestedLimit = Number(limit);
+      const actualLimit = requestedLimit >= 1000 ? requestedLimit : Math.min(requestedLimit, 100);
+
       const result = await Favorite.getFavoritesList({
         userId,
         sessionId,
         page: Number(page),
-        limit: Math.min(Number(limit), 100), // 限制最大每页数量
+        limit: actualLimit,
         populate: typeof populate === 'string' ? populate === 'true' : Boolean(populate)
       });
       
