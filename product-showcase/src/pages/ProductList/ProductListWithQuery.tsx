@@ -507,7 +507,7 @@ export const ProductListWithQuery: React.FC = () => {
                 <HeartIcon className={`h-4 w-4 ${showFavoritesOnly ? 'text-white' : 'text-red-500'}`} />
                 {!isMobile && (
                   <span className="ml-1">
-                    {showFavoritesOnly ? '显示全部' : '仅收藏'}
+                    {showFavoritesOnly ? t('product:filters.showAll') : t('product:filters.favoritesOnly')}
                     {favoriteProductIds.length > 0 && ` (${favoriteProductIds.length})`}
                   </span>
                 )}

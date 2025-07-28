@@ -45,6 +45,8 @@
     "allPlatforms": "All Platforms",
     "allLocations": "All Locations",
     "showDiscountOnly": "Show Discount Only",
+    "showAll": "Show All",
+    "favoritesOnly": "Favorites Only",
     "priceRange": "Price Range",
     "filterBy": "Filter By",
     "sortBy": "Sort By",

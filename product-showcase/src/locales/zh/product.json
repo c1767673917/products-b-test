@@ -45,6 +45,8 @@
     "allPlatforms": "全部平台",
     "allLocations": "全部地区",
     "showDiscountOnly": "仅显示折扣商品",
+    "showAll": "显示全部",
+    "favoritesOnly": "仅收藏",
     "priceRange": "价格区间",
     "filterBy": "筛选条件",
     "sortBy": "排序方式",

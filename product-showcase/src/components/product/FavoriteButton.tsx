@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 
 interface FavoriteButtonProps {
@@ -12,6 +13,7 @@ interface FavoriteButtonProps {
   className?: string;
   showCount?: boolean;
   favoriteCount?: number;
+  showTooltip?: boolean;
 }
 
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({
@@ -21,8 +23,11 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   size = 'md',
   className,
   showCount = false,
-  favoriteCount = 0
+  favoriteCount = 0,
+  showTooltip = true
 }) => {
+  const { t } = useTranslation('product');
+
   const sizeClasses = {
     sm: 'w-6 h-6 p-1',
     md: 'w-8 h-8 p-1.5',
@@ -48,6 +53,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
       <motion.button
         onClick={handleClick}
         disabled={isLoading}
+        title={showTooltip ? (isFavorited ? t('actions.favorited') : t('actions.favorite')) : undefined}
         className={cn(
           'relative rounded-full bg-white/90 backdrop-blur-sm shadow-sm',
           'hover:bg-white hover:shadow-md transition-all duration-200',
