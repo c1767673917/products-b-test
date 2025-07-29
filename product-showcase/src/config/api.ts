@@ -4,9 +4,9 @@ console.log('API_CONFIG: VITE_API_BASE_URL =', import.meta.env.VITE_API_BASE_URL
 export const API_CONFIG = {
   // 后端API基础URL
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
-  
-  // 图片服务URL  
-  imageBaseURL: import.meta.env.VITE_IMAGE_BASE_URL || 'http://152.89.168.61:9000',
+
+  // 图片服务URL
+  imageBaseURL: import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:9000',
   
   // 图片服务配置
   imageService: {

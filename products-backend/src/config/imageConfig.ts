@@ -6,10 +6,10 @@
 export const IMAGE_CONFIG = {
   // MinIO 配置
   MINIO: {
-    ENDPOINT: process.env.MINIO_ENDPOINT || '152.89.168.61',
+    ENDPOINT: process.env.MINIO_ENDPOINT || 'localhost',
     PORT: parseInt(process.env.MINIO_PORT || '9000'),
     ACCESS_KEY: process.env.MINIO_ACCESS_KEY || 'lcsm',
-    SECRET_KEY: process.env.MINIO_SECRET_KEY || 'Sa2482047260@',
+    SECRET_KEY: process.env.MINIO_SECRET_KEY || 'Sa2482047260',
     BUCKET_NAME: process.env.MINIO_BUCKET || 'product-images',
     USE_SSL: false
   },
